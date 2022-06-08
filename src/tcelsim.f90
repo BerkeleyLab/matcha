@@ -1,10 +1,4 @@
 module tcelsim
+  use t_cell_m, only : initialize_positions
   implicit none
-  private
-
-  public :: say_hello
-contains
-  subroutine say_hello
-    print *, "Hello, tcelsim!"
-  end subroutine say_hello
-end module tcelsim
+end module
