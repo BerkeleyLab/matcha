@@ -6,10 +6,10 @@ contains
   subroutine initialize_positions(x,y,z,ncells,npositions)
         
     implicit none
-    integer ncells,npositions
-    double precision x(ncells,npositions)
-    double precision y(ncells,npositions)
-    double precision z(ncells,npositions)
+    integer, intent(in) :: ncells,npositions
+    double precision, intent(out) :: x(ncells,npositions)
+    double precision, intent(out) :: y(ncells,npositions)
+    double precision, intent(out) :: z(ncells,npositions)
 
     !     Local variables
     integer i
