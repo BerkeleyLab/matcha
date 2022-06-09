@@ -1,6 +1,7 @@
 module distribution_m
   implicit none
-  
+    private
+    public :: create_distribution
 contains
 
   subroutine create_distribution(vel,cumulative_distribution,nintervals)
