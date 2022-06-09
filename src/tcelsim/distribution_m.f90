@@ -7,9 +7,9 @@ contains
   subroutine create_distribution(vel,cumulative_distribution,nintervals)
   
     implicit none
-    integer nintervals
-    double precision cumulative_distribution(0:nintervals)              
-    double precision vel(nintervals)
+    integer, intent(in) :: nintervals
+    double precision, intent(out) :: cumulative_distribution(0:nintervals)              
+    double precision, intent(out) :: vel(nintervals)
 
     !   Local variables      
     integer i
