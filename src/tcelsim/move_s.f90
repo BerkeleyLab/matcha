@@ -1,12 +1,13 @@
-submodule(move_m) t_cells
+submodule(move_m) move_s
   implicit none
 
 contains
+  
   module procedure move_tcells
       ! Local variables
-      integer, intent(out) i,j,k
-      double precision, intent(out) speed,dt
-      double precision, intent(out) rr1,rr2,rr3,sum
+      integer i,j,k
+      double precision speed,dt
+      double precision rr1,rr2,rr3,sum
 
       ! Time step
       dt = .1
@@ -39,6 +40,6 @@ contains
         end do
       end do
 
-    end module procedure move_tcells
+    end procedure move_tcells
 
-end submodule move_m
+end submodule move_s
