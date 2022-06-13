@@ -1,15 +1,9 @@
-module t_cell_m
+submodule(t_cell_m) t_cell_s
   implicit none
 
 contains
   
-  subroutine initialize_positions(x,y,z,ncells,npositions)
-        
-    implicit none
-    integer, intent(in) :: ncells,npositions
-    double precision, intent(out) :: x(ncells,npositions)
-    double precision, intent(out) :: y(ncells,npositions)
-    double precision, intent(out) :: z(ncells,npositions)
+  module procedure initialize_positions
 
     !     Local variables
     integer i
@@ -25,6 +19,6 @@ contains
        z(i,1) = rr3*100.d0
     end do
 
-  end subroutine initialize_positions
+  end procedure initialize_positions
 
-end module t_cell_m
+end submodule t_cell_s
