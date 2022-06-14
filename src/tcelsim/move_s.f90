@@ -34,9 +34,9 @@ contains
           rr3 = rr3/sum
 
           !     Use a forward Euler to advance the cell position
-          x(i,j) = x(i,j-1) + dt*speed
-          y(i,j) = y(i,j-1) + dt*speed
-          z(i,j) = z(i,j-1) + dt*speed
+          x(i,j) = x(i,j-1) + dt*speed*rr1
+          y(i,j) = y(i,j-1) + dt*speed*rr2
+          z(i,j) = z(i,j-1) + dt*speed*rr3
         end do
       end do
 
