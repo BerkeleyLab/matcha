@@ -3,9 +3,10 @@ module move_m
 
   interface
 
-    module subroutine move_tcells(x,y,z,vel,cumulative_distribution,ncells,npositions,nintervals)
+    module subroutine move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals)
       implicit none
       integer, intent(in) :: ncells,npositions,nintervals
+      double precision, intent(in) :: random_number_table(ncells,npositions,4)
       double precision, intent(inout) :: x(ncells,npositions)
       double precision, intent(inout) :: y(ncells,npositions)
       double precision, intent(inout) :: z(ncells,npositions)
