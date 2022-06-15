@@ -17,7 +17,7 @@ program tcell
   call initialize_positions(x,y,z,ncells,npositions)
 
   call create_distribution(vel,cumulative_distribution,nintervals)
-  
+
   call create_rand_num_table(ncells,npositions,random_number_table)
 
   call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals)
