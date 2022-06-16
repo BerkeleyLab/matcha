@@ -2,8 +2,8 @@ program tcell
   use tcelsim, only : initialize_positions, create_distribution, create_rand_num_table, move_tcells
   implicit none
 
-  integer ncells, npositions, nintervals
-  parameter(ncells = 100, npositions = 25)
+  integer ncells, npositions, nintervals, nveldim
+  parameter(ncells = 100, npositions = 25, nveldim = 4)
   parameter(nintervals = 10)
 
   double precision vel(nintervals)
@@ -14,7 +14,7 @@ program tcell
   double precision, allocatable :: y(:,:)
   double precision, allocatable :: z(:,:)
   
-  allocate(random_number_table(ncells,npositions,4))
+  allocate(random_number_table(ncells,npositions,nveldim))
   allocate(x(ncells,npositions))
   allocate(y(ncells,npositions))
   allocate(z(ncells,npositions))
@@ -23,8 +23,8 @@ program tcell
 
   call create_distribution(vel,cumulative_distribution,nintervals)
   
-  call create_rand_num_table(ncells,npositions,random_number_table)
+  call create_rand_num_table(ncells,npositions,random_number_table,nveldim)
 
-  call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals)
+  call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals,nveldim)
 
 end program
