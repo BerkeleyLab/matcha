@@ -1,5 +1,5 @@
 program tcell
-  use tcelsim, only : initialize_positions, create_distribution, create_rand_num_table, move_tcells
+  use tcelsim, only : initialize_positions, create_distribution, move_tcells
   implicit none
 
   integer ncells, npositions, nintervals, nveldim
@@ -23,7 +23,7 @@ program tcell
 
   call create_distribution(vel,cumulative_distribution,nintervals)
   
-  call create_rand_num_table(ncells,npositions,random_number_table,nveldim)
+  call random_number(random_number_table)
 
   call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals,nveldim)
 
