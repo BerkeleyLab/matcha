@@ -9,10 +9,15 @@ program tcell
   double precision vel(nintervals)
   double precision cumulative_distribution(0:nintervals)
 
-  double precision random_number_table(ncells,npositions,4)
-  double precision x(ncells,npositions)
-  double precision y(ncells,npositions)
-  double precision z(ncells,npositions)
+  double precision, allocatable :: random_number_table(:,:,:)
+  double precision, allocatable :: x(:,:)
+  double precision, allocatable :: y(:,:)
+  double precision, allocatable :: z(:,:)
+  
+  allocate(random_number_table(ncells,npositions,4))
+  allocate(x(ncells,npositions))
+  allocate(y(ncells,npositions))
+  allocate(z(ncells,npositions))
 
   call initialize_positions(x,y,z,ncells,npositions)
 
