@@ -9,7 +9,6 @@ contains
     integer i
     double precision, parameter :: scaling_factor  = 100.
 
-    scaling_factor = 100.d0
         
     !     Assign initial positions to T cells randomly in a [100x100x100] grid
     do i = 1,ncells
