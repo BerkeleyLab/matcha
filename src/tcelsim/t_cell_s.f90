@@ -7,7 +7,7 @@ contains
 
     !     Local variables
     integer i
-    double precision scaling_factor
+    double precision, parameter :: scaling_factor  = 100.
 
     scaling_factor = 100.d0
         
