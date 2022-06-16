@@ -3,11 +3,11 @@ module random_numbers_m
   
   interface
   
-    module subroutine create_rand_num_table(ncells,npositions,random_number_table)
+    module subroutine create_rand_num_table(ncells,npositions,random_number_table,nveldim)
     
       implicit none
-      integer, intent(in) :: ncells,npositions
-      double precision, intent(out) :: random_number_table(ncells,npositions,4)
+      integer, intent(in) :: ncells,npositions, nveldim
+      double precision, intent(out) :: random_number_table(ncells,npositions,nveldim)
       
     end subroutine
     

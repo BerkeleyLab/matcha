@@ -10,7 +10,7 @@ contains
     
     do i = 1,ncells
       do j = 1,npositions
-        do k = 1,4
+        do k = 1,nveldim
           call random_number(random_number_table(i,j,k))
         end do
       end do
