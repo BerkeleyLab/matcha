@@ -28,10 +28,10 @@ contains
     end do
 
     !     Form the cumulative distribution      
-    cumulative_distribution(0) = 0.d0
-    do i = 1,nintervals
+    cumulative_distribution(1) = 0.d0
+    do i = 2,nintervals+1
        cumulative_distribution(i) = cumulative_distribution(i-1) + &
-                                    sample_distribution(i)
+                                    sample_distribution(i-1)
     end do
 
   end procedure create_distribution

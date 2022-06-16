@@ -22,8 +22,8 @@ contains
 
           ! Sample from the distribution
           do k = 1,nintervals
-            if (rr1 .ge. cumulative_distribution(k-1) .and. &
-                rr1 .lt. cumulative_distribution(k)) then
+            if (rr1 .ge. cumulative_distribution(k) .and. &
+                rr1 .lt. cumulative_distribution(k+1)) then
                speed = vel(k)
             end if
           end do
