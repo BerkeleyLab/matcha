@@ -7,19 +7,14 @@ contains
 
     !     Local variables
     integer i
-    double precision rr1,rr2,rr3
-    double precision scaling_factor
+    double precision, parameter :: scaling_factor  = 100.
 
-    scaling_factor = 100.d0
         
     !     Assign initial positions to T cells randomly in a [100x100x100] grid
     do i = 1,ncells
-       call random_number(rr1)
-       call random_number(rr2)
-       call random_number(rr3)
-       x(i,1) = rr1*scaling_factor
-       y(i,1) = rr2*scaling_factor
-       z(i,1) = rr3*scaling_factor
+       x(i,1) = random_number_table_positions(i,1)*scaling_factor
+       y(i,1) = random_number_table_positions(i,2)*scaling_factor
+       z(i,1) = random_number_table_positions(i,3)*scaling_factor
     end do
 
   end procedure initialize_positions
