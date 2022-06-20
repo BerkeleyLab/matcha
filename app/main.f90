@@ -25,7 +25,7 @@ program tcell
 
   call initialize_positions(x,y,z,random_number_table_positions,ncells,npositions,ndim)
 
-  call create_distribution(vel,cumulative_distribution,nintervals)
+  call create_distribution(vel,cumulative_distribution)
   
   call random_number(random_number_table)
 
