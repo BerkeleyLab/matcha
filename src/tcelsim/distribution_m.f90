@@ -4,7 +4,7 @@ module distribution_m
 
   interface
   
-    module subroutine create_distribution(vel,cumulative_distribution)
+    module subroutine create_distribution(vel,cumulative_distribution,nintervals)
   
       implicit none
       integer, intent(in) :: nintervals
