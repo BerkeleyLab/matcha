@@ -10,7 +10,7 @@ module move_m
       double precision, intent(inout) :: x(ncells,npositions)
       double precision, intent(inout) :: y(ncells,npositions)
       double precision, intent(inout) :: z(ncells,npositions)
-      double precision, intent(in) :: cumulative_distribution(0:nintervals)
+      double precision, intent(in) :: cumulative_distribution(nintervals+1)
       double precision, intent(in) :: vel(nintervals)
     end subroutine
 

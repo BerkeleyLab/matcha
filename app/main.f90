@@ -7,7 +7,7 @@ program tcell
   parameter(nintervals = 10)
 
   double precision vel(nintervals)
-  double precision cumulative_distribution(0:nintervals)
+  double precision cumulative_distribution(nintervals+1)
 
   double precision, allocatable :: random_number_table(:,:,:)
   double precision, allocatable :: random_number_table_positions(:,:)
