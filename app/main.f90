@@ -29,6 +29,6 @@ program tcell
   
   call random_number(random_number_table)
 
-  call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals,nveldim)
+  call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table,ncells,npositions,nintervals)
 
 end program
