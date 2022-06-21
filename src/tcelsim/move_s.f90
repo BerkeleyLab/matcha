@@ -5,40 +5,43 @@ contains
   
   module procedure move_tcells
       ! Local variables
-      integer i,j,k
-      double precision dt
-      double precision, dimension(ncells,npositions-1) :: speed,rr2,rr3,rr4,sum
-
-      ! Time step
-      dt = .1
+      integer i, j
+      double precision, allocatable, dimension(:,:) :: speed
       
-      rr2(:,:) = random_number_table(:,2:,2)
-      rr3(:,:) = random_number_table(:,2:,3)
-      rr4(:,:) = random_number_table(:,2:,4)
+      associate(ncells => size(random_number_table,1), npositions => size(random_number_table,2) )
+        allocate(speed(ncells, npositions-1))
 
-      do i = 1,ncells
-        do j = 2,npositions
-          ! Sample from the distribution
-          do k = 1,nintervals
-            if (random_number_table(i,j,1) .ge. cumulative_distribution(k) .and. &
-                random_number_table(i,j,1) .lt. cumulative_distribution(k+1)) then
-                speed(i,j) = vel(k)
-            end if
-          end do
+        ! Sample from the distribution
+        do concurrent(i = 1:ncells, j = 1:npositions-1)
+          associate(k => findloc(random_number_table(i,j,1) >= cumulative_distribution, value=.true., dim=1))
+            speed(i,j) = vel(k)
+          end associate
         end do
-      end do
       
-      ! Create a random unit vector
+        block
+          ! Time step
+          double precision, allocatable, dimension(:,:,:) :: dir
+          double precision, parameter :: dt = .1
+          
+          ! Create a random unit vector
+          dir = random_number_table(:, 1:npositions-1, 2:4)
 
-      sum(:,:) = rr2(:,:) + rr3(:,:) + rr4(:,:)
-      rr2(:,:) = rr2(:,:)/sum(:,:)
-      rr3(:,:) = rr3(:,:)/sum(:,:)
-      rr4(:,:) = rr4(:,:)/sum(:,:)
+          associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
+            associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
+              dir(:,:,1) = dir(:,:,1)/dir_mag_
+              dir(:,:,2) = dir(:,:,2)/dir_mag_
+              dir(:,:,3) = dir(:,:,3)/dir_mag_
+            end associate
+          end associate
 
-      !     Use a forward Euler to advance the cell position
-      x(:,2:) = x(:,:) + dt*speed(:,:)*rr2(:,:)
-      y(:,2:) = y(:,:) + dt*speed(:,:)*rr3(:,:)
-      z(:,2:) = z(:,:) + dt*speed(:,:)*rr4(:,:)
+          !     Use a forward Euler to advance the cell position
+          do i=2,npositions
+            x(:,i) = x(:,i-1) + dt*speed(:,i-1)*dir(:,i-1,1)
+            y(:,i) = y(:,i-1) + dt*speed(:,i-1)*dir(:,i-1,2)
+            z(:,i) = z(:,i-1) + dt*speed(:,i-1)*dir(:,i-1,3)
+          end do
+        end block
+      end associate
 
   end procedure move_tcells
 
