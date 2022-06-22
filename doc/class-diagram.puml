@@ -1,0 +1,12 @@
+@startuml
+
+Title "Matcha Classes"
+
+class t_cell_collection_t{
+  - positions_ : double precision[:,:]
+  - time_n : double precision
+  + positions() : real[:,:]
+  + t_cell_collection_t(positions : double precision[:,:], scale : double precision, time : double precision) : t_cell_collection_t
+}
+
+@enduml
