@@ -1,7 +1,7 @@
-name = "tcelsim"
+name = "matcha"
 version = "0.1.0"
 license = "license"
-author = "David Torres"
+author = "David Torres, Damian Rouson, Dominick Martinez, and Jeremiah Bailey"
 maintainer = "davytorres@nnmc.edu"
 copyright = "Copyright 2022, David Torres"
 

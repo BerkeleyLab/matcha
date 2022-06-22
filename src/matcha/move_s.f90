@@ -8,23 +8,29 @@ contains
       integer i, j
       double precision, allocatable, dimension(:,:) :: speed
       
-      associate(ncells => size(random_number_table,1), nsteps => size(random_number_table,2) )
-        allocate(speed(ncells, nsteps))
+      associate(nsteps => size(random_speeds,2))
+        associate( &
+          ncells => size(random_speeds,1), &
+          cumulative_distribution => distribution%cumulative_distribution(), &
+          vel => distribution%vel() &
+        )
+          allocate(speed(ncells, nsteps))
 
-        ! Sample from the distribution
-        do concurrent(i = 1:ncells, j = 1:nsteps)
-          associate(k => findloc(random_number_table(i,j,1) >= cumulative_distribution, value=.true., dim=1))
-            speed(i,j) = vel(k)
-          end associate
-        end do
+          ! Sample from the distribution
+          do concurrent(i = 1:ncells, j = 1:nsteps)
+            associate(k => findloc(random_speeds(i,j) >= cumulative_distribution, value=.true., dim=1))
+              speed(i,j) = vel(k)
+            end associate
+          end do
+        end associate
       
         block
           ! Time step
           double precision, allocatable, dimension(:,:,:) :: dir
-          double precision, parameter :: dt = .1
+          double precision, parameter :: dt = .1D0
           
           ! Create a random unit vector
-          dir = random_number_table(:, 1:nsteps, 2:4)
+          dir = random_directions(:,1:nsteps,:)
 
           associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
             associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))

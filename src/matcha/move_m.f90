@@ -1,16 +1,14 @@
 module move_m
+  use distribution_m, only : distribution_t
   implicit none
 
   interface
 
-    module subroutine move_tcells(x,y,z,vel,cumulative_distribution,random_number_table)
+    module subroutine move_tcells(distribution, random_speeds, random_directions, x,y,z)
       implicit none
-      double precision, intent(in) :: random_number_table(:,:,:)
-      double precision, intent(inout) :: x(:,:)
-      double precision, intent(inout) :: y(:,:)
-      double precision, intent(inout) :: z(:,:)
-      double precision, intent(in) :: cumulative_distribution(:)
-      double precision, intent(in) :: vel(:)
+      type(distribution_t), intent(in) :: distribution
+      double precision, intent(in) :: random_speeds(:,:), random_directions(:,:,:)
+      double precision, intent(inout), dimension(:,:) :: x, y, z
     end subroutine
 
   end interface

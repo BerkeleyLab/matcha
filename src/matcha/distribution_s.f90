@@ -1,24 +1,23 @@
 submodule(distribution_m) distribution_s
   implicit none
 
-
 contains
 
-  module procedure create_distribution
-
-    !   Local variables      
+  module procedure construct
     integer i
-    double precision, allocatable :: sample_distribution(:)
     
-    !     Create a distribution 
-    associate(nintervals => size(cumulative_distribution,1)-1)
-      allocate(sample_distribution(nintervals))
-      call random_number(sample_distribution)
-      sample_distribution = sample_distribution/ sum(sample_distribution)
-      vel = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
-      cumulative_distribution = [(0.D0, sum(sample_distribution(1:i)), i=1,nintervals)] ! Form the cumulative distribution
+    associate(nintervals => size(sample_distribution,1))      
+      distribution%vel_ = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
+      distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i)), i=1, nintervals)]]
     end associate
-
-  end procedure create_distribution
+  end procedure construct
   
+  module procedure vel
+    my_vel = self%vel_
+  end procedure
+  
+  module procedure cumulative_distribution
+    my_cumulative_distribution = self%cumulative_distribution_
+  end procedure 
+   
 end submodule distribution_s
