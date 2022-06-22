@@ -1,5 +1,5 @@
-program tcell
-  use tcelsim, only : initialize_positions, create_distribution, move_tcells
+program matcha
+  use matcha_m, only : initialize_positions, create_distribution, move_tcells
   implicit none
 
   integer ncells, npositions, nintervals, nveldim, ndim

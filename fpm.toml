@@ -4,3 +4,6 @@ license = "license"
 author = "David Torres"
 maintainer = "davytorres@nnmc.edu"
 copyright = "Copyright 2022, David Torres"
+
+[dev-dependencies]
+garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}
