@@ -15,7 +15,9 @@ program tcell
   double precision, allocatable :: y(:,:)
   double precision, allocatable :: z(:,:)
   
-  allocate(random_number_table(ncells,npositions,nveldim))
+  associate(nsteps => npositions-1)
+    allocate(random_number_table(ncells,nsteps,nveldim))
+  end associate
   allocate(random_positions(ncells,ndim))
   allocate(x(ncells,npositions))
   allocate(y(ncells,npositions))
@@ -25,7 +27,7 @@ program tcell
 
   call initialize_positions(x(:,1),y(:,1),z(:,1),random_positions)
 
-  call create_distribution(vel,cumulative_distribution,nintervals)
+  call create_distribution(vel,cumulative_distribution)
   
   call random_number(random_number_table)
 
