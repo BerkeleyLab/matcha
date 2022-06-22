@@ -5,5 +5,8 @@ author = "David Torres, Damian Rouson, Dominick Martinez, and Jeremiah Bailey"
 maintainer = "davytorres@nnmc.edu"
 copyright = "Copyright 2022, David Torres"
 
+[dependencies]
+assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
+
 [dev-dependencies]
 garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}

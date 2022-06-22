@@ -1,10 +1,14 @@
 submodule(distribution_m) distribution_s
+  use assert_m, only : assert
+  use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
 contains
 
   module procedure construct
     integer i
+    
+    call assert(all(sample_distribution>=0.D0), "distribution_t: sample_distribution>=0.", intrinsic_array_t(sample_distribution))
     
     associate(nintervals => size(sample_distribution,1))      
       distribution%vel_ = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
