@@ -23,12 +23,16 @@ contains
     type(result_t) result_
     integer, parameter :: ncells = 100, ndim = 3
     double precision random_positions(ncells,ndim)
-    type(t_cell_collection_t) t_cell_collection
+    !type(t_cell_collection_t) t_cell_collection
     double precision, parameter :: scale_factor=100.D0
     
     call random_number(random_positions)
-    t_cell_collection = t_cell_collection_t(positions=random_positions, scale=scale_factor, time=0.D0)
-      result_ = assert_that(all(0.D0 <= t_cell_collection%positions() .and. t_cell_collection%positions() <= scale_factor))
+    associate(t_cell_collection => t_cell_collection_t(positions=random_positions, scale=scale_factor, time=0.D0))
+    result_ = assert_that( &
+      all(0.D0 <= t_cell_collection%positions() .and. t_cell_collection%positions() <= scale_factor), &
+      "position(s) out of range" &
+    )
+    end associate
   end function
 
 end module t_cell_collection_test
