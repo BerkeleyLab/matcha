@@ -9,4 +9,13 @@ class t_cell_collection_t{
   + t_cell_collection_t(positions : double precision[:,:], scale : double precision, time : double precision) : t_cell_collection_t
 }
 
+class distribution_t{
+  - vel_ : double precision[:]
+  - cumulative_distribution : double precision[:]
+  + distribution_t(sample_distribution : double precision[:]) : distribution_t
+}
+note right of distribution_t::distribution_t
+  context distribution_t::distribution_t() post: all([(cumulative_distribution_(i+1) >= cumulative_distribution_(i), i=1,size(cumulative_distribution_,1)-1)]
+end note
+
 @enduml
