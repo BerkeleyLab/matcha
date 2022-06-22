@@ -8,31 +8,16 @@ contains
 
     !   Local variables      
     integer i
-    double precision sum,rr1
     double precision, allocatable :: sample_distribution(:)
-
-    allocate(sample_distribution(nintervals))
-      
-    !     Create a distribution      
-    sum = 0.d0
-    do i = 1,nintervals
-       call random_number(rr1)
-       sample_distribution(i) = rr1
-       sum = sum + sample_distribution(i)
-    end do
-
-    do i = 1,nintervals
-      sample_distribution(i) = sample_distribution(i)/sum
-      !        Assign speeds to each distribution bin         
-      vel(i) = dble(i)
-    end do
-
-    !     Form the cumulative distribution      
-    cumulative_distribution(1) = 0.d0
-    do i = 2,nintervals+1
-       cumulative_distribution(i) = cumulative_distribution(i-1) + &
-                                    sample_distribution(i-1)
-    end do
+    
+    !     Create a distribution 
+    associate(nintervals => size(cumulative_distribution,1)-1)
+      allocate(sample_distribution(nintervals))
+      call random_number(sample_distribution)
+      sample_distribution = sample_distribution/ sum(sample_distribution)
+      vel = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
+      cumulative_distribution = [(0.D0, sum(sample_distribution(1:i)), i=1,nintervals)] ! Form the cumulative distribution
+    end associate
 
   end procedure create_distribution
   
