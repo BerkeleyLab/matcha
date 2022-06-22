@@ -33,5 +33,7 @@ program matcha
     end associate
   end block
 
+  print *
+  print *,"----> Matcha done. <----"
 
 end program
