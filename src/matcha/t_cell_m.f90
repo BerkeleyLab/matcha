@@ -3,7 +3,7 @@ module t_cell_m
 
   interface   
     
-    module subroutine initialize_positions(x,y,z,random_positions)
+    module subroutine initialize_positions(random_positions,x,y,z)
       implicit none
       double precision, intent(in)  :: random_positions(:,:)
       double precision, intent(out) :: x(:), y(:), z(:)

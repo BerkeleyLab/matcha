@@ -1,36 +1,39 @@
-program tcell
-  use tcelsim, only : initialize_positions, create_distribution, move_tcells
+program matcha
+  use matcha_m, only : initialize_positions, move_tcells
+  use distribution_m, only : distribution_t
   implicit none
 
-  integer ncells, npositions, nintervals, nveldim, ndim
-  parameter(ncells = 100, npositions = 25, nveldim = 4, ndim = 3)
-  parameter(nintervals = 10)
+  integer, parameter :: ncells = 100, npositions = 25, nveldim = 4, ndim = 3, nintervals = 10
+  integer, parameter :: nsteps = npositions - 1
+  double precision, allocatable, dimension(:,:) :: x, y, z, random_positions
 
-  double precision vel(nintervals)
-  double precision cumulative_distribution(nintervals+1)
-
-  double precision, allocatable :: random_number_table(:,:,:)
-  double precision, allocatable :: random_positions(:,:)
-  double precision, allocatable :: x(:,:)
-  double precision, allocatable :: y(:,:)
-  double precision, allocatable :: z(:,:)
-  
-  associate(nsteps => npositions-1)
-    allocate(random_number_table(ncells,nsteps,nveldim))
-  end associate
-  allocate(random_positions(ncells,ndim))
   allocate(x(ncells,npositions))
   allocate(y(ncells,npositions))
   allocate(z(ncells,npositions))
+  allocate(random_positions(ncells,ndim))
 
   call random_number(random_positions)
+  call initialize_positions(random_positions, x(:,1),y(:,1),z(:,1))
 
-  call initialize_positions(x(:,1),y(:,1),z(:,1),random_positions)
+  block
+    double precision, allocatable :: random_velocities(:,:,:), sample_distribution(:)
+    type(distribution_t) distribution
+    
+    allocate(random_velocities(ncells,nsteps,nveldim))
+    allocate(sample_distribution(nintervals))
 
-  call create_distribution(vel,cumulative_distribution)
-  
-  call random_number(random_number_table)
+    call random_number(sample_distribution)
+    sample_distribution = sample_distribution/sum(sample_distribution)
+    
+    call random_number(random_velocities)
 
-  call move_tcells(x,y,z,vel,cumulative_distribution,random_number_table)
+    distribution = distribution_t(sample_distribution)
+    associate(random_speeds => random_velocities(:,:,1), random_directions => random_velocities(:,:,2:4))
+      call move_tcells(distribution, random_speeds, random_directions, x,y,z)
+    end associate
+  end block
+
+  print *
+  print *,"----> Matcha done. <----"
 
 end program
