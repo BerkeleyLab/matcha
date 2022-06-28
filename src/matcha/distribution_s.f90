@@ -21,11 +21,6 @@ contains
 
   end procedure construct
 
-  module procedure vel
-    call assert(allocated(self%vel_), "distribution_t%vel_: allocated(self%vel_)")
-    my_vel = self%vel_
-  end procedure
-
   module procedure cumulative_distribution
     call assert(allocated(self%cumulative_distribution_), &
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")

@@ -24,12 +24,6 @@ module distribution_m
   
   interface
   
-    pure module function vel(self) result(my_vel)
-      implicit none
-      class(distribution_t), intent(in) :: self
-      double precision, allocatable :: my_vel(:)
-    end function
-    
     pure module function cumulative_distribution(self) result(my_cumulative_distribution)
       implicit none
       class(distribution_t), intent(in) :: self
