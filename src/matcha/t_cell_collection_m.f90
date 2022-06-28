@@ -10,7 +10,7 @@ module t_cell_collection_m
     !! Encapsulate the state of a collection of T cells
     private
     double precision, allocatable :: positions_(:,:) !! position vectors
-    double precision time_ !! time stample
+    double precision time_ !! time stamp
   contains
     procedure :: positions
     procedure :: time
