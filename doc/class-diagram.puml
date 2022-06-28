@@ -4,22 +4,27 @@ Title "Matcha Classes"
 
 class t_cell_collection_t{
   - positions_ : double precision[:,:]
-  - time_n : double precision
-  + positions() : real[:,:]
-  + t_cell_collection_t(positions : double precision[:,:], scale : double precision, time : double precision) : t_cell_collection_t
+  - time_ : double precision
+  + positions() : double precision[:,:]
+  + time() : double precision
+  + t_cell_collection_t(positions : double precision[:,:], time : double precision) : t_cell_collection_t
 }
 
 class distribution_t{
   - vel_ : double precision[:]
   - cumulative_distribution_ : double precision[:]
-  + vel() : double precision[:]
+  + velocities() : double precision[:,:,:]
   + cumulative_distribution() : double precision[:]
   + distribution_t(sample_distribution : double precision[:]) : distribution_t
 }
+
+note right of distribution_t::cumulative_distribution()
+  context distribution_t::cumulative_distribution() pre: allocated(self%cumulative_distribution_)
+end note
+
 note right of distribution_t::distribution_t
   context distribution_t::distribution_t() pre: all(sample_distribution>=0.D0)
   context distribution_t::distribution_t() post: all([(cumulative_distribution_(i+1) >= cumulative_distribution_(i), i=1,size(cumulative_distribution_,1)-1)]
-  context distribution_t::vel() pre: allocated(self%vel_)
 end note
 
 @enduml
