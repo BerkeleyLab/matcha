@@ -4,14 +4,14 @@ Title "Matcha Classes"
 
 class t_cell_collection_t{
   - positions_ : double precision[:,:]
-  - time_n : double precision
+  - time : double precision
   + positions() : real[:,:]
-  + t_cell_collection_t(positions : double precision[:,:], scale : double precision, time : double precision) : t_cell_collection_t
+  + t_cell_collection_t(positions : double precision[:,:], time : double precision) : t_cell_collection_t
 }
 
 class distribution_t{
   - vel_ : double precision[:]
-  - cumulative_distribution : double precision[:]
+  - cumulative_distribution_ : double precision[:]
   + distribution_t(sample_distribution : double precision[:]) : distribution_t
 }
 note right of distribution_t::distribution_t

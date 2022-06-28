@@ -1,5 +1,6 @@
 module t_cell_collection_m
   !! Define a T-cell abstraction for motility simulations
+  use distribution_m, only : distribution_t
   implicit none
   
   private
@@ -12,14 +13,15 @@ module t_cell_collection_m
     double precision time_ !! time stample
   contains
     procedure :: positions
+    procedure :: time
   end type
   
   interface t_cell_collection_t
     
-    pure module function construct(positions, scale, time) result(t_cell_collection)
+    pure module function construct(positions, time) result(t_cell_collection)
       !! Return a t_cell_collection_t object rescaled position vectors and the provided time stamp
       implicit none
-      double precision, intent(in) :: positions(:,:), scale, time
+      double precision, intent(in) :: positions(:,:), time
       type(t_cell_collection_t) t_cell_collection
     end function 
     
@@ -32,6 +34,14 @@ module t_cell_collection_m
       implicit none
       class(t_cell_collection_t), intent(in) :: self
       double precision, allocatable :: my_positions(:,:)
+    end function
+    
+    
+    pure module function time(self) result(my_time)
+      !! Return the t_cell_collection_t object's time stamp
+      implicit none
+      class(t_cell_collection_t), intent(in) :: self
+      double precision my_time
     end function
     
   end interface 
