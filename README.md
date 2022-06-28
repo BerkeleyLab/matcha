@@ -1,9 +1,10 @@
-Matcha(Motility Analysis of T Cell Histories in Activation)
-=======
+Matcha
+======
+Motility Analysis of T Cell Histories in Activation
+
 Overview
 --------
-Matcha tracks and simulates the activation of tcells going through lung tissue.
-
+Matcha simulates the motion of T cells through organ tissue.
 
 Prerequisites
 -------------
@@ -18,17 +19,20 @@ cd matcha
 ```
 Building and Testing
 --------------------
-**Building and testing: single-image (serial) execution**<br>
-The following command builds Matcha and runs the full test suite in a single image:
+### Single-image (serial) execution
+With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
+fpm run
 fpm test
 ```
-**Building and testing: multi-image (parallel) execution**<br>
-With `fpm`, the GNU Fortran compiler gfortran, and OpenCoarrays installed, build Matcha and run the program by executing the following command in a 'bash'-like shell:
+### Multi-image (parallel) execution
+With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
 fpm run --compiler caf --runner "cafrun -n 2
+fpm test --compiler caf --runner "cafrun -n 2
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
+
 ## Documentation
-Please visit the Matcha Github Pages site to see HTML Documentation generated with ford
+Please visit the Matcha Github Pages site to see HTML Documentation generated with ford.
 
