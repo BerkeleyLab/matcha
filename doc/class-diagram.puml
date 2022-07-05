@@ -24,7 +24,7 @@ end note
 
 note right of distribution_t::distribution_t
   context distribution_t::distribution_t() pre: all(sample_distribution>=0)
-  context distribution_t::distribution_t() post: all([(cumulative_distribution_(i+1) >= cumulative_distribution_(i), i=1,size(cumulative_distribution_,1)-1)]
+  context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
 end note
 
 @enduml
