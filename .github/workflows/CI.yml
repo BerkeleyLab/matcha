@@ -1,0 +1,44 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    env:
+      GCC_V: 11
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install fpm
+      uses: fortran-lang/setup-fpm@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.1
+      with:
+        format: 'YYYY-MM'    
+
+    - name: Setup cache for opencoarrays
+      id: cache-opencoarrays
+      uses: actions/cache@v3
+      with:
+        path: "OpenCoarrays-2.10.0/"
+        key: ${{ steps.time.outputs.time }}
+
+    - name: Install GFortran, OpenCoarrays
+      run: |
+        sudo apt install -y gfortran-${GCC_V} graphviz
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
+        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
+        --slave /usr/bingcov gcov /usr/bin/gcov-${GCC_V}
+        if [ ! -d OpenCoarrays-2.10.0 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.10.0/OpenCoarrays-2.10.0.tar.gz && tar -xf OpenCoarrays-2.10.0.tar.gz && cd OpenCoarrays-2.10.0 && TERM=xterm ./install.sh -y; fi
+    - name: Build and test
+      run: |
+        source OpenCoarrays-2.10.0/prerequisites/installations/opencoarrays/2.10.0/setup.sh
+        fpm test --compiler caf --runner "cafrun -n 2"
