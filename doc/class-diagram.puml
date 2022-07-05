@@ -19,7 +19,7 @@ class distribution_t{
 }
 
 note right of distribution_t::cumulative_distribution()
-  context distribution_t::cumulative_distribution() pre: allocated(self%cumulative_distribution_)
+  context distribution_t::cumulative_distribution() pre: allocated(cumulative_distribution_)
 end note
 
 note right of distribution_t::distribution_t
