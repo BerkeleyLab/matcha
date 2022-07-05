@@ -13,7 +13,7 @@ class t_cell_collection_t{
 class distribution_t{
   - vel_ : double precision[:]
   - cumulative_distribution_ : double precision[:]
-  + velocities() : double precision[:,:,:]
+  + velocities(speeds : double precision[:,:], directions : double precision[:,:,:]) : double precision[:,:,:]
   + cumulative_distribution() : double precision[:]
   + distribution_t(sample_distribution : double precision[:]) : distribution_t
 }
