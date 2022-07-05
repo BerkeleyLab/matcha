@@ -37,12 +37,12 @@ contains
   
   module procedure velocities
     
+    double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
+    integer cell, step
+    
     call assert(allocated(self%cumulative_distribution_), &
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
     call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
-    
-    double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
-    integer cell, step
 
     ! Sample from the distribution
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
