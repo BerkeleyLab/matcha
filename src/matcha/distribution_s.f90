@@ -4,6 +4,13 @@ submodule(distribution_m) distribution_s
   implicit none
 
 contains
+  
+  pure function monotonically_increasing(f) result(monotonic)
+    double precision, intent(in) :: f(:)
+    logical monotonic
+    integer i
+    monotonic = all([(f(i+1) >= f(i), i=1, size(f)-1)])
+  end function
 
   module procedure construct
     integer i
@@ -15,8 +22,9 @@ contains
       distribution%vel_ = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
       distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i)), i=1, nintervals)]]
 
-      call assert(all([(distribution%cumulative_distribution_(i+1) >= distribution%cumulative_distribution_(i), i=1,nintervals)]),&
-        "distribution_t: cumulative_distribution increases monotonically", intrinsic_array_t(sample_distribution))
+      call assert(monotonically_increasing(distribution%cumulative_distribution_), &
+        "distribution_t: monotonically_increasing(distribution%cumulative_distribution_)", &
+        intrinsic_array_t(distribution%cumulative_distribution_))
     end associate
 
   end procedure construct
@@ -28,6 +36,10 @@ contains
   end procedure 
   
   module procedure velocities
+    
+    call assert(allocated(self%cumulative_distribution_), &
+      "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
+    call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
     
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
     integer cell, step
