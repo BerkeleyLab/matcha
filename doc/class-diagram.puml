@@ -4,18 +4,37 @@ Title "Matcha Classes"
 
 class t_cell_collection_t{
   - positions_ : double precision[:,:]
-  - time : double precision
-  + positions() : real[:,:]
+  - time_ : double precision
+  + positions() : double precision[:,:]
+  + time() : double precision
   + t_cell_collection_t(positions : double precision[:,:], time : double precision) : t_cell_collection_t
 }
+
+note right of t_cell_collection_t::positions()
+  context t_cell_collection_t::positions() pre: allocated(postions_)
+end note
 
 class distribution_t{
   - vel_ : double precision[:]
   - cumulative_distribution_ : double precision[:]
+  + velocities(speeds : double precision[:,:], directions : double precision[:,:,:]) : double precision[:,:,:]
+  + cumulative_distribution() : double precision[:]
   + distribution_t(sample_distribution : double precision[:]) : distribution_t
+  - monotonically_increasing(f : double precision[:]) : logical
 }
+
+note right of distribution_t::cumulative_distribution()
+  context distribution_t::cumulative_distribution() pre: allocated(cumulative_distribution_)
+end note
+
 note right of distribution_t::distribution_t
-  context distribution_t::distribution_t() post: all([(cumulative_distribution_(i+1) >= cumulative_distribution_(i), i=1,size(cumulative_distribution_,1)-1)]
+  context distribution_t::distribution_t() pre: all(sample_distribution>=0)
+  context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
+end note
+
+note right of distribution_t::velocities
+  context distribution_t::velocities() pre: allocated(cumulative_distribution_)
+  context distribution_t::velocities() pre: allocated(vel_)
 end note
 
 @enduml
