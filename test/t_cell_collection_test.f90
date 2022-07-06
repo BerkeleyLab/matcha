@@ -1,8 +1,9 @@
 module t_cell_collection_test
    !! summary: unit tests for T-cell collections
    use garden, only: &
-     result_t, test_item_t, describe, it, assert_that, succeed
+     result_t, test_item_t, describe, it, assert_that, assert_equals
    use t_cell_collection_m, only : t_cell_collection_t
+   use data_partition_m, only : data_partition_t
    implicit none
 
    private
@@ -15,8 +16,10 @@ contains
 
     tests = describe( &
      "a t_cell_collection", &
-     [it( &
-       "is constructed with positions in the specified domain", check_constructed_domain)])
+     [it( "is constructed with positions in the specified domain", check_constructed_domain), &
+      it("distributes cells across images", check_cell_distribution) &
+      ] &
+    )
   end function
 
   function check_constructed_domain() result(result_)
@@ -34,6 +37,28 @@ contains
         all(0.D0 <=  constructed_positions .and. constructed_positions <= scale_factor), "position(s) out of range" &
       )
     end associate
+  end function
+  
+  function check_cell_distribution() result(result_)
+    type(result_t) result_
+    integer, parameter :: ncells = 50, ndim = 3
+    double precision, allocatable :: positions(:,:)
+    type(t_cell_collection_t) t_cell_collection
+    type(data_partition_t) data_partition
+    integer cell_collection_size
+    
+    call data_partition%define_partitions(cardinality=ncells)
+
+    associate(me => this_image())
+      associate(my_num_cells => data_partition%last(me) - data_partition%first(me) + 1)
+        allocate(positions(my_num_cells, ndim), source = 0.D0)
+        t_cell_collection = t_cell_collection_t(positions, time=0.D0)
+        cell_collection_size = size(t_cell_collection%positions(), 1)
+        call co_sum(cell_collection_size)
+        result_ = assert_equals(ncells, cell_collection_size)
+      end associate
+    end associate
+    
   end function
 
 end module t_cell_collection_test
