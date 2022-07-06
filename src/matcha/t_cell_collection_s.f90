@@ -11,7 +11,6 @@ contains
   
   module procedure positions
     call assert(allocated(self%positions_), "t_cell_collection_t%positions: allocated(positions_)")
-      "t_cell_collection_t%positions: allocated(positions_)")
     my_positions = self%positions_
   end procedure
   
