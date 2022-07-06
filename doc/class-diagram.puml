@@ -10,6 +10,10 @@ class t_cell_collection_t{
   + t_cell_collection_t(positions : double precision[:,:], time : double precision) : t_cell_collection_t
 }
 
+note right of t_cell_collection_t::positions()
+  context t_cell_collection_t::positions() pre: allocated(postions_)
+end note
+
 class distribution_t{
   - vel_ : double precision[:]
   - cumulative_distribution_ : double precision[:]
