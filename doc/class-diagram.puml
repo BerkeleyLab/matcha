@@ -28,7 +28,7 @@ note right of distribution_t::distribution_t
 end note
 
 note right of distribution_t::velocities()
-   context distribution_t::cumulative_distribution() pre: allocated(cumulative_distribution_)
-   context distribution_t::cumulative_distribution() pre: allocated(vel_)
+   context distribution_t::velocities() pre: allocated(cumulative_distribution_)
+   context distribution_t::velocities() pre: allocated(vel_)
 end note
 @enduml
