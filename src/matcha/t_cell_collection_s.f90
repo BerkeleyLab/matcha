@@ -1,4 +1,5 @@
 submodule(t_cell_collection_m) t_cell_collection_s
+  use assert_m, only : assert
   implicit none
   
 contains
