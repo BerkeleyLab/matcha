@@ -4,7 +4,8 @@ Motility Analysis of T Cell Histories in Activation
 
 Overview
 --------
-Matcha simulates the motion of T cells through organ tissue.
+Despite advances in microscopy, imaging techniques only capture a very small spatial and temporal fraction of T cell activity within a tissue. For this reason, we have pursued the development of a virtual T cell model. Matcha's objective is to design virtual T cells that move like biological T cells. The virtual T cells will match the speed and turning angle distributions of biological cells. In addition, Matcha will also attempt to match the volume patrolled of biological cells and the dependence on speed and turning angle on the previous speed.
+
 
 Prerequisites
 -------------
