@@ -27,4 +27,8 @@ note right of distribution_t::distribution_t
   context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
 end note
 
+note right of distribution_t::velocities()
+   context distribution_t::cumulative_distribution() pre: allocated(cumulative_distribution_)
+   context distribution_t::cumulative_distribution() pre: allocated(vel_)
+end note
 @enduml
