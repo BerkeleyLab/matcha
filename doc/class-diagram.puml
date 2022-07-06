@@ -20,6 +20,7 @@ class distribution_t{
   + velocities(speeds : double precision[:,:], directions : double precision[:,:,:]) : double precision[:,:,:]
   + cumulative_distribution() : double precision[:]
   + distribution_t(sample_distribution : double precision[:]) : distribution_t
+  - monotonically_increasing(f : double precision[:]) : logical
 }
 
 note right of distribution_t::cumulative_distribution()
@@ -31,8 +32,9 @@ note right of distribution_t::distribution_t
   context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
 end note
 
-note right of distribution_t::velocities()
-   context distribution_t::velocities() pre: allocated(cumulative_distribution_)
-   context distribution_t::velocities() pre: allocated(vel_)
+note right of distribution_t::velocities
+  context distribution_t::velocities() pre: allocated(cumulative_distribution_)
+  context distribution_t::velocities() pre: allocated(vel_)
 end note
+
 @enduml
