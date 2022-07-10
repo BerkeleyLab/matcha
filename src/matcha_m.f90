@@ -28,7 +28,7 @@ contains
 
       block
         double precision, parameter :: scale = 100.D0
-        double precision, allocatable :: sample_distribution(:), random_positions(:,:), random_4vectors(:,:,:), velocities(:,:,:)
+        double precision, allocatable :: sample_distribution(:), random_positions(:,:), random_4vectors(:,:,:)
         type(distribution_t) distribution
         integer, parameter :: nveldim = 4
         integer step
