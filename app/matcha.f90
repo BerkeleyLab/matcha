@@ -10,7 +10,7 @@ program matcha_app
 
 
   call data_partition%define_partitions(cardinality=input%num_cells())
-  print*, input%num_cells()
+  print*, data_partition%first(this_image()), data_partition%last(this_image())
   associate(history => matcha(input_t()))
   end associate
 
