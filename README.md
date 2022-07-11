@@ -9,9 +9,12 @@ Despite advances in microscopy, imaging techniques only capture a very small spa
 
 Prerequisites
 -------------
-  1. A Fortran 2018 compiler
-  2. The Fortran Package Manager
-  3. *Optional:* [OpenCoarrays] for parrallel execution with the GNU Fortran compiler
+1. A Fortran 2018 compiler
+2. The Fortran Package Manager
+3. *Optional:* a parallel runtime library for multi-image execution:
+    - [OpenCoarrays] or
+    - [Caffeine].
+
 Downloading
 -----------
 ```
@@ -36,4 +39,7 @@ Change '2' above to the number of images that you would like to launch in parall
 
 ## Documentation
 Please visit the Matcha Github Pages site to see HTML Documentation generated with ford.
+
+[OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
+[Caffeine]: https://go.lbl.gov/caffeine
 
