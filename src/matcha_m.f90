@@ -1,4 +1,4 @@
-module matcha_m 
+module matcha_m
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
   use input_m, only : input_t
@@ -13,7 +13,7 @@ module matcha_m
     end function
 
   end interface
-  
+
 contains
 
   module procedure matcha
@@ -34,16 +34,16 @@ contains
         integer step
 
         allocate(random_positions(ncells,ndim))
-        call random_number(random_positions)  
+        call random_number(random_positions)
         allocate(sample_distribution(nintervals))
         call random_number(sample_distribution)
-          
+
         associate(nsteps => npositions -1)
           allocate(random_4vectors(ncells,nsteps,nveldim))
-          call random_number(random_4vectors)  
+          call random_number(random_4vectors)
           sample_distribution = sample_distribution/sum(sample_distribution)
           distribution = distribution_t(sample_distribution)
-          
+
           associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
             associate(v => distribution%velocities(random_speeds, random_directions))
               history = [t_cell_collection_t(scale*random_positions, time=0.D0)]

@@ -72,7 +72,7 @@ contains
       history = matcha(input)
       cell_collection_size = size(history(1)%positions(), 1)
       call co_sum(cell_collection_size)
-      result_ = assert_equals(input%num_cells(), cell_collection_size)
+      result_ = assert_equals(input%n_cells(), cell_collection_size)
     end associate
   end function
 
