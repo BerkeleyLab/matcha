@@ -6,9 +6,10 @@ module input_m
   public :: input_t
 
   type input_t
-    integer :: ncells = 100, num_cells_ = 100, num_positions_ = 25, num_dimensions_ = 3, num_intervals_ = 10
+    integer :: ncells_ = 100, num_cells_ = 100, num_positions_ = 25, num_dimensions_ = 3, num_intervals_ = 10
     double precision :: time_step_ = 0.1D0
   contains
+    procedure :: ncells
     procedure :: num_cells
     procedure :: num_positions
     procedure :: num_dimensions
@@ -17,6 +18,11 @@ module input_m
   end type
 
   interface
+    pure module function ncells(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function
 
     pure module function num_cells(self) result(n)
       implicit none

@@ -3,6 +3,10 @@ submodule(input_m) input_s
 
 contains
 
+  module procedure ncells
+      n = self%ncells_
+  end procedure
+
    module procedure num_cells
        n = self%num_cells_
    end procedure
