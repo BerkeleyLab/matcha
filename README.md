@@ -29,8 +29,8 @@ fpm test
 ### Multi-image (parallel) execution
 With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
-fpm run --compiler caf --runner "cafrun -n 2
-fpm test --compiler caf --runner "cafrun -n 2
+fpm run --compiler caf --runner "cafrun -n 2"
+fpm test --compiler caf --runner "cafrun -n 2"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
