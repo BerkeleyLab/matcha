@@ -30,17 +30,17 @@ contains
     double precision random_positions(ncells,ndim)
     double precision, parameter :: scale_factor=100.D0
     type(t_cell_collection_t) t_cell_collection
-    
-    call random_number(random_positions)    
+
+    call random_number(random_positions)
     t_cell_collection = t_cell_collection_t(scale_factor*random_positions,time=0.D0)
-    
+
     associate(constructed_positions => t_cell_collection%positions())
       result_ = assert_that( &
         all(0.D0 <=  constructed_positions .and. constructed_positions <= scale_factor), "position(s) out of range" &
       )
     end associate
   end function
-  
+
   function delete_me() result(result_)
     type(result_t) result_
     integer, parameter :: ncells = 50, ndim = 3
@@ -48,7 +48,7 @@ contains
     type(t_cell_collection_t) t_cell_collection
     type(data_partition_t) data_partition
     integer cell_collection_size
-    
+
     call data_partition%define_partitions(cardinality=ncells)
 
     associate(me => this_image())
@@ -60,12 +60,12 @@ contains
         result_ = assert_equals(ncells, cell_collection_size)
       end associate
     end associate
-    
+
   end function
 
   function check_cell_distribution() result(result_)
     type(result_t) result_
-    integer cell_collection_size 
+    integer cell_collection_size
     type(t_cell_collection_t), allocatable :: history(:)
 
     associate(input => input_t())
