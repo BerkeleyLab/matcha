@@ -9,10 +9,8 @@ program matcha_app
   integer a, b
 
   call data_partition%define_partitions(cardinality=input%ncells)
-  a = input%num_cells_
-  b = data_partition%last(this_image())
-  a = b
-  print*, a
+  input%num_cells_ = data_partition%last(this_image()) - data_partition%first(this_image)
+
 
 
   !call data_partition%define_partitions(cardinality=input%num_cells())
