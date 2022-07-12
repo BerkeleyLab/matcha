@@ -40,28 +40,6 @@ contains
       )
     end associate
   end function
-  
-  function delete_me() result(result_)
-    type(result_t) result_
-    integer, parameter :: ncells = 50, ndim = 3
-    double precision, allocatable :: positions(:,:)
-    type(t_cell_collection_t) t_cell_collection
-    type(data_partition_t) data_partition
-    integer cell_collection_size
-    
-    call data_partition%define_partitions(cardinality=ncells)
-
-    associate(me => this_image())
-      associate(my_num_cells => data_partition%last(me) - data_partition%first(me) + 1)
-        allocate(positions(my_num_cells, ndim), source = 0.D0)
-        t_cell_collection = t_cell_collection_t(positions, time=0.D0)
-        cell_collection_size = size(t_cell_collection%positions(), 1)
-        call co_sum(cell_collection_size)
-        result_ = assert_equals(ncells, cell_collection_size)
-      end associate
-    end associate
-    
-  end function
 
   function check_cell_distribution() result(result_)
     type(result_t) result_
