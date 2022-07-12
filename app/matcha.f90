@@ -16,6 +16,7 @@ program matcha_app
 
   !call data_partition%define_partitions(cardinality=input%num_cells())
   associate(history => matcha(input_t()))
+    print*,size(history(1)%positions(), 1)
   end associate
 
   print *
