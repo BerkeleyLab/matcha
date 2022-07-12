@@ -8,7 +8,9 @@ program matcha_app
   type(data_partition_t) :: data_partition
 
   call data_partition%define_partitions(cardinality=input%ncells())
-  input%num_cells_ = data_partition%last(this_image()) - data_partition%first(this_image())
+  input%num_cells_ = data_partition%last(this_image()) - data_partition%first(this_image()) + 1
+  print*, input%num_cells_
+
 
 
 
