@@ -67,6 +67,11 @@ contains
     type(result_t) result_
     integer cell_collection_size
     type(t_cell_collection_t), allocatable :: history(:)
+    type(input_t) :: input
+    type(data_partition_t) :: data_partition
+    
+    call data_partition%define_partitions(cardinality=input%ncells())
+    input%num_cells_ = data_partition%last(this_image()) - data_partition%first(this_image())
 
     associate(input => input_t())
       history = matcha(input)

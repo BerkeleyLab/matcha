@@ -6,7 +6,6 @@ program matcha_app
   implicit none
   type(input_t) :: input
   type(data_partition_t) :: data_partition
-  integer a, b
 
   call data_partition%define_partitions(cardinality=input%ncells())
   input%num_cells_ = data_partition%last(this_image()) - data_partition%first(this_image())
