@@ -6,7 +6,9 @@ module input_m
   public :: input_t
 
   type input_t
-    integer :: ncells_ = 100, num_cells_ = 100, num_positions_ = 25, num_dimensions_ = 3, num_intervals_ = 10
+    private
+    integer :: ncells_ = 100
+    integer, public :: num_cells_ = 100, num_positions_ = 25, num_dimensions_ = 3, num_intervals_ = 10
     double precision :: time_step_ = 0.1D0
   contains
     procedure :: ncells

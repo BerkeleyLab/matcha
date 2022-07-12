@@ -19,7 +19,7 @@ contains
   module procedure matcha
 
     associate( &
-      ncells => input%num_cells(), &
+      ncells => input%num_cells_, &
       npositions => input%num_positions(), &
       ndim => input%num_dimensions(), &
       nintervals => input%num_intervals(), &
@@ -34,6 +34,7 @@ contains
         integer step
 
         allocate(random_positions(ncells,ndim))
+        print*, random_positions
         call random_number(random_positions)
         allocate(sample_distribution(nintervals))
         call random_number(sample_distribution)
