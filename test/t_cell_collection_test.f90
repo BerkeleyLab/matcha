@@ -4,6 +4,8 @@ module t_cell_collection_test
      result_t, test_item_t, describe, it, assert_that, assert_equals
    use t_cell_collection_m, only : t_cell_collection_t
    use data_partition_m, only : data_partition_t
+   use input_m, only : input_t
+   use matcha_m, only : matcha
    implicit none
 
    private
@@ -39,7 +41,7 @@ contains
     end associate
   end function
   
-  function check_cell_distribution() result(result_)
+  function delete_me() result(result_)
     type(result_t) result_
     integer, parameter :: ncells = 50, ndim = 3
     double precision, allocatable :: positions(:,:)
@@ -59,6 +61,19 @@ contains
       end associate
     end associate
     
+  end function
+
+  function check_cell_distribution() result(result_)
+    type(result_t) result_
+    integer cell_collection_size 
+    type(t_cell_collection_t), allocatable :: history(:)
+
+    associate(input => input_t())
+      history = matcha(input)
+      cell_collection_size = size(history(1)%positions(), 1)
+      call co_sum(cell_collection_size)
+      result_ = assert_equals(input%num_cells(), cell_collection_size)
+    end associate
   end function
 
 end module t_cell_collection_test
