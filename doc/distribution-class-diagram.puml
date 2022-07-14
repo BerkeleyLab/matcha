@@ -1,19 +1,5 @@
 @startuml
 
-Title "Matcha Classes"
-
-class t_cell_collection_t{
-  - positions_ : double precision[:,:]
-  - time_ : double precision
-  + positions() : double precision[:,:]
-  + time() : double precision
-  + t_cell_collection_t(positions : double precision[:,:], time : double precision) : t_cell_collection_t
-}
-
-note right of t_cell_collection_t::positions()
-  context t_cell_collection_t::positions() pre: allocated(postions_)
-end note
-
 class distribution_t{
   - vel_ : double precision[:]
   - cumulative_distribution_ : double precision[:]
@@ -36,18 +22,5 @@ note right of distribution_t::distribution_t
   context distribution_t::distribution_t() pre: all(sample_distribution>=0)
   context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
 end note
-
-class input_t {
-  - num_cells_ : integer 
-  - num_positions_ : integer 
-  - num_dimensions_ : integer 
-  - num_intervals_ : integer
-  - time_step_ : double precision
-  + num_cells() : integer
-  + num_positions() : integer
-  + num_dimensions() : integer
-  + num_intervals() : integer
-  + time_step() : double precision
-}
 
 @enduml
