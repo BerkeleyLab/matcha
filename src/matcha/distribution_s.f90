@@ -48,7 +48,7 @@ contains
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
       allocate(sampled_speeds(ncells,nsteps))
       do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.true., dim=1))
+        associate(k => findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.false., dim=1)-1)
           sampled_speeds(cell,step) = self%vel_(k)
         end associate
       end do
