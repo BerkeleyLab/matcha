@@ -101,12 +101,11 @@ For a quick reference, the following citation commands can be used:
 # Figures
 
 Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
+![Caption for example figure.\label{fig:example}](https://user-images.githubusercontent.com/41701816/179321172-013f2b88-ebfa-4842-8073-0880b5085bbf.png)
 and referenced from text using \autoref{fig:example}.
 
 Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
-
+![Caption for example figure.](https://user-images.githubusercontent.com/41701816/179321172-013f2b88-ebfa-4842-8073-0880b5085bbf.png){ width=20% }
 # Acknowledgements
 
 We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
