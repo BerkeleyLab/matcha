@@ -1,3 +1,5 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
 module t_cell_collection_test
    !! summary: unit tests for T-cell collections
    use garden, only: &

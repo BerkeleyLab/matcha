@@ -1,3 +1,5 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
 submodule(distribution_m) distribution_s
   use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t

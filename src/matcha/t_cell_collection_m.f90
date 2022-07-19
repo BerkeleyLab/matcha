@@ -1,3 +1,5 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
 module t_cell_collection_m
   !! Define a T-cell abstraction for motility simulations
   use distribution_m, only : distribution_t
