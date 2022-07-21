@@ -1,10 +1,18 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
+
+#define USE_CAFFEINE
+
 module matcha_m 
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
   use input_m, only : input_t
   use data_partition_m, only : data_partition_t
+  
+#ifdef USE_CAFFEINE
+   use caffeine_m, only : this_image => caf_this_image
+#endif
+
   implicit none
 
   interface matcha

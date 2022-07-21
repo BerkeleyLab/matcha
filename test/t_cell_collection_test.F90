@@ -1,5 +1,8 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
+
+#define USE_CAFFEINE
+
 module t_cell_collection_test
    !! summary: unit tests for T-cell collections
    use garden, only: &
@@ -8,6 +11,11 @@ module t_cell_collection_test
    use data_partition_m, only : data_partition_t
    use input_m, only : input_t
    use matcha_m, only : matcha
+   
+#ifdef USE_CAFFEINE
+   use caffeine_m, only : co_sum => caf_co_sum
+#endif
+   
    implicit none
 
    private

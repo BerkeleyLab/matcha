@@ -8,6 +8,7 @@ copyright = "Copyright 2022, Damian Rouson, David Torres,  Dominick Martinez, an
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
 sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.0.0"}
+caffeine = {git = "https://github.com/BerkeleyLab/Caffeine", tag = "0.1.0"}
 
 [dev-dependencies]
 garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}
