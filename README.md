@@ -37,9 +37,13 @@ fpm test --compiler caf --runner "cafrun -n 2"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
+### Parallel Execution with Caffeine
+```
+fpm test --flag "-DUSE_CAFFEINE"
+```
+
 ## Documentation
 Please visit the Matcha Github Pages site to see HTML Documentation generated with ford.
 
 [OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
 [Caffeine]: https://go.lbl.gov/caffeine
-
