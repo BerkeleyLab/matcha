@@ -4,9 +4,9 @@ submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
   
 #ifdef USE_CAFFEINE
-   use caffeine_assert_m, only: assert
+   use caffeine_assert_m, only : assert
 #else
-   use assert_m, only: assert
+   use assert_m, only : assert
 #endif
   
   implicit none

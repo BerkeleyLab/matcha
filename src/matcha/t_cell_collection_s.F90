@@ -3,9 +3,9 @@
 submodule(t_cell_collection_m) t_cell_collection_s
  
 #ifdef USE_CAFFEINE
-   use caffeine_assert_m, only: assert
+   use caffeine_assert_m, only : assert
 #else
-   use assert_m, only: assert
+   use assert_m, only : assert
 #endif
  
   implicit none
