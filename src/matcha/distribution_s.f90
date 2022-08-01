@@ -1,5 +1,5 @@
 ! Copyright (c), The Regents of the University of California
-! Terms of use are as specified in LICENSE.txt
+! Terms of use are as specified in LICENSE.tx
 submodule(distribution_m) distribution_s
   use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
@@ -17,12 +17,12 @@ contains
   module procedure construct
     integer i
 
-    call assert(all(sample_distribution>=0.D0), "distribution_t%construct: sample_distribution>=0.", &
+    call assert(all(sample_distribution(:,2)>=0.D0), "distribution_t%construct: sample_distribution>=0.", &
       intrinsic_array_t(sample_distribution))
 
     associate(nintervals => size(sample_distribution,1))      
-      distribution%vel_ = [(dble(i), i =1, nintervals)]  ! Assign speeds to each distribution bin         
-      distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i)), i=1, nintervals)]]
+      distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin         
+      distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i,2)), i=1, nintervals)]]
 
       call assert(monotonically_increasing(distribution%cumulative_distribution_), &
         "distribution_t: monotonically_increasing(distribution%cumulative_distribution_)", &
@@ -75,6 +75,32 @@ contains
       end do
     end associate
 
-  end procedure velocities
+  end procedure
 
+  module procedure build_distribution
+  integer i,k
+  double precision, allocatable :: vel(:)
+  
+  associate(nintervals => size(emp_distribution(:,1)))
+    allocate(sim_distribution(nintervals,2))
+    sim_distribution(:,2) = 0.d0
+    sim_distribution(:,1) = emp_distribution(:,1)
+    associate(dvel_half => (emp_distribution(2,1)-emp_distribution(1,1))/2.d0)
+      allocate(vel(nintervals+1))
+      ! Build the distribution bins using vel()
+      vel(1) = emp_distribution(1,1) - dvel_half
+      do i = 1,nintervals
+         vel(i+1) = emp_distribution(i,1) + dvel_half
+      end do
+      associate(nspeeds => size(speeds))
+        do i = 1,nspeeds
+           k = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+           sim_distribution(k,2) = sim_distribution(k,2) + 1.d0
+        end do
+        sim_distribution(:,2) = sim_distribution(:,2)/sum(sim_distribution(1:nintervals,2))
+      end associate
+    end associate
+  end associate
+  
+  end procedure
 end submodule distribution_s

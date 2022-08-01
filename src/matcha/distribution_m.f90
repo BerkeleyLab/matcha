@@ -1,5 +1,3 @@
-! Copyright (c), The Regents of the University of California
-! Terms of use are as specified in LICENSE.txt
 module distribution_m
   implicit none
   
@@ -12,13 +10,14 @@ module distribution_m
   contains
     procedure :: cumulative_distribution
     procedure :: velocities
+    procedure :: build_distribution
   end type  
 
   interface distribution_t
   
    pure module function construct(sample_distribution) result(distribution)
       implicit none
-      double precision, intent(in) :: sample_distribution(:)
+      double precision, intent(in) :: sample_distribution(:,:)
       type(distribution_t) distribution
     end function
     
@@ -38,6 +37,13 @@ module distribution_m
       class(distribution_t), intent(in) :: self
       double precision, intent(in) :: speeds(:,:), directions(:,:,:)
       double precision, allocatable :: my_velocities(:,:,:)
+    end function velocities
+
+    pure module function build_distribution(self, emp_distribution, speeds) result(sim_distribution)
+      implicit none
+      class(distribution_t), intent(in) :: self
+      double precision, intent(in) :: speeds(:),emp_distribution(:,:)
+      double precision, allocatable :: sim_distribution(:,:)
     end function
     
   end interface
