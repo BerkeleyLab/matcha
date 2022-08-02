@@ -39,7 +39,7 @@ module t_cell_collection_m
     end function
     
     
-    pure module function time(self) result(my_time)
+    elemental module function time(self) result(my_time)
       !! Return the t_cell_collection_t object's time stamp
       implicit none
       class(t_cell_collection_t), intent(in) :: self
