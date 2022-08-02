@@ -1,14 +1,13 @@
 name = "matcha"
 version = "0.1.0"
-license = "license"
-author = "Damian Rouson, David Torres,  Dominick Martinez, and Jeremiah Bailey"
+license = "see LICENSE.txt"
+author = "Damian Rouson, David Torres,  Dominick Martinez, Jeremiah Bailey, and Brad Richardson"
 maintainer = "rouson@lbl.gov"
-copyright = "Copyright 2022, Damian Rouson, David Torres,  Dominick Martinez, and Jeremiah Bailey"
 
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
 sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.0.0"}
-caffeine = {git = "https://github.com/BerkeleyLab/Caffeine", tag = "0.1.0"}
+caffeine = {path = "build/dependencies/caffeine"}
 
 [dev-dependencies]
 garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}
