@@ -13,7 +13,7 @@ module output_m
     type(input_t) input_
     type(t_cell_collection_t), allocatable :: history_(:)
   contains
-    procedure :: build_distribution
+    procedure :: simulated_distribution
   end type
   
   interface output_t
@@ -29,11 +29,10 @@ module output_m
 
   interface
     
-    pure module function build_distribution(self, speeds) result(sim_distribution)
+    pure module function simulated_distribution(self) result(output_distribution)
       implicit none
       class(output_t), intent(in) :: self
-      double precision, intent(in) :: speeds(:)
-      double precision, allocatable :: sim_distribution(:,:)
+      double precision, allocatable :: output_distribution(:,:)
     end function
     
   end interface

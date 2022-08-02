@@ -36,10 +36,11 @@ contains
 
     associate(input => input_t())
       associate(empirical_distribution => input%sample_distribution())
-        associate(sim_distribution => output%build_distribution(sim_speeds(matcha(input))))
+        output = output_t(input, matcha(input))
+        associate(simulated_distribution => output%simulated_distribution())
           associate( &
-            diffmax_freqs => maxval(abs(empirical_distribution(:,2)-sim_distribution(:,2))), &
-            diffmax_speeds=> maxval(abs(empirical_distribution(:,1)-sim_distribution(:,1))) &
+            diffmax_freqs => maxval(abs(empirical_distribution(:,2)-simulated_distribution(:,2))), &
+            diffmax_speeds=> maxval(abs(empirical_distribution(:,1)-simulated_distribution(:,1))) &
           )
             result_ = &
               assert_equals_within_absolute(0.D0, diffmax_freqs, 1.D-02, "frequencies match empirical distribution") .and. &
@@ -48,38 +49,6 @@ contains
         end associate
       end associate
     end associate
-
-  contains
-
-    pure function sim_speeds(history) result(speeds)
-      type(t_cell_collection_t), intent(in) :: history(:)
-      double precision, allocatable :: speeds(:)
-
-      integer, parameter :: nspacedims=3
-      integer i, j, k
-      double precision, allocatable :: x(:,:,:)
-  
-      associate( &
-        npositions => size(history,1), &
-        ncells => size(history(1)%positions(),1) &
-      )
-        allocate(x(npositions,ncells,nspacedims))
-        do concurrent(i=1:npositions)
-          x(i,:,:) = history(i)%positions()
-        end do
-        associate(t => history%time())
-          allocate(speeds(ncells*(npositions-1)))
-          do concurrent(i = 1:npositions-1, j = 1:ncells)
-            associate( &
-              u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-              ij => i + (j-1)*(npositions-1) &
-            )
-              speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-            end associate
-          end do
-        end associate
-      end associate
-    end function
 
   end function  
   
