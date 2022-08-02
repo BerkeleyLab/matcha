@@ -93,6 +93,10 @@ contains
          vel(i+1) = emp_distribution(i,1) + dvel_half
       end do
       associate(nspeeds => size(speeds))
+        !do concurrent(i=1:nspeed)
+        !  sim_distribution(:,2) = count(speeds >= vel(1:nspeeds-1) .and. speeds < vel(2:nspeeds))
+        !end do
+
         do i = 1,nspeeds
            k = findloc(speeds(i) >= vel, value=.false., dim=1)-1
            sim_distribution(k,2) = sim_distribution(k,2) + 1.d0

@@ -10,7 +10,7 @@ module distribution_m
   contains
     procedure :: cumulative_distribution
     procedure :: velocities
-    procedure :: build_distribution
+    procedure, nopass :: build_distribution
   end type  
 
   interface distribution_t
@@ -39,9 +39,8 @@ module distribution_m
       double precision, allocatable :: my_velocities(:,:,:)
     end function velocities
 
-    pure module function build_distribution(self, emp_distribution, speeds) result(sim_distribution)
+    pure module function build_distribution(emp_distribution, speeds) result(sim_distribution)
       implicit none
-      class(distribution_t), intent(in) :: self
       double precision, intent(in) :: speeds(:),emp_distribution(:,:)
       double precision, allocatable :: sim_distribution(:,:)
     end function

@@ -3,11 +3,10 @@
 module t_cell_collection_test
    !! summary: unit tests for T-cell collections
    use garden, only: &
-     result_t, test_item_t, describe, it, assert_that, assert_equals
+     result_t, test_item_t, describe, it, assert_that, assert_equals, assert_equals_within_absolute
    use t_cell_collection_m, only : t_cell_collection_t
-   use data_partition_m, only : data_partition_t
    use input_m, only : input_t
-   use matcha_m, only : matcha, input_t
+   use matcha_m, only : matcha
    use distribution_m, only: distribution_t
    implicit none
 
@@ -24,55 +23,56 @@ contains
      [it( "is constructed with positions in the specified domain", check_constructed_domain), &
       it("distributes cells across images", check_cell_distribution), &
       it("creates a simulated distribution similar to the empirical distribution",compare_distributions) &
-      ] &
+     ] &
     )
   end function
 
   function compare_distributions() result(result_)
     implicit none
     type(result_t) result_
-
-    integer i,j,k,ij,npositions,ncells
-    double precision dx,dy,dz,dt,diffmax
-    double precision, allocatable :: x(:,:,:),t(:),sim_speeds(:)
     type(distribution_t) distribution
-  
+
     associate(input => input_t())
-      associate(empirical_distribution => input%sample_distribution(),nintervals => input%num_intervals())
-        distribution = distribution_t(empirical_distribution)
-        associate(history => matcha(input_t()))
-          npositions = size(history,1)
-          ncells = size(history(1)%positions(),1)
-          allocate(x(npositions,ncells,3),t(npositions))
-          allocate(sim_speeds(ncells*(npositions-1)))
-          do i = 1,npositions
-            associate(xcell => history(i)%positions(),times => history(i)%time())
-              x(i,:,:) = xcell(:,:)
-              t(i) = times
-            end associate
-          end do
-          ij = 0
-          do j = 1,ncells
-            do i = 1,npositions-1
-               ij = ij + 1
-               dx = x(i+1,j,1) - x(i,j,1)
-               dy = x(i+1,j,2) - x(i,j,2)
-               dz = x(i+1,j,3) - x(i,j,3)
-               dt = t(i+1) - t(i)
-               sim_speeds(ij) = dsqrt((dx/dt)**2 + (dy/dt)**2 + (dz/dt)**2)
-            end do
-          end do
-        end associate
-        associate(sim_distribution => distribution%build_distribution(empirical_distribution,sim_speeds))
-          diffmax = -1.d0
-          do i = 1,nintervals
-             diffmax = max(abs(empirical_distribution(i,2)-sim_distribution(i,2)),diffmax)
-          end do
+      associate(empirical_distribution => input%sample_distribution())
+        associate(sim_distribution => distribution%build_distribution(empirical_distribution,sim_speeds(matcha(input))))
+          associate(diffmax => maxval(abs(empirical_distribution(:,2)-sim_distribution(:,2))))
+            result_ = assert_equals_within_absolute(0.D0, diffmax, 1.D-02, "distribution matches empirical distribution")
+          end associate
         end associate
       end associate
     end associate
-!    print*,diffmax
-    result_ = assert_that(diffmax < .01, "distributions differ by more than 1 percent")
+
+  contains
+
+    pure function sim_speeds(history)
+      type(t_cell_collection_t), intent(in) :: history(:)
+      double precision, allocatable :: sim_speeds(:)
+      integer, parameter :: nspacedims=3
+      integer i, j, k
+      double precision, allocatable :: x(:,:,:)
+  
+      associate( &
+        npositions => size(history,1), &
+        ncells => size(history(1)%positions(),1) &
+      )
+        allocate(x(npositions,ncells,nspacedims))
+        do concurrent(i=1:npositions)
+          x(i,:,:) = history(i)%positions()
+        end do
+        associate(t => history%time())
+          allocate(sim_speeds(ncells*(npositions-1)))
+          do concurrent(j = 1:ncells, i = 1:npositions-1)
+            associate( &
+              u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
+              ij => i + (j-1)*(npositions-1) &
+            )
+              sim_speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+            end associate
+          end do
+        end associate
+      end associate
+    end function
+
   end function  
   
   function check_constructed_domain() result(result_)
