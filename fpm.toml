@@ -5,9 +5,15 @@ author = "Damian Rouson, David Torres,  Dominick Martinez, and Jeremiah Bailey"
 maintainer = "rouson@lbl.gov"
 copyright = "Copyright 2022, Damian Rouson, David Torres,  Dominick Martinez, and Jeremiah Bailey"
 
+[[executable]]
+name = "matcha"
+source-dir="app"
+main = "main.F90"
+
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
 sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.0.0"}
 
 [dev-dependencies]
 garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}
+
