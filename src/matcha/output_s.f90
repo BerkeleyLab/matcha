@@ -16,26 +16,26 @@ contains
     double precision, allocatable :: vel(:)
 
     associate(speeds => sim_speeds(self%history_))
-    associate(emp_distribution => self%input_%sample_distribution())
-      associate(nintervals => size(emp_distribution(:,1)))
-        allocate(output_distribution(nintervals,2))
-        output_distribution(:,2) = 0.d0
-        output_distribution(:,1) = emp_distribution(:,1)
-        associate(dvel_half => (emp_distribution(2,1)-emp_distribution(1,1))/2.d0)
-          vel = [emp_distribution(1,1) - dvel_half, [(emp_distribution(i,1) + dvel_half, i=1,nintervals)]]
-          associate(nspeeds => size(speeds))
-            allocate(k(nspeeds))
-            do concurrent(i = 1:nspeeds)
-              k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+      associate(emp_distribution => self%input_%sample_distribution())
+        associate(nintervals => size(emp_distribution(:,1)))
+          allocate(output_distribution(nintervals,2))
+          output_distribution(:,2) = 0.d0
+          output_distribution(:,1) = emp_distribution(:,1)
+          associate(dvel_half => (emp_distribution(2,1)-emp_distribution(1,1))/2.d0)
+            vel = [emp_distribution(1,1) - dvel_half, [(emp_distribution(i,1) + dvel_half, i=1,nintervals)]]
+            associate(nspeeds => size(speeds))
+              allocate(k(nspeeds))
+              do concurrent(i = 1:nspeeds)
+                k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+              end do
+            end associate
+            do concurrent(i = 1:size(output_distribution,1))
+              output_distribution(i,2) = count(k==i)
             end do
+            output_distribution(:,2) = output_distribution(:,2)/sum(output_distribution(:,2))
           end associate
-          do concurrent(i = 1:size(output_distribution,1))
-            output_distribution(i,2) = count(k==i)
-          end do
-          output_distribution(:,2) = output_distribution(:,2)/sum(output_distribution(:,2))
         end associate
       end associate
-    end associate
     end associate
 
   contains
