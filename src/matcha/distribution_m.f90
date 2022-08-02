@@ -18,7 +18,7 @@ module distribution_m
   
    pure module function construct(sample_distribution) result(distribution)
       implicit none
-      double precision, intent(in) :: sample_distribution(:)
+      double precision, intent(in) :: sample_distribution(:,:)
       type(distribution_t) distribution
     end function
     
@@ -38,8 +38,8 @@ module distribution_m
       class(distribution_t), intent(in) :: self
       double precision, intent(in) :: speeds(:,:), directions(:,:,:)
       double precision, allocatable :: my_velocities(:,:,:)
-    end function
-    
+    end function velocities
+
   end interface
-  
+
 end module distribution_m
