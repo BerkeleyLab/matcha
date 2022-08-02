@@ -44,9 +44,10 @@ contains
 
   contains
 
-    pure function sim_speeds(history)
+    pure function sim_speeds(history) result(speeds)
       type(t_cell_collection_t), intent(in) :: history(:)
-      double precision, allocatable :: sim_speeds(:)
+      double precision, allocatable :: speeds(:)
+
       integer, parameter :: nspacedims=3
       integer i, j, k
       double precision, allocatable :: x(:,:,:)
@@ -60,13 +61,13 @@ contains
           x(i,:,:) = history(i)%positions()
         end do
         associate(t => history%time())
-          allocate(sim_speeds(ncells*(npositions-1)))
-          do concurrent(j = 1:ncells, i = 1:npositions-1)
+          allocate(speeds(ncells*(npositions-1)))
+          do concurrent(i = 1:npositions-1, j = 1:ncells)
             associate( &
               u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
               ij => i + (j-1)*(npositions-1) &
             )
-              sim_speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+              speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
             end associate
           end do
         end associate
