@@ -31,6 +31,8 @@ contains
   function compare_distributions() result(result_)
     type(result_t) result_
     type(output_t) output
+    
+    integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
@@ -39,8 +41,8 @@ contains
         simulated_distribution => output%simulated_distribution() &
       )
         associate( &
-          diffmax_speeds=> maxval(abs(empirical_distribution(:,1)-simulated_distribution(:,1))), &
-          diffmax_freqs => maxval(abs(empirical_distribution(:,2)-simulated_distribution(:,2))) &
+          diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
+          diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
         )
           result_ = &
             assert_equals_within_absolute(0.D0, diffmax_freqs, 1.D-02, "frequencies match empirical distribution") .and. &

@@ -14,15 +14,17 @@ contains
     integer i
     integer, allocatable :: k(:)
     double precision, allocatable :: vel(:)
+    
+    integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
 
     associate(speeds => sim_speeds(self%history_))
       associate(emp_distribution => self%input_%sample_distribution())
         associate(nintervals => size(emp_distribution(:,1)))
           allocate(output_distribution(nintervals,2))
-          output_distribution(:,2) = 0.d0
-          output_distribution(:,1) = emp_distribution(:,1)
-          associate(dvel_half => (emp_distribution(2,1)-emp_distribution(1,1))/2.d0)
-            vel = [emp_distribution(1,1) - dvel_half, [(emp_distribution(i,1) + dvel_half, i=1,nintervals)]]
+          output_distribution(:,freq) = 0.d0
+          output_distribution(:,speed) = emp_distribution(:,speed)
+          associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
+            vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
             associate(nspeeds => size(speeds))
               allocate(k(nspeeds))
               do concurrent(i = 1:nspeeds)
@@ -30,9 +32,9 @@ contains
               end do
             end associate
             do concurrent(i = 1:size(output_distribution,1))
-              output_distribution(i,2) = count(k==i)
+              output_distribution(i,freq) = count(k==i)
             end do
-            output_distribution(:,2) = output_distribution(:,2)/sum(output_distribution(:,2))
+            output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
           end associate
         end associate
       end associate
