@@ -31,12 +31,18 @@ contains
     implicit none
     type(result_t) result_
     type(distribution_t) distribution
+    type(t_cell_collection_t), allocatable :: history(:) 
 
     associate(input => input_t())
       associate(empirical_distribution => input%sample_distribution())
         associate(sim_distribution => distribution%build_distribution(empirical_distribution,sim_speeds(matcha(input))))
-          associate(diffmax => maxval(abs(empirical_distribution(:,2)-sim_distribution(:,2))))
-            result_ = assert_equals_within_absolute(0.D0, diffmax, 1.D-02, "distribution matches empirical distribution")
+          associate( &
+            diffmax_freqs => maxval(abs(empirical_distribution(:,2)-sim_distribution(:,2))), &
+            diffmax_speeds=> maxval(abs(empirical_distribution(:,1)-sim_distribution(:,1))) &
+          )
+            result_ = &
+              assert_equals_within_absolute(0.D0, diffmax_freqs, 1.D-02, "frequencies match empirical distribution") .and. &
+              assert_equals_within_absolute(0.D0, diffmax_speeds, 1.D-02, "speeds match empirical distribution")
           end associate
         end associate
       end associate
