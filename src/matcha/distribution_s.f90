@@ -78,7 +78,8 @@ contains
   end procedure
 
   module procedure build_distribution
-  integer i,k
+  integer i, j
+  integer, allocatable :: k(:)
   double precision, allocatable :: vel(:)
   
   associate(nintervals => size(emp_distribution(:,1)))
@@ -93,13 +94,12 @@ contains
          vel(i+1) = emp_distribution(i,1) + dvel_half
       end do
       associate(nspeeds => size(speeds))
-        !do concurrent(i=1:nspeed)
-        !  sim_distribution(:,2) = count(speeds >= vel(1:nspeeds-1) .and. speeds < vel(2:nspeeds))
-        !end do
-
+        allocate(k(nspeeds))
         do i = 1,nspeeds
-           k = findloc(speeds(i) >= vel, value=.false., dim=1)-1
-           sim_distribution(k,2) = sim_distribution(k,2) + 1.d0
+          k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+        end do
+        do j = 1,size(sim_distribution,1)
+          sim_distribution(j,2) = count(k==j)
         end do
         sim_distribution(:,2) = sim_distribution(:,2)/sum(sim_distribution(1:nintervals,2))
       end associate
