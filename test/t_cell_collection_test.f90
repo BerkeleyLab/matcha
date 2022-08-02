@@ -6,6 +6,7 @@ module t_cell_collection_test
      result_t, test_item_t, describe, it, assert_that, assert_equals, assert_equals_within_absolute
    use t_cell_collection_m, only : t_cell_collection_t
    use input_m, only : input_t
+   use output_m, only : output_t
    use matcha_m, only : matcha
    use distribution_m, only: distribution_t
    implicit none
@@ -30,12 +31,12 @@ contains
   function compare_distributions() result(result_)
     implicit none
     type(result_t) result_
-    type(distribution_t) distribution
     type(t_cell_collection_t), allocatable :: history(:) 
+    type(output_t) output
 
     associate(input => input_t())
       associate(empirical_distribution => input%sample_distribution())
-        associate(sim_distribution => distribution%build_distribution(empirical_distribution,sim_speeds(matcha(input))))
+        associate(sim_distribution => output%build_distribution(sim_speeds(matcha(input))))
           associate( &
             diffmax_freqs => maxval(abs(empirical_distribution(:,2)-sim_distribution(:,2))), &
             diffmax_speeds=> maxval(abs(empirical_distribution(:,1)-sim_distribution(:,1))) &
