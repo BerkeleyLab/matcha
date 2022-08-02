@@ -78,7 +78,7 @@ contains
   end procedure
 
   module procedure build_distribution
-  integer i, j
+  integer i
   integer, allocatable :: k(:)
   double precision, allocatable :: vel(:)
   
@@ -87,22 +87,17 @@ contains
     sim_distribution(:,2) = 0.d0
     sim_distribution(:,1) = emp_distribution(:,1)
     associate(dvel_half => (emp_distribution(2,1)-emp_distribution(1,1))/2.d0)
-      allocate(vel(nintervals+1))
-      ! Build the distribution bins using vel()
-      vel(1) = emp_distribution(1,1) - dvel_half
-      do i = 1,nintervals
-         vel(i+1) = emp_distribution(i,1) + dvel_half
-      end do
+      vel = [emp_distribution(1,1) - dvel_half, [(emp_distribution(i,1) + dvel_half, i=1,nintervals)]]
       associate(nspeeds => size(speeds))
         allocate(k(nspeeds))
-        do i = 1,nspeeds
+        do concurrent(i = 1:nspeeds)
           k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
         end do
-        do j = 1,size(sim_distribution,1)
-          sim_distribution(j,2) = count(k==j)
-        end do
-        sim_distribution(:,2) = sim_distribution(:,2)/sum(sim_distribution(1:nintervals,2))
       end associate
+      do concurrent(i = 1:size(sim_distribution,1))
+        sim_distribution(i,2) = count(k==i)
+      end do
+      sim_distribution(:,2) = sim_distribution(:,2)/sum(sim_distribution(:,2))
     end associate
   end associate
   
