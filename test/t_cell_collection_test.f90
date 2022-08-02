@@ -29,9 +29,7 @@ contains
   end function
 
   function compare_distributions() result(result_)
-    implicit none
     type(result_t) result_
-    type(t_cell_collection_t), allocatable :: history(:) 
     type(output_t) output
 
     associate(input => input_t())
