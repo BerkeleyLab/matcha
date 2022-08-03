@@ -7,11 +7,7 @@ program round_trip
             get, &
             put, &
             put_line, &
-            var_str
-            
-#ifdef USE_CAFFEINE
-   use caffeine_m, only : error stop => caf_error_stop
-#endif            
+            var_str          
 
     integer :: file_unit
     type(varying_string) :: string

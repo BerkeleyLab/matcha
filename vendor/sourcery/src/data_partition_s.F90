@@ -1,7 +1,7 @@
 submodule(data_partition_m) data_partition_s
   
 #ifdef USE_CAFFEINE
-   use caffeine_m, only : error stop => caf_error_stop, this_image => caf_this_image, &
+   use caffeine_m, only : error_stop => caf_error_stop, this_image => caf_this_image, &
    num_images => caf_num_images, co_sum => caf_co_sum
    use caffeine_assert_m, only : assert
 #else
@@ -144,7 +144,11 @@ contains
               a(:, 1:first-1) = 0.
               a(:, last+1:) = 0.
             case default
+#ifdef USE_CAFFEINE
+              call error_stop("gather_real32_2D_array: invalid dim argument")
+#else
               error stop "gather_real32_2D_array: invalid dim argument"
+#endif
           end select
           call co_sum(a)
         else
@@ -162,7 +166,11 @@ contains
                 a(:, 1:first-1) = 0.
                 a(:, last+1:) = 0.
               case default
+#ifdef USE_CAFFEINE
+                call error_stop("gather_real32_2D_array: invalid dim argument")
+#else
                 error stop "gather_real32_2D_array: invalid dim argument"
+#endif
             end select
 
             call co_sum(a, result_image=result_image)
@@ -176,7 +184,11 @@ contains
                   a(:, 1:first-1) = a_lower
                   a(:, last+1:) = a_upper
                 case default
+#ifdef USE_CAFFEINE
+                  call error_stop("gather_real32_2D_array: invalid dim argument")
+#else
                   error stop "gather_real32_2D_array: invalid dim argument"
+#endif
               end select
             end if
           end block
@@ -209,7 +221,11 @@ contains
               a(:, 1:first-1) = 0.
               a(:, last+1:) = 0.
             case default
+#ifdef USE_CAFFEINE
+              call error_stop("gather_real64_2D_array: invalid dim argument")
+#else
               error stop "gather_real64_2D_array: invalid dim argument"
+#endif
           end select
           call co_sum(a)
         else
@@ -227,7 +243,11 @@ contains
                 a(:, 1:first-1) = 0.
                 a(:, last+1:) = 0.
               case default
-                error stop "gather_real64_2D_array: invalid dim argument"
+#ifdef USE_CAFFEINE
+              call error_stop("gather_real64_2D_array: invalid dim argument")
+#else
+              error stop "gather_real64_2D_array: invalid dim argument"
+#endif
             end select
 
             call co_sum(a, result_image=result_image)
@@ -241,7 +261,11 @@ contains
                   a(:, 1:first-1) = a_lower
                   a(:, last+1:) = a_upper
                 case default
-                  error stop "gather_real64_2D_array: invalid dim argument"
+#ifdef USE_CAFFEINE
+              call error_stop("gather_real64_2D_array: invalid dim argument")
+#else
+              error stop "gather_real64_2D_array: invalid dim argument"
+#endif
               end select
             end if
           end block

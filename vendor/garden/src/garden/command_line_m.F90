@@ -4,7 +4,7 @@ module garden_command_line_m
     use strff, only: NEWLINE
 
 #ifdef USE_CAFFEINE
-   use caffeine_m, only : stop => caf_stop, error stop => caf_error_stop
+   use caffeine_m, only : stop => caf_stop, error_stop => caf_error_stop
 #endif
 
     implicit none
@@ -61,7 +61,11 @@ contains
                 options%colorize_ = .false.
             case ("-h", "--help")
                 call put_line(output_unit, usageMessage(program_name))
+#ifdef USE_CAFFEINE
+                call stop()
+#else
                 stop
+#endif
             case ("-f", "--filter")
                 options%filter_tests_ = .true.
                 i = i + 1
@@ -76,11 +80,19 @@ contains
                             error_unit, &
                             'Unable to read "' // trim(argument) // '" as an integer' // NEWLINE)
                     call put_line(error_unit, usageMessage(program_name))
+#ifdef USE_CAFFEINE
+                    call error_stop()
+#else
                     error stop
+#endif
                 end if
                 if (NUM_GENERATOR_TESTS <= 0) then
                     call put_line(error_unit, "Number of random values must be >0")
+#ifdef USE_CAFFEINE
+                    call error_stop()
+#else
                     error stop
+#endif
                 end if
             case ("-s", "--shrink-max")
                 i = i + 1
@@ -91,7 +103,11 @@ contains
                             error_unit, &
                             'Unable to read "' // trim(argument) // '" as an integer' // NEWLINE)
                     call put_line(error_unit, usageMessage(program_name))
+#ifdef USE_CAFFEINE
+                    call error_stop()
+#else
                     error stop
+#endif
                 end if
             case ("-q", "--quiet")
                 options%quiet_ = .true.
@@ -104,7 +120,11 @@ contains
                         error_unit, &
                         "Unknown argument: '" // trim(argument) // "'" // NEWLINE)
                 call put_line(error_unit, usageMessage(program_name))
-                error stop
+#ifdef USE_CAFFEINE
+                    call error_stop()
+#else
+                    error stop
+#endif
             end select
             i = i + 1
         end do

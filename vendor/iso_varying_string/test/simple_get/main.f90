@@ -1,10 +1,6 @@
 program simple_get
     use iso_varying_string, only: &
             varying_string, operator(//), operator(/=), get, put_line
-            
-#ifdef USE_CAFFEINE
-   use caffeine_m, only : error stop => caf_error_stop
-#endif            
 
     implicit none
 

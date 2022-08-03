@@ -1,10 +1,6 @@
 program get_iostat
     use iso_fortran_env, only: IOSTAT_EOR, IOSTAT_END
     use iso_varying_string, only: varying_string, get, put_line
-    
-#ifdef USE_CAFFEINE
-   use caffeine_m, only : error stop => caf_error_stop
-#endif
 
     integer :: stat
     type(varying_string) :: string

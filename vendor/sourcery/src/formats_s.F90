@@ -2,7 +2,7 @@ submodule(formats_m) formats_s
   !! Construct separated-value formats 
   
 #ifdef USE_CAFFEINE
-   use caffeine_m, only : error stop => caf_error_stop
+   use caffeine_m, only : error_stop => caf_error_stop
 #endif
   
   implicit none
@@ -28,11 +28,19 @@ contains
           type is(character(len=*))
             format_string = prefix // separator // suffix
           class default
+#ifdef USE_CAFFEINE
+             call error_stop("format_s separated_values: unsupported type")
+#else
              error stop "format_s separated_values: unsupported type"
+#endif
         end select
 #ifndef NAGFOR
       rank default
+#ifdef USE_CAFFEINE
+        call error_stop("formats_s separated_values: unsupported rank")
+#else
         error stop "formats_s separated_values: unsupported rank"
+#endif
     end select
 #endif
   end procedure
