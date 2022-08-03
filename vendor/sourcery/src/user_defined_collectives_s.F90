@@ -8,6 +8,7 @@ submodule(user_defined_collectives_m) user_defined_collectives_s
 
 #ifdef USE_CAFFEINE
    use caffeine_m, only : co_reduce => caf_co_reduce
+   use iso_c_binding, only : c_funloc
 #endif
 
   implicit none
@@ -15,7 +16,11 @@ submodule(user_defined_collectives_m) user_defined_collectives_s
 contains
 
   module procedure co_all
+#ifdef USE_CAFFEINE
+    call co_reduce(boolean, c_funloc(both))
+#else
     call co_reduce(boolean, both)
+#endif
   contains
     pure function both(lhs,rhs) result(lhs_and_rhs)
       logical, intent(in) :: lhs,rhs

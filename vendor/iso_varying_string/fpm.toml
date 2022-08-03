@@ -7,7 +7,7 @@ copyright = "2020 Brad Richardson"
 
 [dev-dependencies]
 veggies = { git = "https://gitlab.com/everythingfunctional/veggies", tag = "v1.0.2" }
-strff = { path = "matcha/vendor/strff"}
+strff = { path = "vendor/strff"}
 
 [[test]]
 name = "unit_test"

@@ -9,6 +9,7 @@ module garden_run_tests_m
 #ifdef USE_CAFFEINE
    use caffeine_m, only : this_image => caf_this_image, num_images => caf_num_images,&
    co_reduce => caf_co_reduce
+   use iso_c_binding, only : c_funloc
 #endif    
 
     implicit none
@@ -139,8 +140,11 @@ contains
 
     subroutine co_any(x)
         logical, intent(inout) :: x
-
+#ifdef USE_CAFFEINE
+        call co_reduce(x, c_funloc(or_)) 
+#else
         call co_reduce(x, or_)
+#endif
     contains
         pure function or_(lhs, rhs)
             logical, intent(in) :: lhs, rhs
