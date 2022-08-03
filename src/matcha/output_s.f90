@@ -9,6 +9,10 @@ contains
     output%input_ = input
     output%history_ = history
   end procedure
+  
+  module procedure my_num_cells
+    num_cells = size(self%history_(1)%positions(), 1)
+  end procedure
 
   module procedure simulated_distribution
     integer i

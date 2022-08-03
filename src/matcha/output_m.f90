@@ -16,6 +16,7 @@ module output_m
     type(t_cell_collection_t), allocatable :: history_(:)
   contains
     procedure :: simulated_distribution
+    procedure :: my_num_cells
   end type
   
   interface output_t
@@ -37,6 +38,12 @@ module output_m
       implicit none
       class(output_t), intent(in) :: self
       double precision, allocatable :: output_distribution(:,:)
+    end function
+    
+    pure module function my_num_cells(self) result(num_cells)
+      implicit none
+      class(output_t), intent(in) :: self
+      integer num_cells
     end function
     
   end interface
