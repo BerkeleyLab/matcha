@@ -6,6 +6,11 @@ module matcha_m
   use input_m, only : input_t
   use output_m, only : output_t
   use data_partition_m, only : data_partition_t
+  
+#ifdef USE_CAFFEINE
+   use caffeine_m, only : this_image => caf_this_image
+#endif
+
   implicit none
 
   interface matcha

@@ -8,7 +8,10 @@ module t_cell_collection_test
    use input_m, only : input_t
    use output_m, only : output_t
    use matcha_m, only : matcha
-   use distribution_m, only: distribution_t
+#ifdef USE_CAFFEINE
+   use caffeine_m, only : co_sum => caf_co_sum
+#endif
+   
    implicit none
 
    private

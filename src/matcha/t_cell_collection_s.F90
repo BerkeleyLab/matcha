@@ -1,7 +1,13 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(t_cell_collection_m) t_cell_collection_s
-  use assert_m, only : assert
+ 
+#ifdef USE_CAFFEINE
+   use caffeine_assert_m, only : assert
+#else
+   use assert_m, only : assert
+#endif
+ 
   implicit none
   
 contains
