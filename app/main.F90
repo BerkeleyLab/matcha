@@ -4,7 +4,7 @@ program main
   !! Matcha: Motility Analysis of T-Cell Histories in Activation
   use matcha_m, only : matcha, input_t, output_t
 #ifdef USE_CAFFEINE
- ! use caffeine_m, only : co_sum, this_image => caf_this_image
+  use caffeine_m, only : co_sum, this_image => caf_this_image
 #endif
   implicit none
   type(output_t) output
