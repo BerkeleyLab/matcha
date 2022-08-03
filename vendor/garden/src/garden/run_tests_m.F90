@@ -5,11 +5,12 @@ module garden_run_tests_m
     use garden_command_line_m, only: options_t, get_options, DEBUG
     use garden_test_item_m, only: filter_item_result_t, test_item_t
     use garden_test_result_item_m, only: test_result_item_t
+    use iso_c_binding, only : c_funloc, c_bool
     
 #ifdef USE_CAFFEINE
+   use collective_subroutines_m, only : c_bool_operation
    use caffeine_m, only : this_image => caf_this_image, num_images => caf_num_images,&
    co_reduce => caf_co_reduce
-   use iso_c_binding, only : c_funloc
 #endif    
 
     implicit none
@@ -27,10 +28,10 @@ contains
         type(options_t) :: options
         type(test_result_item_t) :: results
         integer(int64) :: start_time
-        logical :: suite_failed
+        logical(c_bool) :: suite_failed
         type(test_item_t) :: tests_to_run
 
-        suite_failed = .false.
+        suite_failed = .false._c_bool
 
         options = get_options()
 
@@ -40,7 +41,7 @@ contains
                 tests_to_run = filtered_tests%test()
             else
                 call put_line(error_unit, "No matching tests found")
-                passed = .false.
+                passed = .false._c_bool
                 return
             end if
         else
@@ -120,35 +121,38 @@ contains
                         to_string(results%num_failing_asserts()) // " of " &
                             // to_string(results%num_asserts()) // " assertions failed")
                 call put_line(error_unit, "")
-                suite_failed = .true.
+                suite_failed = .true._c_bool
             end if
         end critical
         if (any_image_failed(suite_failed)) then
-            passed = .false.
+            passed = .false._c_bool
         else
-            passed = .true.
+            passed = .true._c_bool
         end if
     end function
 
     function any_image_failed(image_failed)
-        logical, intent(in) :: image_failed
-        logical :: any_image_failed
+        logical(c_bool), intent(in) :: image_failed
+        logical(c_bool) :: any_image_failed
 
         any_image_failed = image_failed
         call co_any(any_image_failed)
     end function
 
     subroutine co_any(x)
-        logical, intent(inout) :: x
+        logical(c_bool), intent(inout) :: x
 #ifdef USE_CAFFEINE
-        call co_reduce(x, c_funloc(or_)) 
+        procedure(c_bool_operation), pointer :: boolean_operation
+
+        boolean_operation => or_
+        call co_reduce(x, c_funloc(boolean_operation)) 
 #else
         call co_reduce(x, or_)
 #endif
     contains
         pure function or_(lhs, rhs)
-            logical, intent(in) :: lhs, rhs
-            logical :: or_
+            logical(c_bool), intent(in) :: lhs, rhs
+            logical(c_bool) :: or_
 
             or_ = lhs .or. rhs
         end function
