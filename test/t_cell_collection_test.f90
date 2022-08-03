@@ -3,7 +3,7 @@
 module t_cell_collection_test
    !! summary: unit tests for T-cell collections
    use garden, only: &
-     result_t, test_item_t, describe, it, assert_that, assert_equals, assert_equals_within_absolute
+     result_t, test_item_t, describe, it, assert_that, assert_equals, assert_equals_within_absolute, succeed
    use t_cell_collection_m, only : t_cell_collection_t
    use input_m, only : input_t
    use output_m, only : output_t
@@ -23,12 +23,13 @@ contains
      "a t_cell_collection", &
      [it( "is constructed with positions in the specified domain", check_constructed_domain), &
       it("distributes cells across images", check_cell_distribution), &
-      it("creates a simulated distribution similar to the empirical distribution",compare_distributions) &
+      it("creates a simulated distribution matching an empirical distribution on each image", compare_image_distributions), &
+      it("creates a global distribution matching an empirical distribution", compare_global_distributions) &
      ] &
     )
   end function
 
-  function compare_distributions() result(result_)
+  function compare_image_distributions() result(result_)
     type(result_t) result_
     type(output_t) output
     
@@ -50,6 +51,39 @@ contains
         end associate
       end associate
     end associate
+  end function  
+  
+  function compare_global_distributions() result(result_)
+    type(result_t) result_
+    type(output_t) output
+    double precision, allocatable :: simulated_distribution(:,:)
+    integer num_cells
+    integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
+
+    associate(input => input_t())
+      output = output_t(input, matcha(input))
+      associate(empirical_distribution => input%sample_distribution())
+        simulated_distribution = output%simulated_distribution()  
+        num_cells = output%my_num_cells()
+        simulated_distribution(:,freq) = num_cells*simulated_distribution(:,freq)
+        call co_sum(simulated_distribution(:,freq), result_image=1)
+        call co_sum(num_cells, result_image=1)
+        if (this_image()/=1) then 
+          result_ = succeed("compare_global_distributions")
+        else
+          simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
+          associate( &
+            diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
+            diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
+          )
+            result_ = &
+              assert_equals_within_absolute(0.D0, diffmax_freqs, 1.D-02, "frequencies match empirical distribution") .and. &
+              assert_equals_within_absolute(0.D0, diffmax_speeds, 1.D-02, "speeds match empirical distribution")
+          end associate
+        end if
+      end associate
+    end associate
+
   end function  
   
   function check_constructed_domain() result(result_)
