@@ -6,8 +6,8 @@ maintainer = "rouson@lbl.gov"
 
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
-sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.0.0"}
+sourcery = {path = "vendor/sourcery"}
 caffeine = {path = "build/dependencies/caffeine"}
 
 [dev-dependencies]
-garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.3"}
+garden = {path = "vendor/garden"}
