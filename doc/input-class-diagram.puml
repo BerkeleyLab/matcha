@@ -11,6 +11,7 @@ class input_t {
   + num_dimensions() : integer
   + num_intervals() : integer
   + time_step() : double precision
+  + input_t() : input_t
 }
 
 @enduml
