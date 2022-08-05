@@ -41,4 +41,5 @@ jobs:
     - name: Build, run, and test
       run: |
         ./install.sh
-        GASNET_PSHM_NODES=2 ./build/run-fpm.sh test 
+        source OpenCoarrays-2.10.0/prerequisites/installations/opencoarrays/2.10.0/setup.sh
+        ./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
