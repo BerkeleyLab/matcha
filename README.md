@@ -34,21 +34,26 @@ Running and Testing
 ### Single-image (serial) execution
 With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
-./build/run-fpm run
-./build/run-fpm test
+./install.sh
+./build/run-fpm.sh run
+./build/run-fpm.sh test
 ```
 ### Multi-image (parallel) execution
 With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
-./build/run-fpm run --compiler caf --runner "cafrun -n 2"
-./build/run-fpm test --compiler caf --runner "cafrun -n 2"
+./install.sh
+./build/run-fpm.sh run --compiler caf --runner "cafrun -n 2"
+./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
 ### Parallel Execution with Caffeine
 ```
-./build/run-fpm test --flag "-DUSE_CAFFEINE"
+./install.sh
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-DUSE_CAFFEINE"
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-DUSE_CAFFEINE"
 ```
+Change '2' above to the number of images that you would like to launch in parallel.
 
 ## Documentation
 Please visit the Matcha Github Pages site to see HTML Documentation generated with ford.

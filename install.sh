@@ -50,7 +50,7 @@ fi
 
 cd "$DEPENDENCIES_DIR/caffeine"
   if [ -z ${PREFIX+x} ]; then
-    ./install.sh 
+    ./install.sh
   else
     ./install.sh --prefix=$PREFIX
   fi
@@ -78,6 +78,7 @@ echo "#-- DO NOT EDIT -- created by matcha/install.sh"                        >>
 echo "\"${FPM}\" \"\$@\" \\"                                                  >> $RUN_FPM_SH
 echo "--c-compiler \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CC`\" \\"  >> $RUN_FPM_SH
 echo "--c-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CFLAGS`\" \\"  >> $RUN_FPM_SH
+echo "--flag \"-Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -g -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single\" \\" >> $RUN_FPM_SH
 echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >> $RUN_FPM_SH
 chmod u+x $RUN_FPM_SH
 

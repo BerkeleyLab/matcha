@@ -1,0 +1,60 @@
+name = "iso_varying_string"
+version = "3.0.2"
+license = "MIT"
+author = "Brad Richardson"
+maintainer = "everythingfunctional@protonmail.com"
+copyright = "2020 Brad Richardson"
+
+[dev-dependencies]
+veggies = { git = "https://gitlab.com/everythingfunctional/veggies", tag = "v1.0.2" }
+strff = { path = "vendor/strff"}
+
+[[test]]
+name = "unit_test"
+source-dir = "test/unit_test"
+main = "main.f90"
+
+[[test]]
+name = "simple_put"
+source-dir = "test/simple_put"
+main = "main.f90"
+
+[[test]]
+name = "string_put"
+source-dir = "test/string_put"
+main = "main.f90"
+
+[[test]]
+name = "simple_get"
+source-dir = "test/simple_get"
+main = "main.f90"
+
+[[test]]
+name = "get_maxlen"
+source-dir = "test/get_maxlen"
+main = "main.f90"
+
+[[test]]
+name = "get_iostat"
+source-dir = "test/get_iostat"
+main = "main.f90"
+
+[[test]]
+name = "get_terminator"
+source-dir = "test/get_terminator"
+main = "main.f90"
+
+[[test]]
+name = "simple_put_line"
+source-dir = "test/simple_put_line"
+main = "main.f90"
+
+[[test]]
+name = "string_put_line"
+source-dir = "test/string_put_line"
+main = "main.f90"
+
+[[test]]
+name = "round_trip"
+source-dir = "test/round_trip"
+main = "main.f90"
