@@ -9,16 +9,16 @@ class distribution_t{
   - monotonically_increasing(f : double precision[:]) : logical
 }
 
-note right of distribution_t::velocities
+note left of distribution_t::velocities
   context distribution_t::velocities() pre: allocated(cumulative_distribution_)
   context distribution_t::velocities() pre: allocated(vel_)
 end note
 
-note right of distribution_t::cumulative_distribution()
+note left of distribution_t::cumulative_distribution()
   context distribution_t::cumulative_distribution() pre: allocated(cumulative_distribution_)
 end note
 
-note right of distribution_t::distribution_t
+note left of distribution_t::distribution_t
   context distribution_t::distribution_t() pre: all(sample_distribution>=0)
   context distribution_t::distribution_t() post: monotonically_increasing(cumulative_distribution_)
 end note
