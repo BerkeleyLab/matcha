@@ -72,7 +72,7 @@ Class Relationships in the Main Program
 
 Distribution Class Diagram:
 
-![Distribution UML Class Diagram](https://user-images.githubusercontent.com/106998745/179088370-b32ec980-8f20-45a1-bc9a-3392f5e59ae7.png){ width=50% }
+![distribution-class-diagram](https://user-images.githubusercontent.com/106998745/183499459-1e179497-eeb3-4388-b82e-eadea1725759.png){ width=50% }
 
 
 Input Class Diagram:
