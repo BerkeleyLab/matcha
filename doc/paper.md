@@ -65,7 +65,7 @@ GitHub Projects 6-9:
 ![GitHub Projects 6-9](https://user-images.githubusercontent.com/106998745/179033602-cbe4f5b9-faa0-4ae6-9fee-7ce57b4c0398.png){ width=50% }
 
 
-Class Relationships in the Main Program
+Class Relationships in the Main Program:
 
 ![main-program-classes](https://user-images.githubusercontent.com/106998745/183495223-2b8d1992-b947-46c9-ac26-037d42f65c31.png){width=50%}
 
