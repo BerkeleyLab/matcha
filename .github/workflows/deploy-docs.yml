@@ -18,7 +18,7 @@ jobs:
         sudo pip install ford
     - name: Build Developer Documenation
       run: |
-        ford doc-generator.md
+        ford ford.md
     - name: Upload Documentation
       uses: actions/upload-artifact@v3
       with:
