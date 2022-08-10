@@ -20,7 +20,9 @@ contains
     monotonic = all([(f(i+1) >= f(i), i=1, size(f)-1)])
   end function
 
-  module procedure construct
+  pure module function construct(sample_distribution) result(distribution)
+    double precision, intent(in) :: sample_distribution(:,:)
+    type(distribution_t) distribution
     integer i
 
     call assert(all(sample_distribution(:,2)>=0.D0), "distribution_t%construct: sample_distribution>=0.", &
@@ -35,15 +37,21 @@ contains
         intrinsic_array_t(distribution%cumulative_distribution_))
     end associate
 
-  end procedure construct
+  end function
 
-  module procedure cumulative_distribution
+  pure module function cumulative_distribution(self) result(my_cumulative_distribution)
+    class(distribution_t), intent(in) :: self
+    double precision, allocatable :: my_cumulative_distribution(:)
     call assert(allocated(self%cumulative_distribution_), &
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
     my_cumulative_distribution = self%cumulative_distribution_
-  end procedure 
+  end function 
   
-  module procedure velocities
+  pure module function velocities(self, speeds, directions) result(my_velocities)
+    !! Return the t_cell_collection_t object's velocity vectors
+    class(distribution_t), intent(in) :: self
+    double precision, intent(in) :: speeds(:,:), directions(:,:,:)
+    double precision, allocatable :: my_velocities(:,:,:)
     
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
     integer cell, step
@@ -81,6 +89,6 @@ contains
       end do
     end associate
 
-  end procedure
+  end function
 
 end submodule distribution_s
