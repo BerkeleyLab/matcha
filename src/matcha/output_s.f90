@@ -5,16 +5,25 @@ submodule(output_m) output_s
   
 contains
 
-  module procedure construct
+  pure module function construct(input, history) result(output)
+    !! Construct a new output_t object
+    type(input_t), intent(in) :: input
+    type(t_cell_collection_t), intent(in) :: history(:)
+    type(output_t) :: output
     output%input_ = input
     output%history_ = history
-  end procedure
+  end function
   
-  module procedure my_num_cells
+  pure module function my_num_cells(self) result(num_cells)
+    class(output_t), intent(in) :: self
+    integer num_cells
     num_cells = size(self%history_(1)%positions(), 1)
-  end procedure
+  end function
 
-  module procedure simulated_distribution
+  pure module function simulated_distribution(self) result(output_distribution)
+    !! The result is a histogram calculated from the simulation output
+    class(output_t), intent(in) :: self
+    double precision, allocatable :: output_distribution(:,:)
     integer i
     integer, allocatable :: k(:)
     double precision, allocatable :: vel(:)
@@ -76,6 +85,6 @@ contains
       end associate
     end function
 
-  end procedure
+  end function simulated_distribution
 
 end submodule output_s
