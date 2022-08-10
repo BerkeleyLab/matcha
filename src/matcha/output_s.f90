@@ -2,45 +2,28 @@
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
   implicit none
-  
-  interface output_t
 
-    pure module function construct(input, history) result(output)
-      !! Construct a new output_t object
-      type(input_t), intent(in) :: input
-      type(t_cell_collection_t), intent(in) :: history(:)
-      type(output_t) :: output
-    end function
-
-  end interface
-
-  interface
-    
-    pure module function simulated_distribution(self) result(output_distribution)
-      !! The result is a histogram calculated from the simulation output
-      class(output_t), intent(in) :: self
-      double precision, allocatable :: output_distribution(:,:)
-    end function
-    
-    pure module function my_num_cells(self) result(num_cells)
-      class(output_t), intent(in) :: self
-      integer num_cells
-    end function
-    
-  end interface
-  
 contains
 
-  module function construct
+  module function construct(input, history) result(output)
+    !! Construct a new output_t object
+    type(input_t), intent(in) :: input
+    type(t_cell_collection_t), intent(in) :: history(:)
+    type(output_t) :: output
     output%input_ = input
     output%history_ = history
   end function
   
-  module function my_num_cells
+  module function my_num_cells(self) result(num_cells)
+    class(output_t), intent(in) :: self
+    integer num_cells
     num_cells = size(self%history_(1)%positions(), 1)
   end function
 
-  module function simulated_distribution
+  module function simulated_distribution(self) result(output_distribution)
+    !! The result is a histogram calculated from the simulation output
+    class(output_t), intent(in) :: self
+    double precision, allocatable :: output_distribution(:,:)
     integer i
     integer, allocatable :: k(:)
     double precision, allocatable :: vel(:)
@@ -102,6 +85,6 @@ contains
       end associate
     end function
 
-  end function
+  end function simulated_distribution
 
 end submodule output_s
