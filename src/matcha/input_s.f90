@@ -5,27 +5,39 @@ submodule(input_m) input_s
 
 contains
       
-  module procedure num_cells
-      n = self%num_cells_
-  end procedure
+  pure module function num_cells(self) result(n)
+    class(input_t), intent(in) :: self
+    integer n
+    n = self%num_cells_
+  end function
    
-  module procedure num_positions
-      n = self%num_positions_
-  end procedure
+  pure module function num_positions(self) result(n)
+    class(input_t), intent(in) :: self
+    integer n
+    n = self%num_positions_
+  end function
   
-  module procedure num_dimensions
-      n = self%num_dimensions_
-  end procedure
+  pure module function num_dimensions(self) result(n)
+    class(input_t), intent(in) :: self
+    integer n
+    n = self%num_dimensions_
+  end function
 
-  module procedure num_intervals
-      n = self%num_intervals_
-  end procedure
+  pure module function num_intervals(self) result(n)
+    class(input_t), intent(in) :: self
+    integer n
+    n = self%num_intervals_
+  end function
 
-  module procedure time_step
-      dt = self%time_step_
-  end procedure
+  pure module function time_step(self) result(dt)
+    class(input_t), intent(in) :: self
+    double precision dt
+    dt = self%time_step_
+  end function
 
-  module procedure sample_distribution
+  pure module function sample_distribution(self) result(empirical_distribution)
+    class(input_t), intent(in) :: self
+    double precision, allocatable :: empirical_distribution(:,:)
      integer i,nintervals
      double precision speed_lower,speed_upper
      double precision range,pi,dspeed,sumy
@@ -63,6 +75,6 @@ contains
          empirical_distribution(i,2) = probability(i)
      end do
       
-  end procedure    
+  end function    
  
 end submodule input_s
