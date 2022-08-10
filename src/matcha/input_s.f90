@@ -6,37 +6,31 @@ submodule(input_m) input_s
   interface
     
     pure module function num_cells(self) result(n)
-      implicit none
       class(input_t), intent(in) :: self
       integer n
     end function
 
     pure module function num_positions(self) result(n)
-      implicit none
       class(input_t), intent(in) :: self
       integer n
     end function
       
     pure module function num_dimensions(self) result(n)
-      implicit none
       class(input_t), intent(in) :: self
       integer n
     end function
     
     pure module function num_intervals(self) result(n)
-      implicit none
       class(input_t), intent(in) :: self
       integer n
     end function 
     
     pure module function time_step(self) result(dt)
-      implicit none
       class(input_t), intent(in) :: self
       double precision dt
     end function time_step
     
     pure module function sample_distribution(self) result(empirical_distribution)
-      implicit none
       class(input_t), intent(in) :: self
       double precision, allocatable :: empirical_distribution(:,:)
     end function sample_distribution    

@@ -7,7 +7,6 @@ submodule(output_m) output_s
 
     pure module function construct(input, history) result(output)
       !! Construct a new output_t object
-      implicit none
       type(input_t), intent(in) :: input
       type(t_cell_collection_t), intent(in) :: history(:)
       type(output_t) :: output
@@ -19,13 +18,11 @@ submodule(output_m) output_s
     
     pure module function simulated_distribution(self) result(output_distribution)
       !! The result is a histogram calculated from the simulation output
-      implicit none
       class(output_t), intent(in) :: self
       double precision, allocatable :: output_distribution(:,:)
     end function
     
     pure module function my_num_cells(self) result(num_cells)
-      implicit none
       class(output_t), intent(in) :: self
       integer num_cells
     end function

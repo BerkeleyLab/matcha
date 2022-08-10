@@ -14,7 +14,6 @@ submodule(t_cell_collection_m) t_cell_collection_s
     
     pure module function construct(positions, time) result(t_cell_collection)
       !! Return a t_cell_collection_t object rescaled position vectors and the provided time stamp
-      implicit none
       double precision, intent(in) :: positions(:,:), time
       type(t_cell_collection_t) t_cell_collection
     end function 
@@ -25,7 +24,6 @@ submodule(t_cell_collection_m) t_cell_collection_s
     
     pure module function positions(self) result(my_positions)
       !! Return the t_cell_collection_t object's position vectors
-      implicit none
       class(t_cell_collection_t), intent(in) :: self
       double precision, allocatable :: my_positions(:,:)
     end function
@@ -33,7 +31,6 @@ submodule(t_cell_collection_m) t_cell_collection_s
     
     elemental module function time(self) result(my_time)
       !! Return the t_cell_collection_t object's time stamp
-      implicit none
       class(t_cell_collection_t), intent(in) :: self
       double precision my_time
     end function
