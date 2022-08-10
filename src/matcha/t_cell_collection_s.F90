@@ -12,18 +12,24 @@ submodule(t_cell_collection_m) t_cell_collection_s
   
 contains
       
-  module procedure construct
+  pure module function construct(positions, time) result(t_cell_collection)
+    double precision, intent(in) :: positions(:,:), time
+    type(t_cell_collection_t) t_cell_collection
     t_cell_collection%positions_ = positions
     t_cell_collection%time_ = time
-  end procedure 
+  end function 
   
-  module procedure positions
+  pure module function positions(self) result(my_positions)
+    class(t_cell_collection_t), intent(in) :: self
+    double precision, allocatable :: my_positions(:,:)
     call assert(allocated(self%positions_), "t_cell_collection_t%positions: allocated(positions_)")
     my_positions = self%positions_
-  end procedure
+  end function
   
-  module procedure time
+  elemental module function time(self) result(my_time)
+    class(t_cell_collection_t), intent(in) :: self
+    double precision my_time
     my_time = self%time_
-  end procedure
+  end function
     
 end submodule t_cell_collection_s
