@@ -2,51 +2,26 @@
 ! Terms of use are as specified in LICENSE.tx
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
-  
 #ifdef USE_CAFFEINE
    use caffeine_assert_m, only : assert
 #else
    use assert_m, only : assert
 #endif
-  
   implicit none
-  
-  interface distribution_t
-  
-   pure module function construct(sample_distribution) result(distribution)
-      double precision, intent(in) :: sample_distribution(:,:)
-      type(distribution_t) distribution
-    end function
-    
-  end interface
-  
-  interface
-  
-    pure module function cumulative_distribution(self) result(my_cumulative_distribution)
-      class(distribution_t), intent(in) :: self
-      double precision, allocatable :: my_cumulative_distribution(:)
-    end function
-    
-    pure module function velocities(self, speeds, directions) result(my_velocities)
-      !! Return the t_cell_collection_t object's velocity vectors
-      class(distribution_t), intent(in) :: self
-      double precision, intent(in) :: speeds(:,:), directions(:,:,:)
-      double precision, allocatable :: my_velocities(:,:,:)
-    end function velocities
-
-  end interface
 
 contains
   
-  pure function monotonically_increasing(f) result(monotonic)
+  module function monotonically_increasing(f) result(monotonic)
     double precision, intent(in) :: f(:)
     logical monotonic
     integer i
     monotonic = all([(f(i+1) >= f(i), i=1, size(f)-1)])
   end function
 
-  module function construct
-    integer i
+  module function construct(sample_distribution) result(distribution)
+     double precision, intent(in) :: sample_distribution(:,:)
+     type(distribution_t) distribution
+     integer i
 
     call assert(all(sample_distribution(:,2)>=0.D0), "distribution_t%construct: sample_distribution>=0.", &
       intrinsic_array_t(sample_distribution))
@@ -60,16 +35,23 @@ contains
         intrinsic_array_t(distribution%cumulative_distribution_))
     end associate
 
-  end function construct
+  end function
 
-  module function cumulative_distribution
+  module function cumulative_distribution(self) result(my_cumulative_distribution)
+    class(distribution_t), intent(in) :: self
+    double precision, allocatable :: my_cumulative_distribution(:)
+    
     call assert(allocated(self%cumulative_distribution_), &
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
     my_cumulative_distribution = self%cumulative_distribution_
   end function 
   
-  module function velocities
-    
+  module function velocities(self, speeds, directions) result(my_velocities)
+    !! Return the t_cell_collection_t object's velocity vectors
+    class(distribution_t), intent(in) :: self
+    double precision, intent(in) :: speeds(:,:), directions(:,:,:)
+    double precision, allocatable :: my_velocities(:,:,:)
+        
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
     integer cell, step
     
@@ -106,6 +88,6 @@ contains
       end do
     end associate
 
-  end function
+  end function velocities
 
 end submodule distribution_s
