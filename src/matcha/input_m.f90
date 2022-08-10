@@ -10,8 +10,6 @@ module input_m
     private
     integer :: num_cells_ = 1000, num_positions_ = 1000, num_dimensions_ = 3, num_intervals_ = 4
     double precision :: time_step_ = 0.1D0
-    !double precision, allocatable :: sample_distribution_(:,:)
-    !allocate(sample_distribution_(num_intervals_,2))
   contains
     procedure :: num_cells
     procedure :: num_positions
