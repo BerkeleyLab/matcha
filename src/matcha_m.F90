@@ -25,7 +25,7 @@ module matcha_m
   
 contains
 
-  module procedure matcha
+  module function matcha
 
     associate( &
       ncells => input%num_cells(), &
@@ -75,6 +75,6 @@ contains
       end block
     end associate
 
-  end procedure
+  end function
 
 end module

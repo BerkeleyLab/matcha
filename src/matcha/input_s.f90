@@ -2,30 +2,70 @@
 ! Terms of use are as specified in LICENSE.txt
 submodule(input_m) input_s
   implicit none
+  
+  interface
+    
+    pure module function num_cells(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function
+
+    pure module function num_positions(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function
+      
+    pure module function num_dimensions(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function
+    
+    pure module function num_intervals(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function 
+    
+    pure module function time_step(self) result(dt)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision dt
+    end function time_step
+    
+    pure module function sample_distribution(self) result(empirical_distribution)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision, allocatable :: empirical_distribution(:,:)
+    end function sample_distribution    
+    
+  end interface
 
 contains
       
-  module procedure num_cells
+  module function num_cells
       n = self%num_cells_
-  end procedure
+  end function
    
-  module procedure num_positions
+  module function num_positions
       n = self%num_positions_
-  end procedure
+  end function
   
-  module procedure num_dimensions
+  module function num_dimensions
       n = self%num_dimensions_
-  end procedure
+  end function
 
-  module procedure num_intervals
+  module function num_intervals
       n = self%num_intervals_
-  end procedure
+  end function
 
-  module procedure time_step
+  module function time_step
       dt = self%time_step_
-  end procedure
+  end function
 
-  module procedure sample_distribution
+  module function sample_distribution
      integer i,nintervals
      double precision speed_lower,speed_upper
      double precision range,pi,dspeed,sumy
@@ -63,6 +103,6 @@ contains
          empirical_distribution(i,2) = probability(i)
      end do
       
-  end procedure    
+  end function    
  
 end submodule input_s
