@@ -12,20 +12,13 @@ module matcha_m
 #endif
 
   implicit none
-
-  interface matcha
-
-    module function matcha(input) result(history)
-      implicit none
-      type(input_t), intent(in) :: input
-      type(t_cell_collection_t), allocatable :: history(:)
-    end function
-
-  end interface
   
 contains
 
-  module procedure matcha
+  module function matcha(input) result(history)
+    implicit none
+    type(input_t), intent(in) :: input
+    type(t_cell_collection_t), allocatable :: history(:)
 
     associate( &
       ncells => input%num_cells(), &
@@ -75,6 +68,6 @@ contains
       end block
     end associate
 
-  end procedure
+  end function
 
 end module
