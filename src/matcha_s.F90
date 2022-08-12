@@ -5,6 +5,11 @@ submodule(matcha_m) matcha_s
   use distribution_m, only : distribution_t
   use input_m, only : input_t
   use data_partition_m, only : data_partition_t
+  
+#ifdef USE_CAFFEINE
+   use caffeine_m, only : this_image => caf_this_image
+#endif
+
   implicit none
   
 contains
