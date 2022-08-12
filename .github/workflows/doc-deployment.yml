@@ -1,0 +1,56 @@
+name: Build and Deploy Documentation
+
+on: [push]
+
+
+jobs:
+  docs:
+    runs-on: ubuntu-22.04
+
+    env:
+      FC: gfortran
+      GCC_V: 12
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies Ubuntu
+      run: |
+        sudo apt-get update
+        sudo apt install -y gfortran-${GCC_V} cmake wget python3-dev python3 build-essential numdiff graphviz
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
+          --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
+          --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
+        sudo pip install ford markdown==3.3.4
+
+    - name: Build Developer Documenation
+      run: |
+        cd doc
+        # Turn warnings into errors
+        ford ford.md > ford_output.txt
+        cat ford_output.txt; if grep -q -i Warning ford_output.txt; then exit 1; fi
+        mv doc/html pages-dir
+        cp ../README.md pages-dir
+
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v2
+      with:
+        name: documentation
+        path: doc/pages-dir
+        if-no-files-found: error
+
+    - name: Broken Link Check
+      if: ${{ github.ref == 'refs/heads/develop'}}
+      uses: technote-space/broken-link-checker-action@v1
+      with:
+        TARGET: file://${{ github.workspace }}/doc/html/index.html
+        RECURSIVE: true
+        ASSIGNEES: ${{ github.actor }}
+
+    - name: Deploy API Documentation
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      if: ${{ github.event_name == 'push'  &&  github.ref == 'refs/heads/develop' }}
+      with:
+        branch: gh-pages
+        folder: doc/pages-dir
