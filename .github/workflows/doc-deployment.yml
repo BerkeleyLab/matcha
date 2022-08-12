@@ -27,9 +27,9 @@ jobs:
     - name: Build Developer Documenation
       run: |
         # Turn warnings into errors
+        cd doc
         ford ford.md > ford_output.txt
         cat ford_output.txt; if grep -q -i Warning ford_output.txt; then exit 1; fi
-        cd doc
         mv html pages-dir
         cp ../README.md pages-dir
 
