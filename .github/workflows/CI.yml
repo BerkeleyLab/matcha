@@ -4,9 +4,10 @@ on: [push, pull_request]
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-22.04]
 
     env:
+      FC: gfortran
       GCC_V: 12
 
     steps:
@@ -33,10 +34,11 @@ jobs:
 
     - name: Install GFortran, OpenCoarrays
       run: |
-        sudo apt install -y gfortran-${GCC_V} graphviz
+        sudo apt-get update
+        sudo apt install -y gfortran-${GCC_V} build-essential
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
-        --slave /usr/bingcov gcov /usr/bin/gcov-${GCC_V}
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
         if [ ! -d OpenCoarrays-2.10.0 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.10.0/OpenCoarrays-2.10.0.tar.gz && tar -xf OpenCoarrays-2.10.0.tar.gz && cd OpenCoarrays-2.10.0 && TERM=xterm ./install.sh -y; fi
     - name: Build, run, and test
       run: |
