@@ -25,23 +25,23 @@ Building
 --------
 With `gfortran` build Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
-./install.sh
+./setup.sh
 ```
-or execute `.install.sh -h` to see a list of options the installer accepts.
+or execute `.setup.sh -h` to see a list of options the installer accepts.
 
 Running and Testing
 -------------------
 ### Single-image (serial) execution
 With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
-./install.sh
-./build/run-fpm.sh run
-./build/run-fpm.sh test
+./setup.sh
+./build/run-fpm.sh run --flag "-fcoarray=single"
+./build/run-fpm.sh test --flag "-fcoarray=single"
 ```
 ### Multi-image (parallel) execution
 With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
-./install.sh
+./setup.sh
 ./build/run-fpm.sh run --compiler caf --runner "cafrun -n 2"
 ./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
 ```
@@ -49,9 +49,9 @@ Change '2' above to the number of images that you would like to launch in parall
 
 ### Parallel Execution with Caffeine
 ```
-./install.sh
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-DUSE_CAFFEINE"
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-DUSE_CAFFEINE"
+./setup.sh
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-fcoarray=single -DUSE_CAFFEINE"
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-fcoarray=single -DUSE_CAFFEINE"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
