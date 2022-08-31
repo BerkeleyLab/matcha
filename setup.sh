@@ -4,16 +4,16 @@ set -e # exit on error
 
 print_usage_info()
 {
-    echo "Matcha Installation Script"
+    echo "Matcha Setup Script"
     echo ""
     echo "USAGE:"
-    echo "./install.sh [--help | [--prefix=PREFIX]"
+    echo "./setup.sh [--help | [--prefix=PREFIX]"
     echo ""
     echo " --help             Display this help text"
-    echo " --prefix=PREFIX    Install binary in 'PREFIX/bin' (default: '\$HOME/.local/bin')"
+    echo " --prefix=PREFIX    Install prerequisites in 'PREFIX/bin' (default: '\$HOME/.local/bin')"
     echo ""
     echo "For a non-interactive build with the 'yes' utility installed, execute"
-    echo "yes | ./install.sh"
+    echo "yes | ./setup.sh"
 }
 
 while [ "$1" != "" ]; do
@@ -78,12 +78,11 @@ echo "#-- DO NOT EDIT -- created by matcha/install.sh"                        >>
 echo "\"${FPM}\" \"\$@\" \\"                                                  >> $RUN_FPM_SH
 echo "--c-compiler \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CC`\" \\"  >> $RUN_FPM_SH
 echo "--c-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CFLAGS`\" \\"  >> $RUN_FPM_SH
-echo "--flag \"-Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -g -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single\" \\" >> $RUN_FPM_SH
+echo "--flag \"-O3 -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -g -fcheck=bounds -fcheck=array-temps -fbacktrace\" \\" >> $RUN_FPM_SH
 echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >> $RUN_FPM_SH
 chmod u+x $RUN_FPM_SH
 
 cp templates/fpm.toml .
-./$RUN_FPM_SH build
 
 echo ""
 echo "________________ Matcha has been poured! ________________"

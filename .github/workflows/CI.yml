@@ -42,6 +42,6 @@ jobs:
         if [ ! -d OpenCoarrays-2.10.0 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.10.0/OpenCoarrays-2.10.0.tar.gz && tar -xf OpenCoarrays-2.10.0.tar.gz && cd OpenCoarrays-2.10.0 && TERM=xterm ./install.sh -y; fi
     - name: Build, run, and test
       run: |
-        ./install.sh
+        ./setup.sh
         source OpenCoarrays-2.10.0/prerequisites/installations/opencoarrays/2.10.0/setup.sh
         ./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
