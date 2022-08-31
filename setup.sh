@@ -4,16 +4,16 @@ set -e # exit on error
 
 print_usage_info()
 {
-    echo "Matcha Installation Script"
+    echo "Matcha Setup Script"
     echo ""
     echo "USAGE:"
-    echo "./install.sh [--help | [--prefix=PREFIX]"
+    echo "./setup.sh [--help | [--prefix=PREFIX]"
     echo ""
     echo " --help             Display this help text"
-    echo " --prefix=PREFIX    Install binary in 'PREFIX/bin' (default: '\$HOME/.local/bin')"
+    echo " --prefix=PREFIX    Install prerequisites in 'PREFIX/bin' (default: '\$HOME/.local/bin')"
     echo ""
     echo "For a non-interactive build with the 'yes' utility installed, execute"
-    echo "yes | ./install.sh"
+    echo "yes | ./setup.sh"
 }
 
 while [ "$1" != "" ]; do
@@ -83,7 +83,6 @@ echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >>
 chmod u+x $RUN_FPM_SH
 
 cp templates/fpm.toml .
-./$RUN_FPM_SH build
 
 echo ""
 echo "________________ Matcha has been poured! ________________"
