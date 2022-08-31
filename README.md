@@ -56,7 +56,7 @@ GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-DUSE_CAFFEINE"
 Change '2' above to the number of images that you would like to launch in parallel.
 
 ## Documentation
-Please visit the Matcha Github Pages site to see HTML Documentation generated with ford.
+Please visit the [Matcha Github Pages](https://berkeleylab.github.io/matcha) site to see HTML Documentation generated with ford.
 
 [OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
 [Caffeine]: https://go.lbl.gov/caffeine
