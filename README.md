@@ -35,8 +35,8 @@ Running and Testing
 With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
 ./install.sh
-./build/run-fpm.sh run
-./build/run-fpm.sh test
+./build/run-fpm.sh run --flag "-fcoarray=single"
+./build/run-fpm.sh test --flag "-fcoarray=single"
 ```
 ### Multi-image (parallel) execution
 With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
