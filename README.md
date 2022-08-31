@@ -50,8 +50,8 @@ Change '2' above to the number of images that you would like to launch in parall
 ### Parallel Execution with Caffeine
 ```
 ./setup.sh
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-DUSE_CAFFEINE"
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-DUSE_CAFFEINE"
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-fcoarray=single -DUSE_CAFFEINE"
+GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-fcoarray=single -DUSE_CAFFEINE"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
