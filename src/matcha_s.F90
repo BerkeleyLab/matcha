@@ -3,7 +3,6 @@
 submodule(matcha_m) matcha_s
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
-  use input_m, only : input_t
   use data_partition_m, only : data_partition_t
   
 #ifdef USE_CAFFEINE

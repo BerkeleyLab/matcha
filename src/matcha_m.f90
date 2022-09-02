@@ -9,7 +9,7 @@ module matcha_m
   
   implicit none
 
-  interface matcha
+  interface
 
     module function matcha(input) result(history)
       implicit none
