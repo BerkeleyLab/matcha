@@ -9,7 +9,7 @@ Despite advances in microscopy, imaging techniques only capture a very small spa
 
 Prerequisites
 -------------
-1. A Fortran 2018 compiler
+1. A Fortran 2018 compiler (`gfortran` 12 works)
 2. The Fortran Package Manager
 3. *Optional:* a parallel runtime library for multi-image execution:
     - [OpenCoarrays] or
