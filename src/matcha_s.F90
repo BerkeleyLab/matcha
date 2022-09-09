@@ -49,11 +49,11 @@ contains
           
               associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
                 associate(v => distribution%velocities(random_speeds, random_directions))
-                  allocate(history(nsteps+1))
+                  allocate(history(nsteps))
                   history(1) = t_cell_collection_t(scale*random_positions, time=0.D0)
-                  do step = 1, nsteps
-                    associate(x => history(step)%positions(), t => history(step)%time())
-                      history(step+1) = t_cell_collection_t(x + v(:,step,:)*dt, t + dt)
+                  do step = 2, nsteps
+                    associate(x => history(step-1)%positions(), t => history(step-1)%time())
+                      history(step) = t_cell_collection_t(x + v(:,step-1,:)*dt, t + dt)
                     end associate
                   end do
                 end associate
