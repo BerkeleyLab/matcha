@@ -21,7 +21,7 @@ module t_cell_collection_m
   interface t_cell_collection_t
     
     pure module function construct(positions, time) result(t_cell_collection)
-      !! Return a t_cell_collection_t object rescaled position vectors and the provided time stamp
+      !! Return a t_cell_collection_t object with rescaled position vectors and the provided time stamp
       implicit none
       double precision, intent(in) :: positions(:,:), time
       type(t_cell_collection_t) t_cell_collection
