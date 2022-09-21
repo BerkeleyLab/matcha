@@ -2,6 +2,7 @@
 ! Terms of use are as specified in LICENSE.tx
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
+  use do_concurrent_m, only : do_concurrent_sampled_speeds
   
 #ifdef USE_CAFFEINE
    use caffeine_assert_m, only : assert
@@ -46,22 +47,18 @@ contains
   module procedure velocities
     
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
-    integer cell, step
+    integer step
     
     call assert(allocated(self%cumulative_distribution_), &
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
     call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
 
-    ! Sample from the distribution
-    associate(ncells => size(speeds,1), nsteps => size(speeds,2))
-      allocate(sampled_speeds(ncells,nsteps))
-      do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.false., dim=1)-1)
-          sampled_speeds(cell,step) = self%vel_(k)
-        end associate
-      end do
+     ! Sample from the distribution
+     sampled_speeds = do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution())
       
-      ! Create unit vectors
+    associate(nsteps => size(speeds,2))
+
+       ! Create unit vectors
       dir = directions(:,1:nsteps,:)
 
       associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
