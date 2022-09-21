@@ -82,7 +82,7 @@ echo "--flag \"-O3 -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -g -f
 echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >> $RUN_FPM_SH
 chmod u+x $RUN_FPM_SH
 
-cp templates/fpm.toml .
+cp templates/fpm.toml-template fpm.toml
 
 echo ""
 echo "________________ Matcha has been poured! ________________"
