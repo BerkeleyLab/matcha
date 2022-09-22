@@ -2,7 +2,7 @@
 ! Terms of use are as specified in LICENSE.tx
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
-  use do_concurrent_m, only : do_concurrent_sampled_speeds
+  use do_concurrent_m, only : do_concurrent_sampled_speeds, do_concurrent_my_velocities
   
 #ifdef USE_CAFFEINE
    use caffeine_assert_m, only : assert
@@ -56,27 +56,7 @@ contains
      ! Sample from the distribution
      sampled_speeds = do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution())
       
-    associate(nsteps => size(speeds,2))
-
-       ! Create unit vectors
-      dir = directions(:,1:nsteps,:)
-
-      associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
-        associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
-          dir(:,:,1) = dir(:,:,1)/dir_mag_
-          dir(:,:,2) = dir(:,:,2)/dir_mag_
-          dir(:,:,3) = dir(:,:,3)/dir_mag_
-        end associate
-      end associate
-
-      allocate(my_velocities, mold=dir)
-      
-      do concurrent(step=1:nsteps)
-        my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
-        my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
-        my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
-      end do
-    end associate
+     my_velocities = do_concurrent_my_velocities(speeds, directions, sampled_speeds)
 
   end procedure
 
