@@ -47,4 +47,16 @@ contains
     
   end procedure
   
+  module procedure do_concurrent_k
+  
+  integer i
+  
+    associate(nspeeds => size(speeds))
+      allocate(k(nspeeds))
+        do concurrent(i = 1:nspeeds)
+          k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+        end do
+    end associate
+  end procedure
+  
 end submodule do_concurrent_s

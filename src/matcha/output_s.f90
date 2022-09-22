@@ -1,6 +1,7 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
+  use do_concurrent_m, only : do_concurrent_k
   implicit none
   
 contains
@@ -29,12 +30,7 @@ contains
           output_distribution(:,speed) = emp_distribution(:,speed)
           associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
             vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
-            associate(nspeeds => size(speeds))
-              allocate(k(nspeeds))
-              do concurrent(i = 1:nspeeds)
-                k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
-              end do
-            end associate
+            k = do_concurrent_k(speeds, vel)
             do concurrent(i = 1:size(output_distribution,1))
               output_distribution(i,freq) = count(k==i)
             end do
