@@ -1,7 +1,7 @@
 module do_concurrent_m
   implicit none
   private
-  public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k
+  public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k, do_concurrent_output_distribution
   
   interface
     
@@ -21,6 +21,13 @@ module do_concurrent_m
       implicit none
       double precision, intent(in) :: speeds(:), vel(:)
       integer, allocatable :: k(:)
+    end function
+    
+    pure module function do_concurrent_output_distribution(n, k) result(output_distribution) 
+      implicit none
+      double precision, intent(in) :: n(:,:)
+      integer, intent(in) :: k(:)
+      double precision, allocatable :: output_distribution(:,:)
     end function
       
       

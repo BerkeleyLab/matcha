@@ -59,4 +59,15 @@ contains
     end associate
   end procedure
   
+  module procedure do_concurrent_output_distribution
+  
+    integer i
+    integer, parameter :: freq = 2
+  
+    do concurrent(i = 1:size(n,1))
+      output_distribution(i,freq) = count(k==i)
+    end do
+    
+  end procedure
+  
 end submodule do_concurrent_s

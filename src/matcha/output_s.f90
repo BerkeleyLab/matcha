@@ -1,7 +1,7 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
-  use do_concurrent_m, only : do_concurrent_k
+  use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution
   implicit none
   
 contains
@@ -31,9 +31,7 @@ contains
           associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
             vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
             k = do_concurrent_k(speeds, vel)
-            do concurrent(i = 1:size(output_distribution,1))
-              output_distribution(i,freq) = count(k==i)
-            end do
+            output_distribution = do_concurrent_output_distribution(output_distribution, k)
             output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
           end associate
         end associate
