@@ -1,7 +1,7 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
-  use do_concurrent_m, only : do_concurrent_k, do_concurrent_x
+  use do_concurrent_m, only : do_concurrent_k, do_concurrent_x, do_concurrent_speeds
   implicit none
   
 contains
@@ -56,17 +56,7 @@ contains
       )   
         allocate(x(npositions,ncells,nspacedims))
         x = do_concurrent_x(npositions, ncells, nspacedims, history)
-        associate(t => history%time())
-          allocate(speeds(ncells*(npositions-1)))
-          do concurrent(i = 1:npositions-1, j = 1:ncells)
-            associate( &
-              u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-              ij => i + (j-1)*(npositions-1) &
-            )   
-              speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-            end associate
-          end do
-        end associate
+        speeds = do_concurrent_speeds(ncells, npositions, nspacedims, x, history)
       end associate
     end function
 
