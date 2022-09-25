@@ -2,8 +2,8 @@ module do_concurrent_m
   use t_cell_collection_m, only : t_cell_collection_t
   implicit none
   private
-  public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k, do_concurrent_x,& 
-  do_concurrent_speeds
+  public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k,& 
+  do_concurrent_output_distribution, do_concurrent_x, do_concurrent_speeds
   
   interface
     
@@ -24,6 +24,13 @@ module do_concurrent_m
       double precision, intent(in) :: speeds(:), vel(:)
       integer, allocatable :: k(:)
     end function
+    
+    pure module function do_concurrent_output_distribution(k) result(output_distribution)
+      implicit none
+      integer, intent(in) :: k(:)
+      double precision, allocatable :: output_distribution(:,:)
+    end function
+      
     
     pure module function do_concurrent_x(npositions, ncells, nspacedims, history) result(x)
       implicit none

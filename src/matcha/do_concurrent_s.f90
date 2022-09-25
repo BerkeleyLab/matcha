@@ -59,6 +59,16 @@ contains
     end associate
   end procedure
   
+  module procedure do_concurrent_output_distribution
+  
+    integer i, freq
+    
+    do concurrent(i = 1:size(output_distribution,1))
+      output_distribution(i,freq) = count(k==i)
+    end do
+    
+  end procedure
+  
   module procedure do_concurrent_x
   
     integer i
