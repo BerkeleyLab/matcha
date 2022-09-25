@@ -59,15 +59,17 @@ contains
     end associate
   end procedure
   
-  module procedure do_concurrent_output_distribution
+  module procedure do_concurrent_x
   
     integer i
-    integer, parameter :: freq = 2
   
-    do concurrent(i = 1:size(n,1))
-      output_distribution(i,freq) = count(k==i)
+    allocate(x(npositions,ncells,nspacedims))
+    do concurrent(i=1:npositions)
+      x(i,:,:) = history(i)%positions()
     end do
     
   end procedure
+  
+  
   
 end submodule do_concurrent_s
