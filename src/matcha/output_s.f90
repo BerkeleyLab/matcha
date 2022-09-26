@@ -1,7 +1,7 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
-  use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution,&
+  use do_concurrent_m, only : do_concurrent_k,&
   do_concurrent_x, do_concurrent_speeds
   implicit none
   
@@ -32,7 +32,9 @@ contains
           associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
             vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
             k = do_concurrent_k(speeds, vel)
-            output_distribution = do_concurrent_output_distribution(k)
+            do concurrent(i = 1:size(output_distribution,1))
+              output_distribution(i,freq) = count(k==i)
+            end do
             output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
           end associate
         end associate
@@ -44,21 +46,13 @@ contains
     pure function sim_speeds(history) result(speeds)
       type(t_cell_collection_t), intent(in) :: history(:)
       double precision, allocatable :: speeds(:)
-
-      integer, parameter :: nspacedims=3
-      integer i, j, k
       double precision, allocatable :: x(:,:,:)
+      
+      x = do_concurrent_x(history)
+      speeds = do_concurrent_speeds(x, history)
   
-      associate( &
-        npositions => size(history,1), &
-        ncells => size(history(1)%positions(),1) &
-      )   
-        allocate(x(npositions,ncells,nspacedims))
-        x = do_concurrent_x(npositions, ncells, nspacedims, history)
-        speeds = do_concurrent_speeds(ncells, npositions, nspacedims, x, history)
-      end associate
+ 
     end function
-
   end procedure
 
 end submodule output_s

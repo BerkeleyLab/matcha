@@ -59,41 +59,44 @@ contains
     end associate
   end procedure
   
-  module procedure do_concurrent_output_distribution
-  
-    integer i, freq
-    
-    do concurrent(i = 1:size(output_distribution,1))
-      output_distribution(i,freq) = count(k==i)
-    end do
-    
-  end procedure
-  
   module procedure do_concurrent_x
   
     integer i
+    integer, parameter :: nspacedims=3
   
-    allocate(x(npositions,ncells,nspacedims))
-    do concurrent(i=1:npositions)
-      x(i,:,:) = history(i)%positions()
-    end do
-    
+    associate( &
+        npositions => size(history,1), &
+        ncells => size(history(1)%positions(),1) &
+      )   
+      allocate(x(npositions,ncells,nspacedims))
+      do concurrent(i=1:npositions)
+        x(i,:,:) = history(i)%positions()
+      end do
+    end associate
+  
   end procedure
   
   module procedure do_concurrent_speeds
   
     integer i, j, k
+    integer, parameter :: nspacedims=3
     
-    associate(t => history%time())
-      allocate(speeds(ncells*(npositions-1)))
-      do concurrent(i = 1:npositions-1, j = 1:ncells)
-        associate( &
-          u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-          ij => i + (j-1)*(npositions-1) &
-         )   
-          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-        end associate
-      end do
+    associate( &
+        npositions => size(history,1), &
+        ncells => size(history(1)%positions(),1) &
+      )
+    
+      associate(t => history%time())
+        allocate(speeds(ncells*(npositions-1)))
+        do concurrent(i = 1:npositions-1, j = 1:ncells)
+          associate( &
+            u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
+            ij => i + (j-1)*(npositions-1) &
+           )   
+            speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+          end associate
+        end do
+      end associate
     end associate
     
   end procedure

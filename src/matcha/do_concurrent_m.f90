@@ -3,7 +3,7 @@ module do_concurrent_m
   implicit none
   private
   public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k,& 
-  do_concurrent_output_distribution, do_concurrent_x, do_concurrent_speeds
+  do_concurrent_x, do_concurrent_speeds
   
   interface
     
@@ -25,23 +25,14 @@ module do_concurrent_m
       integer, allocatable :: k(:)
     end function
     
-    pure module function do_concurrent_output_distribution(k) result(output_distribution)
+    pure module function do_concurrent_x(history) result(x)
       implicit none
-      integer, intent(in) :: k(:)
-      double precision, allocatable :: output_distribution(:,:)
-    end function
-      
-    
-    pure module function do_concurrent_x(npositions, ncells, nspacedims, history) result(x)
-      implicit none
-      integer, intent(in) :: npositions, ncells, nspacedims
       type(t_cell_collection_t), intent(in) :: history(:)
       double precision, allocatable :: x(:,:,:)
     end function  
     
-    pure module function do_concurrent_speeds(ncells, npositions, nspacedims, x, history) result(speeds)
+    pure module function do_concurrent_speeds(x, history) result(speeds)
       implicit none
-      integer, intent(in) :: ncells, npositions, nspacedims
       double precision, intent(in) :: x(:,:,:)
       type(t_cell_collection_t), intent(in) :: history(:)
       double precision, allocatable :: speeds(:)
