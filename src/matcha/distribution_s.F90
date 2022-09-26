@@ -69,7 +69,7 @@ contains
          end associate
        end associate
        
-       my_velocities = do_concurrent_my_velocities(nsteps, dir, sampled_speeds)
+       call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
        
      end associate
 

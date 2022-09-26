@@ -22,6 +22,7 @@ contains
   
     integer step
     
+      if(alloctaed(my_velocities)) deallocate(my_velocities)
       allocate(my_velocities, mold=dir)
       
       do concurrent(step=1:nsteps)
