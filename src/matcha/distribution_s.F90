@@ -54,7 +54,7 @@ contains
     call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
 
      ! Sample from the distribution
-     sampled_speeds = do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution())
+     call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution(), sampled_speeds)
       
      my_velocities = do_concurrent_my_velocities(speeds, directions, sampled_speeds)
 
