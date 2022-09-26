@@ -68,8 +68,6 @@ contains
            dir(:,:,3) = dir(:,:,3)/dir_mag_
          end associate
        end associate
-
-       allocate(my_velocities, mold=dir)
       
        my_velocities = do_concurrent_my_velocities(nsteps, dir, sampled_speeds)
      end associate
