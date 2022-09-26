@@ -23,7 +23,7 @@ contains
     integer step
     
   
-    allocate(my_velocities, mold=dir)
+    
       
       do concurrent(step=1:nsteps)
         my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
