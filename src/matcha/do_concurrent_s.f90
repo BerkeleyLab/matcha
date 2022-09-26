@@ -20,7 +20,7 @@ contains
   
   module procedure do_concurrent_my_velocities
   
-    integer step, nsteps
+    integer step
     
   
     allocate(my_velocities, mold=dir)
