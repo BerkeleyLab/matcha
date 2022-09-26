@@ -50,6 +50,7 @@ contains
   
     integer i
     
+    if(allocated(output_distribution)) deallocate(output_distribution)
     allocate(output_distribution(nintervals,2))
     output_distribution(:,freq) = 0.d0
     output_distribution(:,speed) = emp_distribution(:,speed)
