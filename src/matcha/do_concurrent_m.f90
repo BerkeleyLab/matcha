@@ -13,9 +13,9 @@ module do_concurrent_m
       double precision, allocatable :: sampled_speeds(:,:)
     end function
     
-    pure module function do_concurrent_my_velocities(speeds, directions, sampled_speeds) result(my_velocities)
+    pure module function do_concurrent_my_velocities(dir, sampled_speeds) result(my_velocities)
       implicit none
-      double precision, intent(in) :: speeds(:,:), directions(:,:,:), sampled_speeds(:,:)
+      double precision, intent(in) :: dir(:,:,:), sampled_speeds(:,:)
       double precision, allocatable :: my_velocities(:,:,:)
     end function
     

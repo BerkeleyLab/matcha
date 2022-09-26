@@ -20,30 +20,16 @@ contains
   
   module procedure do_concurrent_my_velocities
   
-    integer step
-    double precision, allocatable :: dir(:,:,:)
+    integer step, nsteps
+    
   
-    associate(nsteps => size(speeds,2))
-
-       ! Create unit vectors
-      dir = directions(:,1:nsteps,:)
-
-      associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
-        associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
-          dir(:,:,1) = dir(:,:,1)/dir_mag_
-          dir(:,:,2) = dir(:,:,2)/dir_mag_
-          dir(:,:,3) = dir(:,:,3)/dir_mag_
-        end associate
-      end associate
-
-      allocate(my_velocities, mold=dir)
+    allocate(my_velocities, mold=dir)
       
       do concurrent(step=1:nsteps)
         my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
         my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
         my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
       end do
-    end associate
     
   end procedure
   
