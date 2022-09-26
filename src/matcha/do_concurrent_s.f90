@@ -59,6 +59,19 @@ contains
     end associate
   end procedure
   
+  module procedure do_concurrent_output_distribution
+  
+    integer i
+    
+    allocate(output_distribution(nintervals,2))
+    output_distribution(:,freq) = 0.d0
+    output_distribution(:,speed) = emp_distribution(:,speed)
+    do concurrent(i = 1:size(output_distribution,1))
+      output_distribution(i,freq) = count(k==i)
+    end do
+    
+  end procedure
+  
   module procedure do_concurrent_x
   
     integer i
