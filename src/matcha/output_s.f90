@@ -28,7 +28,7 @@ contains
         associate(nintervals => size(emp_distribution(:,1)))
           associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
             vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
-            k = do_concurrent_k(speeds, vel)
+            call do_concurrent_k(speeds, vel, k)
             output_distribution = do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k)
             output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
           end associate

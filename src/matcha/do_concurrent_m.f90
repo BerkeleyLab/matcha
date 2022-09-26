@@ -1,5 +1,5 @@
 module do_concurrent_m
-  use iso_c_binding, only : c_double
+  use iso_c_binding, only : c_double, c_int
   use t_cell_collection_m, only : t_cell_collection_t
   implicit none
   private
@@ -21,11 +21,11 @@ module do_concurrent_m
       real(c_double), intent(out), allocatable :: my_velocities(:,:,:)
     end subroutine
     
-    pure module function do_concurrent_k(speeds, vel) result (k)
+    pure module subroutine do_concurrent_k(speeds, vel, k) bind(C)
       implicit none
-      double precision, intent(in) :: speeds(:), vel(:)
-      integer, allocatable :: k(:)
-    end function
+      real(c_double), intent(in) :: speeds(:), vel(:)
+      integer(c_int), intent(out), allocatable :: k(:)
+    end subroutine
     
     pure module function do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k) result(output_distribution)
       implicit none

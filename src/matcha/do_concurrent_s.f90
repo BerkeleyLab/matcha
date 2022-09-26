@@ -38,6 +38,7 @@ contains
   integer i
   
     associate(nspeeds => size(speeds))
+      if(allocated(k)) deallocate(k)
       allocate(k(nspeeds))
         do concurrent(i = 1:nspeeds)
           k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
