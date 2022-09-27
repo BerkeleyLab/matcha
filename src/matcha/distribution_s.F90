@@ -1,5 +1,5 @@
 ! Copyright (c), The Regents of the University of California
-! Terms of use are as specified in LICENSE.tx
+! Terms of use are as specified in LICENSE.txt
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
   use do_concurrent_m, only : do_concurrent_sampled_speeds, do_concurrent_my_velocities
