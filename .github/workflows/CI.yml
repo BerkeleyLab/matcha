@@ -35,7 +35,7 @@ jobs:
     - name: Install GFortran, OpenCoarrays
       run: |
         sudo apt update
-        sudo apt install -y build-essential gfortran-12 g++-12 pkg-config make
+        sudo apt install -y build-essential gfortran-${GCC_V} g++-${GCC_V} pkg-config make
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
           --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
           --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V}
