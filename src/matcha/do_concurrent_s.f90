@@ -69,6 +69,7 @@ contains
         npositions => size(history,1), &
         ncells => size(history(1)%positions(),1) &
       )   
+      if(allocated(x)) deallocate(x)
       allocate(x(npositions,ncells,nspacedims))
       do concurrent(i=1:npositions)
         x(i,:,:) = history(i)%positions()
