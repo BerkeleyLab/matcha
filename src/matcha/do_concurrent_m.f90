@@ -16,7 +16,7 @@ module do_concurrent_m
     
     pure module subroutine do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities) bind(C)
       implicit none
-      integer, intent(in) :: nsteps
+      integer(c_int), intent(in) :: nsteps
       real(c_double), intent(in) :: dir(:,:,:), sampled_speeds(:,:)
       real(c_double), intent(out), allocatable :: my_velocities(:,:,:)
     end subroutine
@@ -35,11 +35,11 @@ module do_concurrent_m
       real(c_double), intent(out), allocatable :: output_distribution(:,:)
     end subroutine
     
-    pure module function do_concurrent_x(history) result(x)
+    pure module subroutine do_concurrent_x(history, x) bind(C)
       implicit none
       type(t_cell_collection_t), intent(in) :: history(:)
-      double precision, allocatable :: x(:,:,:)
-    end function  
+      real(c_double), intent(out), allocatable :: x(:,:,:)
+    end subroutine 
     
     pure module function do_concurrent_speeds(x, history) result(speeds)
       implicit none

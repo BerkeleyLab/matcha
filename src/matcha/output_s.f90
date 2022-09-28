@@ -43,7 +43,7 @@ contains
       double precision, allocatable :: speeds(:)
       double precision, allocatable :: x(:,:,:)
       
-      x = do_concurrent_x(history)
+      call do_concurrent_x(history, x) 
       speeds = do_concurrent_speeds(x, history)
   
  
