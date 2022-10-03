@@ -33,7 +33,7 @@ module output_m
 
   interface
     
-    pure module function simulated_distribution(self) result(output_distribution)
+    module function simulated_distribution(self) result(output_distribution)
       !! The result is a histogram calculated from the simulation output
       implicit none
       class(output_t), intent(in) :: self

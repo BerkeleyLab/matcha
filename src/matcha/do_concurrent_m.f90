@@ -1,6 +1,6 @@
 module do_concurrent_m
   use iso_c_binding, only : c_double, c_int
-  use t_cell_collection_m, only : t_cell_collection_t
+  use t_cell_collection_m, only : t_cell_collection_t, t_cell_collection_bind_C_t
   implicit none
   private
   public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k,& 
@@ -35,21 +35,19 @@ module do_concurrent_m
       real(c_double), intent(out), allocatable :: output_distribution(:,:)
     end subroutine
     
-    pure module subroutine do_concurrent_x(history, x) bind(C)
+    module subroutine do_concurrent_x(history, x) bind(C)
       implicit none
-      type(t_cell_collection_t), intent(in) :: history(:)
+      type(t_cell_collection_bind_C_t), intent(in) :: history(:)
       real(c_double), intent(out), allocatable :: x(:,:,:)
     end subroutine  
     
     pure module function do_concurrent_speeds(x, history) result(speeds)
       implicit none
-      double precision, intent(in) :: x(:,:,:)
-      type(t_cell_collection_t), intent(in) :: history(:)
-      double precision, allocatable :: speeds(:)
+      real(c_double), intent(in) :: x(:,:,:)
+      type(t_cell_collection_bind_C_t), intent(in) :: history(:)
+      real(c_double), allocatable :: speeds(:)
     end function
       
-      
-
   end interface
   
 end module do_concurrent_m
