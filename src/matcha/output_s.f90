@@ -25,16 +25,12 @@ contains
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
 
-    associate(speeds => sim_speeds(self%history_))
-      associate(emp_distribution => self%input_%sample_distribution())
-        associate(nintervals => size(emp_distribution(:,1)))
-          associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
-            vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
-            call do_concurrent_k(speeds, vel, k)
-            call do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution)
-            output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
-          end associate
-        end associate
+    associate(speeds => sim_speeds(self%history_), emp_distribution => self%input_%sample_distribution())
+      associate(nintervals => size(emp_distribution(:,1)), dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
+        vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
+        call do_concurrent_k(speeds, vel, k)
+        call do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution)
+        output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
       end associate
     end associate
 
@@ -47,10 +43,11 @@ contains
       
       associate(bind_C_history => t_cell_collection_bind_C_t(history))
         call do_concurrent_x(bind_C_history, x)
-        speeds = do_concurrent_speeds(x, bind_C_history)
+        call do_concurrent_speeds(x, bind_C_history, speeds)
       end associate
  
     end function
+
   end procedure
 
 end submodule output_s

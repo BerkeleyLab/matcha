@@ -86,9 +86,7 @@ contains
     integer i, j, k
     integer, parameter :: nspacedims=3
     
-    associate(npositions => size(history))
-    associate(ncells => history(1)%positions_shape(1))
-    associate(t => history%time)
+    associate(npositions => size(history), ncells => history(1)%positions_shape(1), t => history%time)
       allocate(speeds(ncells*(npositions-1)))
       do concurrent(i = 1:npositions-1, j = 1:ncells)
         associate( &
@@ -98,8 +96,6 @@ contains
           speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
         end associate
       end do
-    end associate
-    end associate
     end associate
     
   end procedure
