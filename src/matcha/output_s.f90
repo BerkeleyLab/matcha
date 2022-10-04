@@ -2,7 +2,9 @@
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
   use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution, &
-  do_concurrent_x, do_concurrent_speeds
+    do_concurrent_x, do_concurrent_speeds
+  use t_cell_collection_m, only : t_cell_collection_bind_C_t
+  use iso_c_binding, only : c_loc 
   implicit none
   
 contains
@@ -38,14 +40,15 @@ contains
 
   contains
 
-    pure function sim_speeds(history) result(speeds)
+    function sim_speeds(history) result(speeds)
       type(t_cell_collection_t), intent(in) :: history(:)
       double precision, allocatable :: speeds(:)
       double precision, allocatable :: x(:,:,:)
       
-      x = do_concurrent_x(history)
-      speeds = do_concurrent_speeds(x, history)
-  
+      associate(bind_C_history => t_cell_collection_bind_C_t(history))
+        call do_concurrent_x(bind_C_history, x)
+        speeds = do_concurrent_speeds(x, bind_C_history)
+      end associate
  
     end function
   end procedure

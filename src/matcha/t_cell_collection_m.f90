@@ -3,10 +3,12 @@
 module t_cell_collection_m
   !! Define a T-cell abstraction for motility simulations
   use distribution_m, only : distribution_t
+  use iso_c_binding, only : c_ptr, c_double, c_int
   implicit none
   
   private
   public :: t_cell_collection_t
+  public :: t_cell_collection_bind_C_t
   
   type t_cell_collection_t
     !! Encapsulate the state of a collection of T cells
@@ -17,6 +19,14 @@ module t_cell_collection_m
     procedure :: positions
     procedure :: time
   end type
+
+  integer, parameter :: positions_dimension = 2
+
+  type, bind(C) :: t_cell_collection_bind_C_t
+    type(c_ptr) positions_ptr
+    integer(c_int) positions_shape(positions_dimension)
+    real(c_double) time
+  end type
   
   interface t_cell_collection_t
     
@@ -25,6 +35,18 @@ module t_cell_collection_m
       implicit none
       double precision, intent(in) :: positions(:,:), time
       type(t_cell_collection_t) t_cell_collection
+    end function 
+    
+  end interface
+
+    
+  interface t_cell_collection_bind_C_t
+    
+    elemental module function construct_bind_C(t_cell_collection) result(t_cell_collection_bind_C)
+      !! Result is bind(C) representation of the data inside a t_cell_collection_t object
+      implicit none
+      type(t_cell_collection_t), intent(in), target :: t_cell_collection
+      type(t_cell_collection_bind_C_t) t_cell_collection_bind_C
     end function 
     
   end interface
