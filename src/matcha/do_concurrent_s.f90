@@ -23,14 +23,14 @@ contains
   
     integer step
     
-      if(allocated(my_velocities)) deallocate(my_velocities)
-      allocate(my_velocities, mold=dir)
-      
-      do concurrent(step=1:nsteps)
-        my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
-        my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
-        my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
-      end do
+    if(allocated(my_velocities)) deallocate(my_velocities)
+    allocate(my_velocities, mold=dir)
+    
+    do concurrent(step=1:nsteps)
+      my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
+      my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
+      my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
+    end do
     
   end procedure
   
@@ -61,45 +61,34 @@ contains
     
   end procedure
   
-  module procedure do_concurrent_x
-  
-    integer i
-    integer, parameter :: nspacedims=3
-
-    real(c_double), pointer :: positions_(:,:)
-  
-    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
-      if(allocated(x)) deallocate(x)
-      allocate(x(npositions,ncells,nspacedims))
-
-      !do concurrent(i=1:npositions)
-      do i=1,npositions
-         call c_f_pointer(history(i)%positions_ptr, positions_, history(1)%positions_shape)
-         x(i,:,:) = positions_
-      end do
-    end associate
-  
-  end procedure
-  
   module procedure do_concurrent_speeds
   
     integer i, j, k
     integer, parameter :: nspacedims=3
     
-    associate(npositions => size(history))
-    associate(ncells => history(1)%positions_shape(1))
-    associate(t => history%time)
-      allocate(speeds(ncells*(npositions-1)))
-      do concurrent(i = 1:npositions-1, j = 1:ncells)
-        associate( &
-          u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-          ij => i + (j-1)*(npositions-1) &
-         )   
-          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-        end associate
+    real(c_double), pointer :: positions(:,:)
+    real(c_double), allocatable :: x(:,:,:)
+  
+    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
+
+      allocate(x(npositions,ncells,nspacedims))
+
+      do i=1,npositions
+         call c_f_pointer(history(i)%positions_ptr, positions, history(1)%positions_shape)
+         x(i,:,:) = positions
       end do
-    end associate
-    end associate
+  
+      associate(t => history%time)
+        allocate(speeds(ncells*(npositions-1)))
+        do concurrent(i = 1:npositions-1, j = 1:ncells)
+          associate( &
+            u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
+            ij => i + (j-1)*(npositions-1) &
+           )   
+            speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+          end associate
+        end do
+      end associate
     end associate
     
   end procedure
