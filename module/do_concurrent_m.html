@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 8.4% of total for modules and submodules.">42 statements</a>
+    title=" 7.8% of total for modules and submodules.">37 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/do_concurrent_m.f90"> Source File</a></li>
   </ul>
@@ -117,11 +117,10 @@
   <div id="inters-0" class="panel-collapse collapse">
     <div class="list-group">
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_sampled_speeds">do_concurrent_sampled_speeds</a>
-      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_speeds">do_concurrent_speeds</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_my_velocities">do_concurrent_my_velocities</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_k">do_concurrent_k</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_output_distribution">do_concurrent_output_distribution</a>
-      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_x">do_concurrent_x</a>
+      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_speeds">do_concurrent_speeds</a>
     </div>
   </div>
 </div>
@@ -424,11 +423,10 @@
   <div id="inters-1" class="panel-collapse collapse">
     <div class="list-group">
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_sampled_speeds">do_concurrent_sampled_speeds</a>
-      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_speeds">do_concurrent_speeds</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_my_velocities">do_concurrent_my_velocities</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_k">do_concurrent_k</a>
       <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_output_distribution">do_concurrent_output_distribution</a>
-      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_x">do_concurrent_x</a>
+      <a class="list-group-item" href="../module/do_concurrent_m.html#interface-do_concurrent_speeds">do_concurrent_speeds</a>
     </div>
   </div>
 </div>
@@ -445,43 +443,7 @@
   <div class="panel-heading codesum"><span class="anchor" id="interface-do_concurrent_sampled_speeds"></span><h3>interface   </h3></div>
   <ul class="list-group">
     <li class="list-group-item">
-    <h3>public pure module module function do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution) result(sampled_speeds)   <a href='../proc/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
-</h3>    
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>double precision,</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>speeds</strong>(:,:)</td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>double precision,</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>vel</strong>(:)</td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>double precision,</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>cumulative_distribution</strong>(:)</td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>double precision,allocatable, (:,:)</small></h4>  
-
-    </li>
-  </ul>
-</div>
-
-     <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-do_concurrent_speeds"></span><h3>interface   </h3></div>
-  <ul class="list-group">
-    <li class="list-group-item">
-    <h3>public pure module module function do_concurrent_speeds(x, history) result(speeds)   <a href='../proc/do_concurrent_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    <h3>public pure module module subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds) bind(C)   <a href='../proc/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
 </h3>    
 <h4>Arguments</h4>      <table class="table table-striped varlist">
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
@@ -490,18 +452,29 @@
   <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
-  <td><strong>x</strong>(:,:,:)</td><td></td>
+  <td><strong>speeds</strong>(:,:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" ></span>type(<a href='../type/t_cell_collection_bind_c_t.html'>t_cell_collection_bind_C_t</a>),</td>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
-  <td><strong>history</strong>(:)</td><td></td>
+  <td><strong>vel</strong>(:)</td><td></td>
+</tr>
+<tr>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
+<td>intent(in)</td>
+  <td></td>  <td></td><td>::</td>
+  <td><strong>cumulative_distribution</strong>(:)</td><td></td>
+</tr>
+<tr>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>sampled_speeds</strong>(:,:)</td><td></td>
 </tr>
 </tbody>
 </table>
 
-<h4>Return Value <small>real(kind=c_double),allocatable, (:)</small></h4>  
 
     </li>
   </ul>
@@ -637,10 +610,10 @@
 </div>
 
      <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-do_concurrent_x"></span><h3>interface   </h3></div>
+  <div class="panel-heading codesum"><span class="anchor" id="interface-do_concurrent_speeds"></span><h3>interface   </h3></div>
   <ul class="list-group">
     <li class="list-group-item">
-    <h3>public module module subroutine do_concurrent_x(history, x) bind(C)   <a href='../proc/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    <h3>public module module subroutine do_concurrent_speeds(history, speeds) bind(C)   <a href='../proc/do_concurrent_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
 </h3>    
 <h4>Arguments</h4>      <table class="table table-striped varlist">
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
@@ -655,7 +628,7 @@
   <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(out),</td>
   <td></td>  <td>allocatable</td><td>::</td>
-  <td><strong>x</strong>(:,:,:)</td><td></td>
+  <td><strong>speeds</strong>(:)</td><td></td>
 </tr>
 </tbody>
 </table>

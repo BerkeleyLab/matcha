@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title="15.0% of total for modules and submodules.">75 statements</a>
+    title="14.2% of total for modules and submodules.">67 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/do_concurrent_s.f90"> Source File</a></li>
   </ul>
@@ -120,7 +120,6 @@
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_my_velocities">do_concurrent_my_velocities</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_k">do_concurrent_k</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_output_distribution">do_concurrent_output_distribution</a>
-      <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_x">do_concurrent_x</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_speeds">do_concurrent_speeds</a>
     </div>
   </div>
@@ -316,7 +315,6 @@
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_my_velocities">do_concurrent_my_velocities</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_k">do_concurrent_k</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_output_distribution">do_concurrent_output_distribution</a>
-      <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_x">do_concurrent_x</a>
       <a class="list-group-item" href="../module/do_concurrent_s.html#proc-do_concurrent_speeds">do_concurrent_speeds</a>
     </div>
   </div>
@@ -339,7 +337,7 @@
         <section>
         <h2>Module Procedures</h2>
           <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-do_concurrent_sampled_speeds"></span><h3>module procedure <a href='../proc/do_concurrent_sampled_speeds.html'>do_concurrent_sampled_speeds</a> <small>pure module module function do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution) result(sampled_speeds)</small>   <a href='../interface/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+  <div class="panel-heading codesum"><span class="anchor" id="proc-do_concurrent_sampled_speeds"></span><h3>module procedure <a href='../proc/do_concurrent_sampled_speeds.html'>do_concurrent_sampled_speeds</a> <small>pure module module subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds)</small>   <a href='../interface/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h3></div>
   <div class="panel-body">
            
@@ -347,27 +345,32 @@
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
 <tbody>
 <tr>
-  <td><span class="anchor" ></span>double precision,</td>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>speeds</strong>(:,:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" ></span>double precision,</td>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>vel</strong>(:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" ></span>double precision,</td>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>cumulative_distribution</strong>(:)</td><td></td>
 </tr>
+<tr>
+  <td><span class="anchor" ></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>sampled_speeds</strong>(:,:)</td><td></td>
+</tr>
 </tbody>
 </table>
 
-<h4>Return Value <small>double precision,allocatable, (:,:)</small></h4>  
 
   </div>
   </div>
@@ -496,7 +499,7 @@
   </div>
 
           <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-do_concurrent_x"></span><h3>module procedure <a href='../proc/do_concurrent_x.html'>do_concurrent_x</a> <small>module module subroutine do_concurrent_x(history, x)</small>   <a href='../interface/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+  <div class="panel-heading codesum"><span class="anchor" id="proc-do_concurrent_speeds"></span><h3>module procedure <a href='../proc/do_concurrent_speeds.html'>do_concurrent_speeds</a> <small>module module subroutine do_concurrent_speeds(history, speeds)</small>   <a href='../interface/do_concurrent_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h3></div>
   <div class="panel-body">
            
@@ -513,39 +516,11 @@
   <td><span class="anchor" ></span>real(kind=c_double),</td>
 <td>intent(out),</td>
   <td></td>  <td>allocatable</td><td>::</td>
-  <td><strong>x</strong>(:,:,:)</td><td></td>
+  <td><strong>speeds</strong>(:)</td><td></td>
 </tr>
 </tbody>
 </table>
 
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-do_concurrent_speeds"></span><h3>module procedure <a href='../proc/do_concurrent_speeds.html'>do_concurrent_speeds</a> <small>pure module module function do_concurrent_speeds(x, history) result(speeds)</small>   <a href='../interface/do_concurrent_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>real(kind=c_double),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>x</strong>(:,:,:)</td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>type(<a href='../type/t_cell_collection_bind_c_t.html'>t_cell_collection_bind_C_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>history</strong>(:)</td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>real(kind=c_double),allocatable, (:)</small></h4>  
 
   </div>
   </div>

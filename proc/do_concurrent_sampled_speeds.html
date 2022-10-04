@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 2.1% of total for procedures.">11 statements</a>
+    title=" 2.4% of total for procedures.">11 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/do_concurrent_s.f90"> Source File</a></li>
   </ul>
@@ -120,7 +120,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>module procedure do_concurrent_sampled_speeds <small>pure module module function do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution) result(sampled_speeds)</small>   <a href='../interface/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+    <h2>module procedure do_concurrent_sampled_speeds <small>pure module module subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds)</small>   <a href='../interface/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h2>
     
 
@@ -130,28 +130,32 @@
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
 <tbody>
 <tr>
-  <td><span class="anchor" id="variable-speeds"></span>double precision,</td>
+  <td><span class="anchor" id="variable-speeds"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>speeds</strong>(:,:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" id="variable-vel"></span>double precision,</td>
+  <td><span class="anchor" id="variable-vel"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>vel</strong>(:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" id="variable-cumulative_distribution~2"></span>double precision,</td>
+  <td><span class="anchor" id="variable-cumulative_distribution~2"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>cumulative_distribution</strong>(:)</td><td></td>
 </tr>
+<tr>
+  <td><span class="anchor" id="variable-sampled_speeds"></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>sampled_speeds</strong>(:,:)</td><td></td>
+</tr>
 </tbody>
 </table>
 
-   <h3>Return Value <small><span class="anchor" id="variable-sampled_speeds"></span>double precision,allocatable,(:,:)</small></h3>
-    
     <br>
     <div class="panel panel-default">
       <div class="panel-heading">

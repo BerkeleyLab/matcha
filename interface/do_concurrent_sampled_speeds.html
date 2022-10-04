@@ -89,7 +89,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 6.8% of total for procedures.">35 statements</a>
+    title=" 6.4% of total for procedures.">29 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/do_concurrent_m.f90"> Source File</a></li>
   </ul>
@@ -150,7 +150,7 @@
 <g id="interface~~do_concurrent_sampled_speeds~~CallsGraph_node2" class="node">
 <title>proc~do_concurrent_sampled_speeds</title>
 <g id="a_interface~~do_concurrent_sampled_speeds~~CallsGraph_node2"><a xlink:href=".././proc/do_concurrent_sampled_speeds.html" xlink:title="do_concurrent_sampled_speeds">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="402,-24 219,-24 219,0 402,0 402,-24"/>
+<polygon fill="#d9534f" stroke="#d9534f" points="402,-24 219,-24 219,0 402,0 402,-24"/>
 <text text-anchor="middle" x="310.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">do_concurrent_sampled_speeds</text>
 </a>
 </g>
@@ -340,7 +340,7 @@
       </div>
     </div>
     <br>
-      <h2>public pure module module function do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution) result(sampled_speeds)   <a href='../proc/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+      <h2>public pure module module subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds) bind(C)   <a href='../proc/do_concurrent_sampled_speeds.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
 </h2>
 
     
@@ -350,28 +350,32 @@
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
 <tbody>
 <tr>
-  <td><span class="anchor" id="variable-speeds"></span>double precision,</td>
+  <td><span class="anchor" id="variable-speeds"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>speeds</strong>(:,:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" id="variable-vel"></span>double precision,</td>
+  <td><span class="anchor" id="variable-vel"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>vel</strong>(:)</td><td></td>
 </tr>
 <tr>
-  <td><span class="anchor" id="variable-cumulative_distribution~2"></span>double precision,</td>
+  <td><span class="anchor" id="variable-cumulative_distribution~2"></span>real(kind=c_double),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>cumulative_distribution</strong>(:)</td><td></td>
 </tr>
+<tr>
+  <td><span class="anchor" id="variable-sampled_speeds"></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>sampled_speeds</strong>(:,:)</td><td></td>
+</tr>
 </tbody>
 </table>
 
-      <h3>Return Value <span class="anchor" id="variable-sampled_speeds"></span><small>double precision,allocatable,(:,:)</small></h3>
-    
     <br>
 
  </div>
