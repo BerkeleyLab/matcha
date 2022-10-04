@@ -23,14 +23,14 @@ contains
   
     integer step
     
-      if(allocated(my_velocities)) deallocate(my_velocities)
-      allocate(my_velocities, mold=dir)
-      
-      do concurrent(step=1:nsteps)
-        my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
-        my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
-        my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
-      end do
+    if(allocated(my_velocities)) deallocate(my_velocities)
+    allocate(my_velocities, mold=dir)
+    
+    do concurrent(step=1:nsteps)
+      my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
+      my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
+      my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
+    end do
     
   end procedure
   
@@ -73,7 +73,6 @@ contains
 
       allocate(x(npositions,ncells,nspacedims))
 
-      !do concurrent(i=1:npositions)
       do i=1,npositions
          call c_f_pointer(history(i)%positions_ptr, positions, history(1)%positions_shape)
          x(i,:,:) = positions
