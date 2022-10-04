@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 2.0% of total for procedures.">10 statements</a>
+    title=" 2.5% of total for procedures.">13 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/do_concurrent_s.f90"> Source File</a></li>
   </ul>
@@ -120,7 +120,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>module procedure do_concurrent_x <small>pure module module function do_concurrent_x(history) result(x)</small>   <a href='../interface/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+    <h2>module procedure do_concurrent_x <small>module module subroutine do_concurrent_x(history, x)</small>   <a href='../interface/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h2>
     
 
@@ -130,16 +130,20 @@
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
 <tbody>
 <tr>
-  <td><span class="anchor" id="variable-history~2"></span>type(<a href='../type/t_cell_collection_t.html'>t_cell_collection_t</a>),</td>
+  <td><span class="anchor" id="variable-history~3"></span>type(<a href='../type/t_cell_collection_bind_c_t.html'>t_cell_collection_bind_C_t</a>),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>history</strong>(:)</td><td></td>
 </tr>
+<tr>
+  <td><span class="anchor" id="variable-x~2"></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>x</strong>(:,:,:)</td><td></td>
+</tr>
 </tbody>
 </table>
 
-   <h3>Return Value <small><span class="anchor" id="variable-x"></span>double precision,allocatable,(:,:,:)</small></h3>
-    
     <br>
     <div class="panel panel-default">
       <div class="panel-heading">

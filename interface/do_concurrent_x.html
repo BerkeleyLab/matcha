@@ -150,7 +150,7 @@
 <g id="interface~~do_concurrent_x~~CallsGraph_node2" class="node">
 <title>proc~do_concurrent_x</title>
 <g id="a_interface~~do_concurrent_x~~CallsGraph_node2"><a xlink:href=".././proc/do_concurrent_x.html" xlink:title="do_concurrent_x">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="236,-24 136,-24 136,0 236,0 236,-24"/>
+<polygon fill="#d9534f" stroke="#d9534f" points="236,-24 136,-24 136,0 236,0 236,-24"/>
 <text text-anchor="middle" x="186" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">do_concurrent_x</text>
 </a>
 </g>
@@ -225,7 +225,7 @@
       </div>
     </div>
     <br>
-      <h2>public pure module module function do_concurrent_x(history) result(x)   <a href='../proc/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+      <h2>public module module subroutine do_concurrent_x(history, x) bind(C)   <a href='../proc/do_concurrent_x.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
 </h2>
 
     
@@ -235,16 +235,20 @@
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
 <tbody>
 <tr>
-  <td><span class="anchor" id="variable-history~2"></span>type(<a href='../type/t_cell_collection_t.html'>t_cell_collection_t</a>),</td>
+  <td><span class="anchor" id="variable-history~3"></span>type(<a href='../type/t_cell_collection_bind_c_t.html'>t_cell_collection_bind_C_t</a>),</td>
 <td>intent(in)</td>
   <td></td>  <td></td><td>::</td>
   <td><strong>history</strong>(:)</td><td></td>
 </tr>
+<tr>
+  <td><span class="anchor" id="variable-x~2"></span>real(kind=c_double),</td>
+<td>intent(out),</td>
+  <td></td>  <td>allocatable</td><td>::</td>
+  <td><strong>x</strong>(:,:,:)</td><td></td>
+</tr>
 </tbody>
 </table>
 
-      <h3>Return Value <span class="anchor" id="variable-x"></span><small>double precision,allocatable,(:,:,:)</small></h3>
-    
     <br>
 
  </div>

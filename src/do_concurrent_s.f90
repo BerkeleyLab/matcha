@@ -1,10 +1,11 @@
 submodule(do_concurrent_m) do_concurrent_s
+  use iso_c_binding, only : c_f_pointer
   implicit none
 
 contains
   
   module procedure do_concurrent_sampled_speeds
-    
+  
     integer cell, step
     
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
@@ -64,14 +65,17 @@ contains
   
     integer i
     integer, parameter :: nspacedims=3
+
+    real(c_double), pointer :: positions_(:,:)
   
-    associate( &
-        npositions => size(history,1), &
-        ncells => size(history(1)%positions(),1) &
-      )   
+    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
+      if(allocated(x)) deallocate(x)
       allocate(x(npositions,ncells,nspacedims))
-      do concurrent(i=1:npositions)
-        x(i,:,:) = history(i)%positions()
+
+      !do concurrent(i=1:npositions)
+      do i=1,npositions
+         call c_f_pointer(history(i)%positions_ptr, positions_, history(1)%positions_shape)
+         x(i,:,:) = positions_
       end do
     end associate
   
@@ -82,26 +86,22 @@ contains
     integer i, j, k
     integer, parameter :: nspacedims=3
     
-    associate( &
-        npositions => size(history,1), &
-        ncells => size(history(1)%positions(),1) &
-      )
-    
-      associate(t => history%time())
-        allocate(speeds(ncells*(npositions-1)))
-        do concurrent(i = 1:npositions-1, j = 1:ncells)
-          associate( &
-            u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-            ij => i + (j-1)*(npositions-1) &
-           )   
-            speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-          end associate
-        end do
-      end associate
+    associate(npositions => size(history))
+    associate(ncells => history(1)%positions_shape(1))
+    associate(t => history%time)
+      allocate(speeds(ncells*(npositions-1)))
+      do concurrent(i = 1:npositions-1, j = 1:ncells)
+        associate( &
+          u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
+          ij => i + (j-1)*(npositions-1) &
+         )   
+          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+        end associate
+      end do
+    end associate
+    end associate
     end associate
     
   end procedure
-  
-  
   
 end submodule do_concurrent_s
