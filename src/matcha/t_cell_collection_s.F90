@@ -11,6 +11,13 @@ submodule(t_cell_collection_m) t_cell_collection_s
   implicit none
   
 contains
+
+  module procedure define
+  
+    self%positions_ = positions
+    self%time_ = time
+    
+  end procedure
       
   module procedure construct
     t_cell_collection%positions_ = positions

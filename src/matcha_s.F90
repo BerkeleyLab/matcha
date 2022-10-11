@@ -53,7 +53,7 @@ contains
                   history(1) = t_cell_collection_t(scale*random_positions, time=0.D0)
                   do step = 2, nsteps
                     associate(x => history(step-1)%positions(), t => history(step-1)%time())
-                      history(step) = t_cell_collection_t(x + v(:,step-1,:)*dt, t + dt)
+                      call history(step)%define(x + v(:,step-1,:)*dt, t + dt)
                     end associate
                   end do
                 end associate

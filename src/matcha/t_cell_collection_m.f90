@@ -18,6 +18,8 @@ module t_cell_collection_m
   contains
     procedure :: positions
     procedure :: time
+    procedure :: define
+    generic :: t_cell_collection_t => define
   end type
 
   integer, parameter :: positions_dimension = 2
@@ -28,14 +30,21 @@ module t_cell_collection_m
     real(c_double) time
   end type
   
-  interface t_cell_collection_t
+  interface 
     
-    pure module function construct(positions, time) result(t_cell_collection)
+    !pure module function construct(positions, time) result(t_cell_collection)
+      !! Return a t_cell_collection_t object with rescaled position vectors and the provided time stamp
+    !  implicit none
+     ! double precision, intent(in) :: positions(:,:), time
+     ! type(t_cell_collection_t) t_cell_collection
+    !end function 
+    
+    pure module subroutine define(self, positions, time) 
       !! Return a t_cell_collection_t object with rescaled position vectors and the provided time stamp
       implicit none
       double precision, intent(in) :: positions(:,:), time
-      type(t_cell_collection_t) t_cell_collection
-    end function 
+      class(t_cell_collection_t), intent(inout) :: self
+    end subroutine 
     
   end interface
 
