@@ -15,7 +15,13 @@ contains
   module procedure construct
     t_cell_collection%positions_ = positions
     t_cell_collection%time_ = time
+    allocate(t_cell_collection)
+    t_cell_collection%x_ = real(j)
   end procedure 
+  
+  module procedure x
+  	self_x = self%x_
+  end procedure
   
   module procedure positions
     call assert(allocated(self%positions_), "t_cell_collection_t%positions: allocated(positions_)")
