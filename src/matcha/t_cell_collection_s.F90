@@ -12,6 +12,11 @@ submodule(t_cell_collection_m) t_cell_collection_s
   
 contains
       
+  module procedure define
+    self%positions_ = positions
+    self%time_ = time
+  end procedure 
+  
   module procedure construct
     t_cell_collection%positions_ = positions
     t_cell_collection%time_ = time

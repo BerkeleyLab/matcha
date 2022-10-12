@@ -18,6 +18,7 @@ module t_cell_collection_m
   contains
     procedure :: positions
     procedure :: time
+    procedure :: define
   end type
 
   integer, parameter :: positions_dimension = 2
@@ -41,7 +42,7 @@ module t_cell_collection_m
 
     
   interface t_cell_collection_bind_C_t
-    
+
     elemental module function construct_bind_C(t_cell_collection) result(t_cell_collection_bind_C)
       !! Result is bind(C) representation of the data inside a t_cell_collection_t object
       implicit none
@@ -52,6 +53,13 @@ module t_cell_collection_m
   end interface
   
   interface
+
+    pure module subroutine define(self, positions, time)
+      !! Return a t_cell_collection_t object with rescaled position vectors and the provided time stamp
+      implicit none
+      class(t_cell_collection_t), intent(inout) :: self
+      double precision, intent(in) :: positions(:,:), time
+    end subroutine
     
     pure module function positions(self) result(my_positions)
       !! Return the t_cell_collection_t object's position vectors
