@@ -4,15 +4,15 @@ submodule(do_concurrent_m) do_concurrent_s
 
 contains
   
-  module procedure do_concurrent_sampled_speeds
+  module procedure do_concurrent_sample
   
     integer cell, step
     
-    associate(ncells => size(speeds,1), nsteps => size(speeds,2))
-      allocate(sampled_speeds(ncells,nsteps))
+    associate(ncells => size(rvalues,1), nsteps => size(rvalues,2))
+      allocate(sampled_values(ncells,nsteps))
       do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
-          sampled_speeds(cell,step) = vel(k)
+        associate(k => findloc(rvalues(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
+          sampled_values(cell,step) = val(k)
         end associate
       end do
     end associate

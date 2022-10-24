@@ -8,7 +8,7 @@ module input_m
   
   type input_t
     private
-    integer :: num_cells_ = 6000, num_positions_ = 6000, num_dimensions_ = 3, num_intervals_ = 4
+    integer :: num_cells_ = 6000, num_positions_ = 6000, num_dimensions_ = 3, num_intervals_ = 4, num_angle_intervals_ = 4
     double precision :: time_step_ = 0.1D0
     !double precision, allocatable :: sample_distribution_(:,:)
     !allocate(sample_distribution_(num_intervals_,2))
@@ -17,8 +17,10 @@ module input_m
     procedure :: num_positions
     procedure :: num_dimensions
     procedure :: num_intervals
+    procedure :: num_angle_intervals
     procedure :: time_step
     procedure :: sample_distribution
+    procedure :: sample_angle_distribution
   end type
   
   interface
@@ -46,6 +48,12 @@ module input_m
       class(input_t), intent(in) :: self
       integer n
     end function 
+
+    pure module function num_angle_intervals(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function 
     
     pure module function time_step(self) result(dt)
       implicit none
@@ -57,7 +65,14 @@ module input_m
       implicit none
       class(input_t), intent(in) :: self
       double precision, allocatable :: empirical_distribution(:,:)
-    end function sample_distribution    
+    end function sample_distribution
+
+    pure module function sample_angle_distribution(self) result(empirical_angle_distribution)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision, allocatable :: empirical_angle_distribution(:,:)
+    end function sample_angle_distribution    
+    
     
   end interface
   
