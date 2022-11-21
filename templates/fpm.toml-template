@@ -4,6 +4,9 @@ license = "see LICENSE.txt"
 author = "Damian Rouson, David Torres,  Dominick Martinez, Jeremiah Bailey, and Brad Richardson"
 maintainer = "rouson@lbl.gov"
 
+[build]
+external-modules = ["caffeine_m", "caffeine_assert_m"]
+
 [[executable]]
 name = "matcha"
 source-dir="app"
@@ -12,7 +15,6 @@ main = "main.F90"
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", rev = "a3065a9dffaedf085fbd262c6bf31b309aa43a4a"}
 sourcery = {path = "vendor/sourcery"}
-caffeine = {path = "build/dependencies/caffeine"}
 
 [dev-dependencies]
 garden = {path = "vendor/garden"}

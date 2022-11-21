@@ -44,17 +44,17 @@ set -u # error on use of undefined variable
 
 DEPENDENCIES_DIR="build/dependencies"
 mkdir -p $DEPENDENCIES_DIR
-if [ ! -d $DEPENDENCIES_DIR/caffeine ] ; then
-  git clone https://github.com/berkeleylab/caffeine build/dependencies/caffeine
-fi
+#if [ ! -d $DEPENDENCIES_DIR/caffeine ] ; then
+#  git clone https://github.com/berkeleylab/caffeine build/dependencies/caffeine
+#fi
 
-cd "$DEPENDENCIES_DIR/caffeine"
-  if [ -z ${PREFIX+x} ]; then
-    ./install.sh
-  else
-    ./install.sh --prefix=$PREFIX
-  fi
-cd -
+#cd "$DEPENDENCIES_DIR/caffeine"
+#  if [ -z ${PREFIX+x} ]; then
+#    ./install.sh
+#  else
+#    ./install.sh --prefix=$PREFIX
+#  fi
+#cd -
 
 if [ -z ${PREFIX+x} ]; then
   PREFIX="$HOME/.local"
@@ -76,10 +76,10 @@ RUN_FPM_SH="build/run-fpm.sh"
 echo "#!/bin/sh"                                                              >  $RUN_FPM_SH
 echo "#-- DO NOT EDIT -- created by matcha/install.sh"                        >> $RUN_FPM_SH
 echo "\"${FPM}\" \"\$@\" \\"                                                  >> $RUN_FPM_SH
-echo "--c-compiler \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CC`\" \\"  >> $RUN_FPM_SH
-echo "--c-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CFLAGS`\" \\"  >> $RUN_FPM_SH
+#echo "--c-compiler \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CC`\" \\"  >> $RUN_FPM_SH
+#echo "--c-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_CFLAGS`\" \\"  >> $RUN_FPM_SH
 echo "--flag \"-O3 -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -g -fcheck=bounds -fcheck=array-temps -fbacktrace\" \\" >> $RUN_FPM_SH
-echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >> $RUN_FPM_SH
+#echo "--link-flag \"`$PKG_CONFIG caffeine --variable=CAFFEINE_FPM_LDFLAGS`\"" >> $RUN_FPM_SH
 chmod u+x $RUN_FPM_SH
 
 cp templates/fpm.toml-template fpm.toml
