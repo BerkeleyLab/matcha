@@ -6,5 +6,5 @@ maintainer = "everythingfunctional@protonmail.com"
 copyright = "2020 Brad Richardson"
 
 [dependencies]
-iso_varying_string = { path = "vendor/iso_varying_string" }
-strff = { path = "vendor/strff" }
+iso_varying_string = { path = "../iso_varying_string" }
+strff = { path = "../strff" }
