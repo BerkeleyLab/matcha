@@ -68,8 +68,11 @@ contains
     
     real(c_double), pointer :: positions(:,:)
     real(c_double), allocatable :: x(:,:,:)
+    integer(c_int) ncells
   
-    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
+    ncells = history(1)%positions_shape(1)
+
+    associate(npositions => size(history))
 
       allocate(x(npositions,ncells,nspacedims))
 
