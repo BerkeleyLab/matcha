@@ -11,9 +11,7 @@ contains
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
       allocate(sampled_speeds(ncells,nsteps))
       do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
-          sampled_speeds(cell,step) = vel(k)
-        end associate
+        sampled_speeds(cell,step) = vel(findloc(speeds(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
       end do
     end associate
     
@@ -63,11 +61,11 @@ contains
   
   module procedure do_concurrent_speeds
   
-    integer i, j, k
+    integer i, j, k, ij
     integer, parameter :: nspacedims=3
     
     real(c_double), pointer :: positions(:,:)
-    real(c_double), allocatable :: x(:,:,:)
+    real(c_double), allocatable :: x(:,:,:), u(:)
     integer(c_int) ncells
   
     ncells = history(1)%positions_shape(1)
@@ -84,12 +82,11 @@ contains
       associate(t => history%time)
         allocate(speeds(ncells*(npositions-1)))
         do concurrent(i = 1:npositions-1, j = 1:ncells)
-          associate( &
-            u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-            ij => i + (j-1)*(npositions-1) &
-           )   
-            speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-          end associate
+          
+          u = (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)) 
+          ij = i + (j-1)*(npositions-1) 
+          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+         
         end do
       end associate
     end associate
