@@ -14,7 +14,7 @@ program main
         integer i
 
         do i = 1, nt
-          u =  u + (dt * nu) * .laplacian. u
+          u =  u + dt * nu * .laplacian. u
         end do
       end block
     end associate
