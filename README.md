@@ -9,49 +9,25 @@ Despite advances in microscopy, imaging techniques only capture a very small spa
 
 Prerequisites
 -------------
-1. A Fortran 2018 compiler (`gfortran` 12 works)
+1. A Fortran 2018 compiler (`gfortran` + [OpenCoarrays])
 2. The Fortran Package Manager
-3. *Optional:* a parallel runtime library for multi-image execution:
-    - [OpenCoarrays] or
-    - [Caffeine].
 
-Downloading
------------
+Downloading, Building, and Testing
+---------------------------------
+
+### Single-image (serial) execution
+With `gfortran` installed, download, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
 git clone https://github.com/rouson/matcha
 cd matcha
+fpm test
 ```
-Building
---------
-With `gfortran` build Matcha in a single image by entering the following commands in a `bash`-like shell:
-```
-./setup.sh
-```
-or execute `.setup.sh -h` to see a list of options the installer accepts.
 
-Running and Testing
--------------------
-### Single-image (serial) execution
-With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
-```
-./setup.sh
-./build/run-fpm.sh run --flag "-fcoarray=single"
-./build/run-fpm.sh test --flag "-fcoarray=single"
-```
 ### Multi-image (parallel) execution
-With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
+With `gfortran` and OpenCoarrays installed, build, test, and run Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
-./setup.sh
-./build/run-fpm.sh run --compiler caf --runner "cafrun -n 2"
-./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
-```
-Change '2' above to the number of images that you would like to launch in parallel.
-
-### Parallel Execution with Caffeine
-```
-./setup.sh
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-fcoarray=single -DUSE_CAFFEINE"
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-fcoarray=single -DUSE_CAFFEINE"
+fpm test --compiler caf --runner "cafrun -n 2"
+fpm run --compiler caf --runner "cafrun -n 2"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
@@ -59,4 +35,3 @@ Change '2' above to the number of images that you would like to launch in parall
 Please visit the [Matcha Github Pages](https://berkeleylab.github.io/matcha) site to see HTML Documentation generated with ford.
 
 [OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
-[Caffeine]: https://go.lbl.gov/caffeine

@@ -3,13 +3,7 @@
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
   use do_concurrent_m, only : do_concurrent_sampled_speeds, do_concurrent_my_velocities
-  
-#ifdef USE_CAFFEINE
-   use caffeine_assert_m, only : assert
-#else
-   use assert_m, only : assert
-#endif
-  
+  use assert_m, only : assert
   implicit none
 
 contains
