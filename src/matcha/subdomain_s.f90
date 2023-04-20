@@ -32,13 +32,15 @@ contains
               self%s_(my_last, i) = merge(boundary_val, internal_val, my_last==nx)
             end do
             self%s_(my_first:my_last, ny) = boundary_val
+
+            if (me>1) halo_x(:,west)[me-1] = self%s_(my_first,:)
+            if (me<num_subdomains) halo_x(:,east)[me+1] = self%s_(my_last,:)
+            sync all
           end block
           self%dx_ = side/num_subdomains
           self%dy_ = self%dx_
         end associate
       end associate
-
-      sync all
 
     end procedure
 
