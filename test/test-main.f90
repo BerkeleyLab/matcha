@@ -9,8 +9,6 @@ contains
                 t_cell_collection_t_cell_collection => &
                     test_t_cell_collection
         use garden , only: test_item_t, test_that, run_tests
-        use setup_and_teardown, only: setup
-        use setup_and_teardown, only: teardown
 
         logical :: passed
 
@@ -20,8 +18,6 @@ contains
         individual_tests(1) = t_cell_collection_t_cell_collection()
         tests = test_that(individual_tests)
 
-        call setup
         passed = run_tests(tests)
-        call teardown
     end function
 end program
