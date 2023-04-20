@@ -16,6 +16,8 @@ module subdomain_m
     generic :: operator(*) => multiply
     procedure add
     generic :: operator(+) => add
+    procedure assign_and_sync
+    generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
   end type
@@ -64,6 +66,12 @@ module subdomain_m
       type(subdomain_t), intent(in) :: rhs
       type(subdomain_t) total
     end function
+
+    module subroutine assign_and_sync(lhs, rhs)
+      implicit none
+      class(subdomain_t), intent(out) :: lhs
+      type(subdomain_t), intent(in) :: rhs
+    end subroutine
 
   end interface
 

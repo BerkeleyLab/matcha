@@ -37,6 +37,9 @@ contains
           self%dy_ = self%dx_
         end associate
       end associate
+
+      sync all
+
     end procedure
 
     module procedure dx
@@ -63,6 +66,12 @@ contains
 
     module procedure add
       total%s_ =  lhs%s_ + rhs%s_
+    end procedure
+
+    module procedure assign_and_sync
+      sync all
+      lhs%s_ =  rhs%s_
+      sync all
     end procedure
 
 end submodule subdomain_s
