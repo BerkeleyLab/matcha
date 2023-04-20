@@ -12,35 +12,22 @@ Prerequisites
 1. A Fortran 2018 compiler (`gfortran` + [OpenCoarrays])
 2. The Fortran Package Manager
 
-Downloading
------------
+Downloading, Building, and Testing
+---------------------------------
+
+### Single-image (serial) execution
+With `gfortran` installed, download, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
 ```
 git clone https://github.com/rouson/matcha
 cd matcha
+fpm test
 ```
-Building
---------
-With `gfortran` build Matcha in a single image by entering the following commands in a `bash`-like shell:
-```
-./setup.sh
-```
-or execute `.setup.sh -h` to see a list of options the installer accepts.
 
-Running and Testing
--------------------
-### Single-image (serial) execution
-With `gfortran` installed, build, run and test Matcha in a single image by entering the following commands in a `bash`-like shell:
-```
-./setup.sh
-./build/run-fpm.sh run --flag "-fcoarray=single"
-./build/run-fpm.sh test --flag "-fcoarray=single"
-```
 ### Multi-image (parallel) execution
-With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multiple images by entering the following commands in a `bash`-like shell:
+With `gfortran` and OpenCoarrays installed, build, test, and run Matcha in multiple images by entering the following commands in a `bash`-like shell:
 ```
-./setup.sh
-./build/run-fpm.sh run --compiler caf --runner "cafrun -n 2"
-./build/run-fpm.sh test --compiler caf --runner "cafrun -n 2"
+fpm test --compiler caf --runner "cafrun -n 2"
+fpm run --compiler caf --runner "cafrun -n 2"
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
