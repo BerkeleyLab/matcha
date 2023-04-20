@@ -9,11 +9,8 @@ Despite advances in microscopy, imaging techniques only capture a very small spa
 
 Prerequisites
 -------------
-1. A Fortran 2018 compiler (`gfortran` 12 works)
+1. A Fortran 2018 compiler (`gfortran` + [OpenCoarrays])
 2. The Fortran Package Manager
-3. *Optional:* a parallel runtime library for multi-image execution:
-    - [OpenCoarrays] or
-    - [Caffeine].
 
 Downloading
 -----------
@@ -47,16 +44,7 @@ With `gfortran` and OpenCoarrays installed, build, run and test Matcha in multip
 ```
 Change '2' above to the number of images that you would like to launch in parallel.
 
-### Parallel Execution with Caffeine
-```
-./setup.sh
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh run --flag "-fcoarray=single -DUSE_CAFFEINE"
-GASNET_PSHM_NODES=2 ./build/run-fpm.sh test --flag "-fcoarray=single -DUSE_CAFFEINE"
-```
-Change '2' above to the number of images that you would like to launch in parallel.
-
 ## Documentation
 Please visit the [Matcha Github Pages](https://berkeleylab.github.io/matcha) site to see HTML Documentation generated with ford.
 
 [OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
-[Caffeine]: https://go.lbl.gov/caffeine
