@@ -9,11 +9,15 @@ submodule(subdomain_m) subdomain_s
 
   type(data_partition_t) data_partition
 
+  real dx_, dy_
+  integer ny
+
 contains
 
     module procedure define
 
-      associate(nx => (n), ny => (n), num_subdomains => num_images(), me => this_image())
+      associate(nx => (n), me => this_image(), num_subdomains => num_images())
+        ny = nx
 
         call assert(num_subdomains <= nx, "subdomain_t%define: num_subdomains <= nx", intrinsic_array_t([nx, num_subdomains]))
 
@@ -37,44 +41,74 @@ contains
             if (me<num_subdomains) halo_x(:,east)[me+1] = self%s_(my_last,:)
             sync all
           end block
-          self%dx_ = side/num_subdomains
-          self%dy_ = self%dx_
+          dx_ = side/num_subdomains
+          dy_ = dx_
         end associate
       end associate
 
     end procedure
 
     module procedure dx
-      my_dx = self%dx_
+      my_dx = dx_
     end procedure
 
     module procedure dy
-      my_dy = self%dy_
+      my_dy = dy_
     end procedure
 
     module procedure laplacian
-      allocate(laplacian_rhs%s_, mold=rhs%s_)
-      laplacian_rhs%s_ = 0.
+ 
+       call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
+       call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
 
-      !laplacian_s%f = ( &
-      !    s%f(1:nx-2,2:ny-1) - 2*s%f(2:nx-1, 2:ny-1) + f(3:nx, 2:ny-1) + &
-      !    s%f(2:nx-1,1:ny-2) - 2*s%f(2:nx-1, 2:ny-1) + f(2:nx-1, 3:ny) &
-      ! ) / dy**2
+       associate(me => this_image(), num_subdomains => num_images())
+         associate(my_first => data_partition%first(me), my_last => data_partition%last(me))
+           allocate(laplacian_rhs%s_(my_first:my_last, ny))
+           block
+             integer i, j
+   
+             compute_west_boundary: &
+             if (me>1) then
+               i=my_first
+               do concurrent(j=2:ny-1) ! j = 1 or ny is always a boundary
+                 laplacian_rhs%s_(i,j) = (halo_x(west,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+                                         (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+               end do
+             end if compute_west_boundary
+
+             compute_internal_points: &
+             do concurrent(i=my_first+1:my_last-1, j=2:ny-1) ! j = 1 or ny is always a boundary
+               laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+                                       (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+             end do compute_internal_points
+
+             compute_east_boundary: &
+             if (me<num_subdomains) then
+               i=my_last
+               do concurrent(j=2:ny-1) ! j = 1 or ny is always a boundary
+                 laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + halo_x(east,j))/dx_**2 + &
+                                         (rhs%s_(i,j-1) - 2*rhs%s_(i,j) +  rhs%s_(i,j+1))/dy_**2
+               end do
+             end if compute_east_boundary 
+           end block
+         end associate
+       end associate
     end procedure
 
     module procedure multiply
+       call assert(allocated(rhs%s_), "subdomain_t%multiply: allocated(rhs%s_)")
       product%s_ =  lhs * rhs%s_
     end procedure
 
     module procedure add
+       call assert(allocated(rhs%s_), "subdomain_t%add: allocated(rhs%s_)")
       total%s_ =  lhs%s_ + rhs%s_
     end procedure
 
     module procedure assign_and_sync
+      call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
       sync all
       lhs%s_ =  rhs%s_
-      lhs%dx_ =  rhs%dx_
-      lhs%dy_ =  rhs%dy_
       sync all
     end procedure
 
