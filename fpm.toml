@@ -1,0 +1,17 @@
+name = "matcha"
+version = "0.1.0"
+license = "see LICENSE.txt"
+author = "Damian Rouson, David Torres,  Dominick Martinez, Jeremiah Bailey, and Brad Richardson"
+maintainer = "rouson@lbl.gov"
+
+[[executable]]
+name = "matcha"
+source-dir="app"
+main = "main.F90"
+
+[dependencies]
+assert = {git = "https://github.com/sourceryinstitute/assert", tag = "1.4.0"}
+sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.6.0"}
+
+[dev-dependencies]
+garden = {git = "https://gitlab.com/everythingfunctional/garden", tag = "v1.0.5"}
