@@ -73,6 +73,8 @@ contains
     module procedure assign_and_sync
       sync all
       lhs%s_ =  rhs%s_
+      lhs%dx_ =  rhs%dx_
+      lhs%dy_ =  rhs%dy_
       sync all
     end procedure
 
