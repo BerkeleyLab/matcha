@@ -41,6 +41,7 @@ contains
             end do
             self%s_(my_first:my_last, ny) = boundary_val
 
+            if (allocated(halo_x)) deallocate(halo_x)
             allocate(halo_x(west:east, ny)[*])
             if (me>1) halo_x(east,:)[me-1] = self%s_(my_first,:)
             if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_last,:)
