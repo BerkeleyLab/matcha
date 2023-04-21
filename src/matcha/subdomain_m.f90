@@ -22,10 +22,6 @@ module subdomain_m
     procedure values
   end type
 
-  interface subdomain_t
-
-  end interface
-
   interface
 
     module subroutine define(side, boundary_val, internal_val, n, self)
