@@ -38,12 +38,13 @@ contains
   subroutine output(v)
     real, intent(in) :: v(:,:)
     integer j
-
+    sync all
     critical
       do j = 1, size(v,2)
         print *,"image ",this_image(),": ", v(:,j)
       end do
     end critical
+    sync all
   end subroutine
 
   function correctly_shaped_laplacian() result(test_passes)
@@ -51,9 +52,14 @@ contains
     type(subdomain_t) f, laplacian_f
     real, allocatable :: lap_f_vals(:,:)
 
-    call f%define(side=1., boundary_val=0., internal_val=1., n=11) ! internally constant subdomain with a step down at the edges
+    call f%define(side=1., boundary_val=1., internal_val=2., n=11) ! internally constant subdomain with a step down at the edges
+    call output(f%values())
     laplacian_f = .laplacian. f
     lap_f_vals = laplacian_f%values()
+    sync all
+    if (this_image()==1) print *,"-------------------- lap_f_vals ______________________"
+    sync all
+    call output(lap_f_vals)
 
     associate(me => this_image(), n_subdomains => num_images(), nx => size(lap_f_vals,1), ny => size(lap_f_vals,2))
       associate(first_zero_in_x => merge(3, 1, me==1), last_zero_in_x => merge(nx-2, nx, me==n_subdomains))
@@ -62,7 +68,7 @@ contains
           integer, parameter :: left_adjacent = 2, bottom_adjacent = 2 
           logical internally_zero, concave_down_edges, doubly_curved_left_corners, doubly_curved_right_corners
 
-          associate(top_adjacent => ny - 1, right_adjacent => nx - 1)
+         associate(top_adjacent => ny - 1, right_adjacent => nx - 1)
             internally_zero = all(abs(lap_f_vals(first_zero_in_x:last_zero_in_x, 3:ny-2)) < tolerance)
             concave_down_edges  = all( &
               [lap_f_vals(left_adjacent:right_adjacent,bottom_adjacent), lap_f_vals(left_adjacent:right_adjacent,top_adjacent)] < 0&
