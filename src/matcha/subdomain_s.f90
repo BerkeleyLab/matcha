@@ -68,12 +68,9 @@ contains
 
     allocate(laplacian_rhs%s_(my_nx, ny))
 
-    if (me==1) then
-      halo_left = rhs%s_(1,:)
-    else
-      halo_left = halo_x(west,:)
-    end if
-    i=my_internal_left
+    halo_left = merge(halo_x(west,:), rhs%s_(1,:), me/=1)
+    i = my_internal_left
+    call assert(i+1<=my_nx,"laplacian: leftmost subdomain too small")
     do concurrent(j=2:ny-1)
       laplacian_rhs%s_(i,j) = (halo_left(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
                               (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
@@ -84,17 +81,18 @@ contains
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    if (me==num_subdomains) then
-      halo_right = rhs%s_(my_nx,:)
-    else
-      halo_right = halo_x(east,:)
-    end if 
-    i=my_internal_right
-    do concurrent(j=2:ny-1) ! j = 1 or ny is always a boundary
-      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
+    halo_right = merge(halo_x(east,:), rhs%s_(my_nx,:), me/=num_subdomains)
+    i = my_internal_right
+    call assert(i-1>0,"laplacian: rightmost subdomain too small")
+    do concurrent(j=2:ny-1)
+      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
+    laplacian_rhs%s_(:, 1) = 0.
+    laplacian_rhs%s_(:,ny) = 0.
+    if (me==1) laplacian_rhs%s_(1,:) = 0.
+    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:) = 0.
   end procedure
 
   module procedure multiply
@@ -111,6 +109,8 @@ contains
     call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
     sync all
     lhs%s_ =  rhs%s_
+    if (me>1) halo_x(east,:)[me-1] = rhs%s_(1,:)
+    if (me<num_subdomains) halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
     sync all
   end procedure
 

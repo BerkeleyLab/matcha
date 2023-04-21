@@ -28,9 +28,11 @@ contains
 
     test_results = test_result_t( &
       [ character(len=len("computing a correctly shaped Laplacian for a 2D flat-topped, step-like plateau")) :: &
-        "computing a correctly shaped Laplacian for a 2D flat-topped, step-like plateau" &
+        "computing a correctly shaped Laplacian for a 2D flat-topped, step-like plateau", &
+        "reaching the correct steady state solution" &
       ], &
-      [ correctly_shaped_laplacian()  &
+      [ correctly_shaped_laplacian(),  &
+        correct_steady_state()  &
        ] &
     )
   end function
@@ -52,7 +54,7 @@ contains
     type(subdomain_t) f, laplacian_f
     real, allocatable :: lap_f_vals(:,:)
 
-    call f%define(side=1., boundary_val=1., internal_val=2., n=11) ! internally constant subdomain with a step down at the edges
+    call f%define(side=1., boundary_val=1., internal_val=2., n=101) ! internally constant subdomain with a step down at the edges
     laplacian_f = .laplacian. f
     lap_f_vals = laplacian_f%values()
 
@@ -100,6 +102,38 @@ contains
       end associate
     end associate
     
+  end function
+
+  function correct_steady_state() result(test_passes)
+     logical test_passes
+     type(subdomain_t) T
+     real, parameter :: T_boundary = 1., T_initial = 2.
+
+     call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=51) 
+       ! spatially constant internal temperatuers with a step change at the boundaries
+
+     block
+       integer step
+       integer, parameter :: steps = 5000
+       real, parameter :: alpha = 1.
+       associate(dt => T%dx()*T%dy()/(4*alpha))
+         do step = 1, steps
+           T =  T + dt * alpha * .laplacian. T
+         end do
+       end associate
+     end block
+
+     block
+       real, parameter :: tolerance = 0.01, T_steady = T_boundary
+       associate(T_values => T%values())
+         associate(ny => size(T_values,2))
+           associate( residual => T_values(:,2:ny-1) - T_steady)
+             test_passes = all(residual >= 0.  .and.  residual <= tolerance)
+           end associate
+         end associate
+       end associate
+     end block
+
   end function
 
 end module subdomain_test_m
