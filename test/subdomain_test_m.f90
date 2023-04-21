@@ -53,13 +53,8 @@ contains
     real, allocatable :: lap_f_vals(:,:)
 
     call f%define(side=1., boundary_val=1., internal_val=2., n=11) ! internally constant subdomain with a step down at the edges
-    call output(f%values())
     laplacian_f = .laplacian. f
     lap_f_vals = laplacian_f%values()
-    sync all
-    if (this_image()==1) print *,"-------------------- lap_f_vals ______________________"
-    sync all
-    call output(lap_f_vals)
 
     associate(me => this_image(), n_subdomains => num_images(), nx => size(lap_f_vals,1), ny => size(lap_f_vals,2))
       associate(first_zero_in_x => merge(3, 1, me==1), last_zero_in_x => merge(nx-2, nx, me==n_subdomains))
