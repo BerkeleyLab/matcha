@@ -16,12 +16,16 @@ contains
 
     module procedure define
 
+      integer, parameter :: nx_boundaries = 2
+
       associate(nx => (n), me => this_image(), num_subdomains => num_images())
         ny = nx
+        dx_ = side/(nx-1)
+        dy_ = dx_
 
-        call assert(num_subdomains <= nx, "subdomain_t%define: num_subdomains <= nx", intrinsic_array_t([nx, num_subdomains]))
+        call assert(num_subdomains <= nx-nx_boundaries, &
+          "subdomain_t%define: num_subdomains <= nx-nx_boundaries", intrinsic_array_t([nx, num_subdomains]))
 
-        allocate(halo_x(ny,west:east)[*])
         call data_partition%define_partitions(nx)
 
         associate(my_first => data_partition%first(me), my_last => data_partition%last(me))
@@ -37,12 +41,11 @@ contains
             end do
             self%s_(my_first:my_last, ny) = boundary_val
 
-            if (me>1) halo_x(:,west)[me-1] = self%s_(my_first,:)
-            if (me<num_subdomains) halo_x(:,east)[me+1] = self%s_(my_last,:)
+            allocate(halo_x(west:east, ny)[*])
+            if (me>1) halo_x(east,:)[me-1] = self%s_(my_first,:)
+            if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_last,:)
             sync all
           end block
-          dx_ = side/num_subdomains
-          dy_ = dx_
         end associate
       end associate
 
@@ -57,7 +60,7 @@ contains
     end procedure
 
     module procedure laplacian
- 
+
        call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
        call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
 
@@ -110,6 +113,11 @@ contains
       sync all
       lhs%s_ =  rhs%s_
       sync all
+    end procedure
+
+    module procedure values
+      call assert(allocated(self%s_), "subdomain_t%values: allocated(self%s_)")
+      my_values =  self%s_
     end procedure
 
 end submodule subdomain_s

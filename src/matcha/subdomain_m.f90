@@ -7,7 +7,6 @@ module subdomain_m
   type subdomain_t 
     private
     real, allocatable :: s_(:,:)
-    real dx_, dy_
   contains
     procedure, pass(self) :: define
     procedure laplacian
@@ -20,6 +19,7 @@ module subdomain_m
     generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
+    procedure values
   end type
 
   interface subdomain_t
@@ -34,6 +34,12 @@ module subdomain_m
       integer, intent(in) :: n !! number of grid points in each coordinate direction
       class(subdomain_t), intent(out) :: self
     end subroutine
+
+    pure module function values(self) result(my_values)
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      real, allocatable :: my_values(:,:)
+    end function
 
     pure module function dx(self) result(my_dx)
       implicit none
