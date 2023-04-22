@@ -54,7 +54,7 @@ You'll need to append `, T_half` to the declaration `type(subdomain_2D_t) T`.
 With some care, you could modify the main program to use any desired order of
 Runge-Kutta algorithm without changing any of the supporting code.
 
-This example also demonstrates a benefit of Fortran's facility for declaring a
+This example also demonstrates a beneif of Fortran's facility for declaring a
 procedure to be `pure`: the semantics of `pure` procedures essentially
 guarantees that the above right-hand-side expressions can be evaluated fully
 asynchronously across all images.  No operator can modify state that would be
@@ -62,7 +62,7 @@ observable by another operator other than via the first operator's result. This
 would be true even if an operator executing on one image performs communication
 to _get_ data from another image via a coarray.  To reduce communication waiting
 times, however, each image in our example proactively _puts_ data onto
-neighboring images.  Puts generally outperform gets because the data can be
+neighboring images.  Puts generally outperofrm gets because the data can be
 shipped off as soon the data are ready.  All image control (synchronization in
 this example) happens in the user-defined assignment.  Our assignment modifies
 state that is observable by other images: halo values.  Modifying existing state
