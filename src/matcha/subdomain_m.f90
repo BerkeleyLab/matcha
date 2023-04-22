@@ -9,13 +9,13 @@ module subdomain_m
     real, allocatable :: s_(:,:)
   contains
     procedure, pass(self) :: define
-    procedure laplacian
+    procedure :: laplacian
     generic :: operator(.laplacian.) => laplacian
     procedure, pass(rhs) :: multiply
     generic :: operator(*) => multiply
-    procedure add
+    procedure :: add
     generic :: operator(+) => add
-    procedure assign_and_sync
+    procedure :: assign_and_sync
     generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
