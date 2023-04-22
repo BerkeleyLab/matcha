@@ -11,6 +11,7 @@ submodule(subdomain_m) subdomain_s
 
   real dx_, dy_
   integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
+  integer, allocatable :: image_neighborhood(:)
 
 contains
 
@@ -44,10 +45,18 @@ contains
 
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
-    if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
-    if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
-    sync all
 
+    image_neighborhood = [me]
+    if (me>1) then
+      image_neighborhood = [image_neighborhood, me-1]
+      halo_x(east,:)[me-1] = self%s_(1,:)
+    end if
+    if (me<num_subdomains) then
+      image_neighborhood = [image_neighborhood, me+1]
+      halo_x(west,:)[me+1] = self%s_(my_nx,:)
+    end if
+    sync images(image_neighborhood)
+    
   end procedure
 
   module procedure dx
@@ -106,12 +115,14 @@ contains
   end procedure
 
   module procedure assign_and_sync
+
     call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
-    sync all
+
+    sync images(image_neighborhood)
     lhs%s_ =  rhs%s_
     if (me>1) halo_x(east,:)[me-1] = rhs%s_(1,:)
     if (me<num_subdomains) halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
-    sync all
+    sync images(image_neighborhood)
   end procedure
 
   module procedure values
