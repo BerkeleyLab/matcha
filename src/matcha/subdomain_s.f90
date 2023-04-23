@@ -5,7 +5,7 @@ submodule(subdomain_m) subdomain_s
   use iso_fortran_env, only : event_type
   implicit none
 
-  real, allocatable :: halo_x(:,:)[:]
+  real, allocatable, target :: halo_x(:,:)[:]
   integer, parameter :: west=1, east=2
 
   type(data_partition_t) data_partition
@@ -69,7 +69,7 @@ contains
   module procedure laplacian
 
     integer i, j
-    real, allocatable :: halo_west(:), halo_east(:)
+    real, pointer :: halo_west(:), halo_east(:)
 
     call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
@@ -78,10 +78,10 @@ contains
 
     if (me>1) then
       event wait(halo_x_ready(west))
-      halo_west = halo_x(west,:)
+      halo_west => halo_x(west,:)
       event post(halo_x_picked_up(west)[me-1])
     else
-      halo_west = rhs%s_(1,:)
+      halo_west => rhs%s_(1,:)
     end if
 
     i = my_internal_west
@@ -98,10 +98,10 @@ contains
 
     if (me < num_subdomains) then
       event wait(halo_x_ready(east))
-      halo_east = halo_x(east,:)
+      halo_east => halo_x(east,:)
       event post(halo_x_picked_up(east)[me+1])
     else
-      halo_east = rhs%s_(my_nx,:)
+      halo_east => rhs%s_(my_nx,:)
     end if
 
     i = my_internal_east
