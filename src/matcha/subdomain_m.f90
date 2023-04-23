@@ -51,7 +51,7 @@ module subdomain_m
 
     module function laplacian(rhs) result(laplacian_rhs)
       implicit none
-      class(subdomain_t), intent(in) :: rhs
+      class(subdomain_t), intent(in), target :: rhs
       type(subdomain_t) laplacian_rhs
     end function
 

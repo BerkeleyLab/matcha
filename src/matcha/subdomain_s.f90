@@ -12,7 +12,7 @@ submodule(subdomain_m) subdomain_s
   type(event_type) halo_x_ready(west:east)[*], halo_x_picked_up(west:east)[*]
 
   real dx_, dy_
-  integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
+  integer my_nx, nx, ny, me, num_subdomains, my_internal_west, my_internal_east
 
 contains
 
@@ -35,12 +35,12 @@ contains
     if (allocated(self%s_)) deallocate(self%s_)
     allocate(self%s_(my_nx, ny))
 
-    my_internal_left = merge(2, 1, me==1)
-    my_internal_right = merge(my_nx-1, my_nx, me==num_subdomains)
+    my_internal_west = merge(2, 1, me==1)
+    my_internal_east = merge(my_nx-1, my_nx, me==num_subdomains)
 
-    self%s_(my_internal_left:my_internal_right, 1) = boundary_val ! bottom subdomain boundary
-    self%s_(my_internal_left:my_internal_right, ny) = boundary_val ! top subdomain boundary
-    self%s_(my_internal_left:my_internal_right, 2:ny-1) = internal_val ! internal points
+    self%s_(my_internal_west:my_internal_east, 1) = boundary_val ! bottom subdomain boundary
+    self%s_(my_internal_west:my_internal_east, ny) = boundary_val ! top subdomain boundary
+    self%s_(my_internal_west:my_internal_east, 2:ny-1) = internal_val ! internal points
     self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! left subdomain boundary
     self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! right subdomain boundary
 
@@ -69,7 +69,7 @@ contains
   module procedure laplacian
 
     integer i, j
-    real, allocatable :: halo_left(:), halo_right(:)
+    real, allocatable :: halo_west(:), halo_east(:)
 
     call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
@@ -78,36 +78,36 @@ contains
 
     if (me>1) then
       event wait(halo_x_ready(west))
-      halo_left = halo_x(west,:)
+      halo_west = halo_x(west,:)
       event post(halo_x_picked_up(west)[me-1])
     else
-      halo_left = rhs%s_(1,:)
+      halo_west = rhs%s_(1,:)
     end if
 
-    i = my_internal_left
+    i = my_internal_west
     call assert(i+1<=my_nx,"laplacian: leftmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs%s_(i,j) = (halo_left(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+      laplacian_rhs%s_(i,j) = (halo_west(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
                               (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    do concurrent(i=my_internal_left+1:my_internal_right-1, j=2:ny-1)
+    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1)
       laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
     if (me < num_subdomains) then
       event wait(halo_x_ready(east))
-      halo_right = halo_x(east,:)
+      halo_east = halo_x(east,:)
       event post(halo_x_picked_up(east)[me+1])
     else
-      halo_right = rhs%s_(my_nx,:)
+      halo_east = rhs%s_(my_nx,:)
     end if
 
-    i = my_internal_right
+    i = my_internal_east
     call assert(i-1>0,"laplacian: rightmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
+      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_east(j))/dx_**2 + &
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
