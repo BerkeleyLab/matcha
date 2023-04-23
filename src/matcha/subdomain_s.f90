@@ -93,15 +93,15 @@ contains
 
     compute_westernmost_points: &
     block
-      real, pointer :: halo_west(:)
+      real, allocatable :: halo_west(:)
       integer i, j
 
       if (me>1) then
         event wait(halo_x_ready(west))
-        halo_west => halo_x(west,:)
+        halo_west = halo_x(west,:)
         event post(halo_x_picked_up(west)[me-1])
       else
-        halo_west => rhs%s_(1,:)
+        halo_west = rhs%s_(1,:)
       end if
 
       i = my_internal_west
@@ -113,15 +113,15 @@ contains
 
     compute_easternmost_points: &
     block
-      real, pointer :: halo_east(:)
+      real, allocatable :: halo_east(:)
       integer i, j
 
       if (me < num_subdomains) then
         event wait(halo_x_ready(east))
-        halo_east => halo_x(east,:)
+        halo_east = halo_x(east,:)
         event post(halo_x_picked_up(east)[me+1])
       else
-        halo_east => rhs%s_(my_nx,:)
+        halo_east = rhs%s_(my_nx,:)
       end if
 
       i = my_internal_east
