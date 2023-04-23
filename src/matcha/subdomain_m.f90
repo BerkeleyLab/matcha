@@ -15,8 +15,8 @@ module subdomain_m
     generic :: operator(*) => multiply
     procedure :: add
     generic :: operator(+) => add
-    procedure :: assign_and_sync
-    generic :: assignment(=) => assign_and_sync
+    procedure :: assign_wait_post
+    generic :: assignment(=) => assign_wait_post
     procedure dx
     procedure dy
     procedure values
@@ -49,7 +49,7 @@ module subdomain_m
       real my_dy
     end function
 
-    pure module function laplacian(rhs) result(laplacian_rhs)
+    module function laplacian(rhs) result(laplacian_rhs)
       implicit none
       class(subdomain_t), intent(in) :: rhs
       type(subdomain_t) laplacian_rhs
@@ -69,7 +69,7 @@ module subdomain_m
       type(subdomain_t) total
     end function
 
-    module subroutine assign_and_sync(lhs, rhs)
+    module subroutine assign_wait_post(lhs, rhs)
       implicit none
       class(subdomain_t), intent(out) :: lhs
       type(subdomain_t), intent(in) :: rhs

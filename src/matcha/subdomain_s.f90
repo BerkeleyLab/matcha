@@ -2,16 +2,17 @@ submodule(subdomain_m) subdomain_s
   use data_partition_m, only : data_partition_t
   use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
+  use iso_fortran_env, only : event_type
   implicit none
 
   real, allocatable :: halo_x(:,:)[:]
   integer, parameter :: west=1, east=2
 
   type(data_partition_t) data_partition
+  type(event_type) halo_x_ready(west:east)[*], halo_x_picked_up(west:east)[*]
 
   real dx_, dy_
   integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
-  integer, allocatable :: image_neighborhood(:)
 
 contains
 
@@ -46,16 +47,14 @@ contains
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
 
-    image_neighborhood = [me]
     if (me>1) then
-      image_neighborhood = [image_neighborhood, me-1]
       halo_x(east,:)[me-1] = self%s_(1,:)
+      event post(halo_x_ready(east)[me-1])
     end if
     if (me<num_subdomains) then
-      image_neighborhood = [image_neighborhood, me+1]
       halo_x(west,:)[me+1] = self%s_(my_nx,:)
+      event post(halo_x_ready(west)[me+1])
     end if
-    sync images(image_neighborhood)
     
   end procedure
 
@@ -77,7 +76,14 @@ contains
 
     allocate(laplacian_rhs%s_(my_nx, ny))
 
-    halo_left = merge(halo_x(west,:), rhs%s_(1,:), me/=1)
+    if (me>1) then
+      event wait(halo_x_ready(west))
+      halo_left = halo_x(west,:)
+      event post(halo_x_picked_up(west)[me-1])
+    else
+      halo_left = rhs%s_(1,:)
+    end if
+
     i = my_internal_left
     call assert(i+1<=my_nx,"laplacian: leftmost subdomain too small")
     do concurrent(j=2:ny-1)
@@ -90,7 +96,14 @@ contains
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    halo_right = merge(halo_x(east,:), rhs%s_(my_nx,:), me/=num_subdomains)
+    if (me < num_subdomains) then
+      event wait(halo_x_ready(east))
+      halo_right = halo_x(east,:)
+      event post(halo_x_picked_up(east)[me+1])
+    else
+      halo_right = rhs%s_(my_nx,:)
+    end if
+
     i = my_internal_right
     call assert(i-1>0,"laplacian: rightmost subdomain too small")
     do concurrent(j=2:ny-1)
@@ -114,15 +127,23 @@ contains
     total%s_ =  lhs%s_ + rhs%s_
   end procedure
 
-  module procedure assign_and_sync
+  module procedure assign_wait_post
 
-    call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
+    call assert(allocated(rhs%s_), "subdomain_t%wait_assign_post: allocated(rhs%s_)")
 
-    sync images(image_neighborhood)
     lhs%s_ =  rhs%s_
-    if (me>1) halo_x(east,:)[me-1] = rhs%s_(1,:)
-    if (me<num_subdomains) halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
-    sync images(image_neighborhood)
+
+    if (me>1) then
+      event wait(halo_x_picked_up(east))
+      halo_x(east,:)[me-1] = rhs%s_(1,:)
+      event post(halo_x_ready(east)[me-1])
+    end if
+
+    if (me<num_subdomains) then
+      event wait(halo_x_picked_up(west))
+      halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
+      event post(halo_x_ready(west)[me+1])
+    end if
   end procedure
 
   module procedure values
