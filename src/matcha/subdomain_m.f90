@@ -49,7 +49,7 @@ module subdomain_m
       real my_dy
     end function
 
-    module function laplacian(rhs) result(laplacian_rhs)
+    pure module function laplacian(rhs) result(laplacian_rhs)
       implicit none
       class(subdomain_t), intent(in), target :: rhs
       type(subdomain_t) laplacian_rhs

@@ -6,6 +6,7 @@ submodule(subdomain_m) subdomain_s
   implicit none
 
   real, allocatable, target :: halo_x(:,:)[:]
+  real, allocatable :: halo_west(:), halo_east(:)
   integer, parameter :: west=1, east=2
 
   type(data_partition_t) data_partition
@@ -47,14 +48,35 @@ contains
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
 
+    send_east: &
     if (me>1) then
       halo_x(east,:)[me-1] = self%s_(1,:)
       event post(halo_x_ready(east)[me-1])
-    end if
+    end if send_east
+
+    send_west: &
     if (me<num_subdomains) then
       halo_x(west,:)[me+1] = self%s_(my_nx,:)
       event post(halo_x_ready(west)[me+1])
-    end if
+    end if send_west
+
+    pick_up_east: &
+    if (me>1) then
+      event wait(halo_x_ready(west))
+      halo_west = halo_x(west,:)
+      event post(halo_x_picked_up(west)[me-1])
+    else
+      halo_west = self%s_(1,:)
+    end if pick_up_east
+
+    pick_up_west: &
+    if (me < num_subdomains) then
+      event wait(halo_x_ready(east))
+      halo_east = halo_x(east,:)
+      event post(halo_x_picked_up(east)[me+1])
+    else
+      halo_east = self%s_(my_nx,:)
+    end if pick_up_west
     
   end procedure
 
@@ -68,8 +90,12 @@ contains
 
   module procedure laplacian
 
+    integer i, j
+
     call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
+    call assert(allocated(halo_west), "subdomain_t%laplacian: allocated(halo_west)")
+    call assert(allocated(halo_east), "subdomain_t%laplacian: allocated(halo_east)")
     call assert(my_internal_west+1<=my_nx, "laplacian: westernmost subdomain too small")
     call assert(my_internal_east-1>0, "laplacian: easternmost subdomain too small")
 
@@ -82,54 +108,24 @@ contains
     if (me==num_subdomains) laplacian_rhs%s_(my_nx,:) = 0. ! east boundary
 
     compute_internal_points: &
-    block
-      integer i, j
+    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1)
+      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+                              (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+    end do compute_internal_points
 
-      do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1)
-        laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
-                                (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
-      end do
-    end block compute_internal_points
-
+    i = my_internal_west
     compute_westernmost_points: &
-    block
-      real, allocatable :: halo_west(:)
-      integer i, j
+    do concurrent(j=2:ny-1)
+      laplacian_rhs%s_(i,j) = (halo_west(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+                              (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+    end do compute_westernmost_points
 
-      if (me>1) then
-        event wait(halo_x_ready(west))
-        halo_west = halo_x(west,:)
-        event post(halo_x_picked_up(west)[me-1])
-      else
-        halo_west = rhs%s_(1,:)
-      end if
-
-      i = my_internal_west
-      do concurrent(j=2:ny-1)
-        laplacian_rhs%s_(i,j) = (halo_west(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
-                                (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
-      end do
-    end block compute_westernmost_points
-
+    i = my_internal_east
     compute_easternmost_points: &
-    block
-      real, allocatable :: halo_east(:)
-      integer i, j
-
-      if (me < num_subdomains) then
-        event wait(halo_x_ready(east))
-        halo_east = halo_x(east,:)
-        event post(halo_x_picked_up(east)[me+1])
-      else
-        halo_east = rhs%s_(my_nx,:)
-      end if
-
-      i = my_internal_east
-      do concurrent(j=2:ny-1)
-        laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_east(j))/dx_**2 + &
-                                (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
-      end do
-    end block compute_easternmost_points
+    do concurrent(j=2:ny-1)
+      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_east(j))/dx_**2 + &
+                              (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+    end do compute_easternmost_points
    
   end procedure
 
@@ -149,17 +145,38 @@ contains
 
     lhs%s_ =  rhs%s_
 
+    send_east: &
     if (me>1) then
       event wait(halo_x_picked_up(east))
       halo_x(east,:)[me-1] = rhs%s_(1,:)
       event post(halo_x_ready(east)[me-1])
-    end if
+    end if send_east
 
+    send_west: &
     if (me<num_subdomains) then
       event wait(halo_x_picked_up(west))
       halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
       event post(halo_x_ready(west)[me+1])
-    end if
+    end if send_west
+
+    pick_up_east: &
+    if (me>1) then
+      event wait(halo_x_ready(west))
+      halo_west = halo_x(west,:)
+      event post(halo_x_picked_up(west)[me-1])
+    else
+      halo_west = rhs%s_(1,:)
+    end if pick_up_east
+
+    pick_up_west: &
+    if (me < num_subdomains) then
+      event wait(halo_x_ready(east))
+      halo_east = halo_x(east,:)
+      event post(halo_x_picked_up(east)[me+1])
+    else
+      halo_east = rhs%s_(my_nx,:)
+    end if pick_up_west
+
   end procedure
 
   module procedure values
