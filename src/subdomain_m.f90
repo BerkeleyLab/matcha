@@ -9,6 +9,7 @@ module subdomain_m
     real, allocatable :: s_(:,:)
   contains
     procedure, pass(self) :: define
+    procedure, pass(self) :: step
     procedure :: laplacian
     generic :: operator(.laplacian.) => laplacian
     procedure, pass(rhs) :: multiply
@@ -29,6 +30,12 @@ module subdomain_m
       real, intent(in) :: side, boundary_val, internal_val
       integer, intent(in) :: n !! number of grid points in each coordinate direction
       class(subdomain_t), intent(out) :: self
+    end subroutine
+
+    module subroutine step(alpha_dt, self)
+      implicit none
+      real, intent(in) :: alpha_dt
+      class(subdomain_t), intent(inout) :: self
     end subroutine
 
     pure module function values(self) result(my_values)
