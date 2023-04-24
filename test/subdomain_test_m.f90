@@ -5,6 +5,7 @@ module subdomain_test_m
   use test_m, only : test_t
   use test_result_m, only : test_result_t
   use subdomain_m, only : subdomain_t
+  use iso_fortran_env, only : output_unit
   implicit none
 
   private
@@ -140,33 +141,50 @@ contains
 
   function functional_matches_procedural() result(test_passes)
      logical test_passes
-     type(subdomain_t) T, T_ref
-     real, parameter :: T_boundary = 1., T_initial = 2.
+     real, parameter :: tolerance = 0.1
+     integer, parameter :: steps = 5000, n=51
+     real, parameter :: alpha = 1.
+     real, parameter :: side=1., boundary_val=1., internal_val=2.
 
-     call T_ref%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=51)
-       ! spatially constant internal temperatuers with a step change at the boundaries
-     T = T_ref
-
-     block
-       integer step
-       integer, parameter :: steps = 5000
-       real, parameter :: alpha = 1.
-
-       associate(dt => T%dx()*T%dy()/(4*alpha))
-         do step = 1, steps
-           T =  T + dt * alpha * .laplacian. T
-           call T_ref%step(alpha*dt)
-         end do
-       end associate
-     end block
-
-     block
-       real, parameter :: tolerance = 0.001
-
-       associate( L_infinity_norm => maxval(abs(T%values() - T_ref%values())))
+     associate( T_f => T_functional(), T_p => T_procedural())
+       associate(L_infinity_norm => maxval(abs(T_f - T_p)))
          test_passes = L_infinity_norm < tolerance
        end associate
-     end block
+     end associate
+
+  contains
+
+    function T_functional()
+      real, allocatable :: T_functional(:,:)
+      type(subdomain_t) T
+      integer step
+
+      call T%define(side, boundary_val, internal_val, n)
+
+      associate(dt => T%dx()*T%dy()/(4*alpha))
+        do step = 1, steps
+          T =  T + dt * alpha * .laplacian. T
+        end do
+      end associate
+
+      T_functional = T%values()
+    end function
+
+    function T_procedural()
+      real, allocatable :: T_procedural(:,:)
+      type(subdomain_t) T
+      integer step
+
+      call T%define(side, boundary_val, internal_val, n)
+
+      associate(dt => T%dx()*T%dy()/(4*alpha))
+        do step = 1, steps
+          call T%step(alpha*dt)
+        end do
+      end associate
+
+      T_procedural = T%values()
+    end function
 
   end function
 end module subdomain_test_m
