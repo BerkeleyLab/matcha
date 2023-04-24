@@ -42,8 +42,8 @@ contains
     self%s_(my_internal_west:my_internal_east, 1) = boundary_val ! bottom subdomain boundary
     self%s_(my_internal_west:my_internal_east, ny) = boundary_val ! top subdomain boundary
     self%s_(my_internal_west:my_internal_east, 2:ny-1) = internal_val ! internal points
-    self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! left subdomain boundary
-    self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! right subdomain boundary
+    self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! west subdomain boundary
+    self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! east subdomain boundary
 
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
@@ -190,8 +190,8 @@ contains
 
     call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
-    call assert(my_internal_left+1<=my_nx,"laplacian: leftmost subdomain too small")
-    call assert(my_internal_right-1>0,"laplacian: rightmost subdomain too small")
+    call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain size")
+    call assert(my_internal_east-1>0,"laplacian: easternmost subdomain size")
 
     allocate(increment(my_nx,ny))
  
@@ -210,7 +210,7 @@ contains
       real, intent(inout) :: ds(:,:)
       integer i, j
 
-      do concurrent(i=my_internal_left+1:my_internal_right-1, j=2:ny-1)
+      do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1)
         ds(i,j) = alpha_dt*( &
           (self%s_(i-1,j) - 2*self%s_(i,j) + self%s_(i+1,j))/dx_**2 + &
           (self%s_(i,j-1) - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
@@ -220,24 +220,24 @@ contains
 
     subroutine edge_points(ds)
       real, intent(inout) :: ds(:,:)
-      real, allocatable :: halo_left(:), halo_right(:)
+      real, allocatable :: halo_west(:), halo_east(:)
       integer i, j
 
-      halo_left = merge(halo_x(west,:), self%s_(1,:), me/=1)
-      halo_right = merge(halo_x(east,:), self%s_(my_nx,:), me/=num_subdomains)
+      halo_west = merge(halo_x(west,:), self%s_(1,:), me/=1)
+      halo_east = merge(halo_x(east,:), self%s_(my_nx,:), me/=num_subdomains)
 
-      i = my_internal_left
+      i = my_internal_west
       do concurrent(j=2:ny-1)
         ds(i,j) = alpha_dt*( &
-          (halo_left(j)   - 2*self%s_(i,j) + self%s_(i+1,j))/dx_**2 + &
+          (halo_west(j)   - 2*self%s_(i,j) + self%s_(i+1,j))/dx_**2 + &
           (self%s_(i,j-1)  - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
         )
       end do
 
-      i = my_internal_right
+      i = my_internal_east
       do concurrent(j=2:ny-1)
         ds(i,j) = alpha_dt*( &
-          (self%s_(i-1,j)  - 2*self%s_(i,j) + halo_right(j))/dx_**2 + &
+          (self%s_(i-1,j)  - 2*self%s_(i,j) + halo_east(j))/dx_**2 + &
           (self%s_(i,j-1) - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
         )
       end do
