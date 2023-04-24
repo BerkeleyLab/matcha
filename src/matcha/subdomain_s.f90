@@ -184,4 +184,81 @@ contains
     my_values =  self%s_
   end procedure
 
+  module procedure step
+
+    real, allocatable :: increment(:,:)
+
+    call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
+    call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
+    call assert(my_internal_left+1<=my_nx,"laplacian: leftmost subdomain too small")
+    call assert(my_internal_right-1>0,"laplacian: rightmost subdomain too small")
+
+    allocate(increment(my_nx,ny))
+ 
+    call internal_points(increment)
+    call edge_points(increment)
+    call apply_boundary_condition(increment)
+
+    sync all
+    self%s_ = self%s_ + increment
+    sync all
+    call exchange_halo(self%s_)
+
+  contains
+
+    subroutine internal_points(ds)
+      real, intent(inout) :: ds(:,:)
+      integer i, j
+
+      do concurrent(i=my_internal_left+1:my_internal_right-1, j=2:ny-1)
+        ds(i,j) = alpha_dt*( &
+          (self%s_(i-1,j) - 2*self%s_(i,j) + self%s_(i+1,j))/dx_**2 + &
+          (self%s_(i,j-1) - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
+        )
+      end do
+    end subroutine
+
+    subroutine edge_points(ds)
+      real, intent(inout) :: ds(:,:)
+      real, allocatable :: halo_left(:), halo_right(:)
+      integer i, j
+
+      halo_left = merge(halo_x(west,:), self%s_(1,:), me/=1)
+      halo_right = merge(halo_x(east,:), self%s_(my_nx,:), me/=num_subdomains)
+
+      i = my_internal_left
+      do concurrent(j=2:ny-1)
+        ds(i,j) = alpha_dt*( &
+          (halo_left(j)   - 2*self%s_(i,j) + self%s_(i+1,j))/dx_**2 + &
+          (self%s_(i,j-1)  - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
+        )
+      end do
+
+      i = my_internal_right
+      do concurrent(j=2:ny-1)
+        ds(i,j) = alpha_dt*( &
+          (self%s_(i-1,j)  - 2*self%s_(i,j) + halo_right(j))/dx_**2 + &
+          (self%s_(i,j-1) - 2*self%s_(i,j) + self%s_(i,j+1))/dy_**2 &
+        )
+      end do
+    end subroutine
+
+    subroutine apply_boundary_condition(ds)
+      real, intent(inout) :: ds(:,:)
+      integer i, j
+
+      ds(:, 1) = 0.
+      ds(:,ny) = 0.
+      if (me==1) ds(1,:) = 0.
+      if (me==num_subdomains) ds(my_nx,:) = 0.
+    end subroutine
+
+    subroutine exchange_halo(s)
+      real, intent(in) :: s(:,:)
+      if (me>1) halo_x(east,:)[me-1] = s(1,:)
+      if (me<num_subdomains) halo_x(west,:)[me+1] = s(my_nx,:)
+    end subroutine
+
+  end procedure
+
 end submodule subdomain_s
