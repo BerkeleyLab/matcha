@@ -40,7 +40,7 @@ contains
   
   module procedure velocities
     
-    double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
+    double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:), dir_mag(:,:), dir_mag_(:,:)
     integer step
     
     call assert(allocated(self%cumulative_distribution_), &
@@ -54,14 +54,12 @@ contains
 
        ! Create unit vectors
        dir = directions(:,1:nsteps,:)
+       dir_mag = sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2)
+       dir_mag_ = merge(dir_mag, epsilon(dir_mag), dir_mag/=0.)
 
-       associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
-         associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
-           dir(:,:,1) = dir(:,:,1)/dir_mag_
-           dir(:,:,2) = dir(:,:,2)/dir_mag_
-           dir(:,:,3) = dir(:,:,3)/dir_mag_
-         end associate
-       end associate
+       dir(:,:,1) = dir(:,:,1)/dir_mag_
+       dir(:,:,2) = dir(:,:,2)/dir_mag_
+       dir(:,:,3) = dir(:,:,3)/dir_mag_
        
        call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
        
