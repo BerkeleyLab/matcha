@@ -1,3 +1,14 @@
+module assertions_m
+  implicit none
+contains
+  pure subroutine assert(assertion, description)
+    logical, intent(in) :: assertion
+    character(len=*), intent(in) :: description
+    if (.not. assertion) error stop description
+  end subroutine
+end module
+
+
 module subdomain_2D_m
   implicit none
 
@@ -80,20 +91,43 @@ module subdomain_2D_m
 end module
 
 submodule(subdomain_2D_m) subdomain_2D_s
-  use data_partition_m, only : data_partition_t
-  use assert_m, only : assert
-  use intrinsic_array_m, only : intrinsic_array_t
+  use assertions_m, only : assert
   implicit none
 
   real, allocatable :: halo_x(:,:)[:]
   integer, parameter :: west=1, east=2
 
-  type(data_partition_t) data_partition
-
   real dx_, dy_
   integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
+  integer first_datum, last_datum
 
 contains
+
+  subroutine define_partitions(cardinality)
+    !! define the range of data identification numbers owned by the executing image
+    integer, intent(in) :: cardinality
+
+    associate( ni => num_images() )
+
+      block
+        integer i, me
+        me = this_image()
+        associate(remainder => mod(cardinality, ni), quotient => cardinality/ni)
+          first_datum = sum([(quotient+overflow(i, remainder), i=1, me-1)]) + 1
+          last_datum = first_datum + quotient + overflow(me, remainder) - 1
+        end associate
+      end block
+    end associate
+
+  contains
+
+    pure function overflow(im, excess) result(extra_datum)
+      integer, intent(in) :: im, excess
+      integer extra_datum
+      extra_datum= merge(1,0,im<=excess)
+    end function
+
+  end subroutine
 
   module procedure define
 
@@ -104,12 +138,15 @@ contains
     dx_ = side/(nx-1)
     dy_ = dx_
     call assert(num_subdomains <= nx-nx_boundaries, &
-      "subdomain_2D_t%define: num_subdomains <= nx-nx_boundaries", intrinsic_array_t([nx, num_subdomains]))
+      "subdomain_2D_t%define: num_subdomains <= nx-nx_boundaries")
     me = this_image()
     num_subdomains = num_images()
 
-    call data_partition%define_partitions(nx)
-    my_nx = data_partition%last(me) - data_partition%first(me) + 1
+    call define_partitions(nx)
+    my_nx = last_datum - first_datum + 1
+ 
+    print *,"image",me,"gets",first_datum,"through",last_datum,"of",num_subdomains
+    stop "ok"
 
     if (allocated(self%s_)) deallocate(self%s_)
     allocate(self%s_(my_nx, ny))
