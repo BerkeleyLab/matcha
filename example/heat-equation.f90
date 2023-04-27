@@ -22,12 +22,11 @@ module subdomain_2D_m
     procedure dx
     procedure dy
     procedure values
+    procedure exchange_halo
     generic :: operator(.laplacian.) => laplacian
     generic :: operator(+) => add
-    generic :: assignment(=) => assign_and_exchange
     procedure, private :: add
     procedure, private :: laplacian
-    procedure, private :: assign_and_exchange
   end type
 
   interface
@@ -67,13 +66,12 @@ module subdomain_2D_m
       implicit none
       class(subdomain_2D_t), intent(in) :: lhs
       real, intent(in) :: rhs(:,:)
-      type(subdomain_2D_t) total 
+      type(subdomain_2D_t) total
     end function
 
-    module subroutine assign_and_exchange(lhs, rhs)
+    module subroutine exchange_halo(self)
       implicit none
-      class(subdomain_2D_t), intent(out) :: lhs
-      type(subdomain_2D_t), intent(in) :: rhs
+      class(subdomain_2D_t), intent(in) :: self
     end subroutine
 
   end interface
@@ -128,8 +126,6 @@ contains
     allocate(halo_x(west:east, ny)[*])
     if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
     if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
-    sync all
-
   end procedure
 
   module procedure dx
@@ -181,10 +177,9 @@ contains
     total%s_ =  lhs%s_ + rhs
   end procedure
    
-  module procedure assign_and_exchange
-    lhs%s_ = rhs%s_
-    if (me>1) halo_x(east,:)[me-1] = rhs%s_(1,:)
-    if (me<num_subdomains) halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
+  module procedure exchange_halo
+    if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
+    if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
   end procedure
 
   module procedure values
@@ -204,6 +199,7 @@ program main
 
   call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=nx) 
     ! spatially constant internal temperatuers with a step change at the boundaries
+  sync all
 
   block
     integer, parameter :: steps = 5000
@@ -214,6 +210,7 @@ program main
       call cpu_time(t_start)
       do step = 1, steps
         T =  T + dt * alpha * .laplacian. T
+        call T%exchange_halo
         sync all
       end do
       call cpu_time(t_finish)
