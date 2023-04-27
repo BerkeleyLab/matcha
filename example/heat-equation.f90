@@ -8,7 +8,6 @@ contains
   end subroutine
 end module
 
-
 module subdomain_2D_m
   implicit none
 
@@ -103,32 +102,6 @@ submodule(subdomain_2D_m) subdomain_2D_s
 
 contains
 
-  subroutine define_partitions(cardinality)
-    !! define the range of data identification numbers owned by the executing image
-    integer, intent(in) :: cardinality
-
-    associate( ni => num_images() )
-
-      block
-        integer i, me
-        me = this_image()
-        associate(remainder => mod(cardinality, ni), quotient => cardinality/ni)
-          first_datum = sum([(quotient+overflow(i, remainder), i=1, me-1)]) + 1
-          last_datum = first_datum + quotient + overflow(me, remainder) - 1
-        end associate
-      end block
-    end associate
-
-  contains
-
-    pure function overflow(im, excess) result(extra_datum)
-      integer, intent(in) :: im, excess
-      integer extra_datum
-      extra_datum= merge(1,0,im<=excess)
-    end function
-
-  end subroutine
-
   module procedure define
 
     integer, parameter :: nx_boundaries = 2
@@ -165,6 +138,32 @@ contains
     if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
     if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
     sync all
+
+  contains
+
+    pure function overflow(im, excess) result(extra_datum)
+      integer, intent(in) :: im, excess
+      integer extra_datum
+      extra_datum= merge(1,0,im<=excess)
+    end function
+
+    subroutine define_partitions(cardinality)
+      !! define the range of data identification numbers owned by the executing image
+      integer, intent(in) :: cardinality
+
+      associate( ni => num_images() )
+
+        block
+          integer i, me
+          me = this_image()
+          associate(remainder => mod(cardinality, ni), quotient => cardinality/ni)
+            first_datum = sum([(quotient+overflow(i, remainder), i=1, me-1)]) + 1
+            last_datum = first_datum + quotient + overflow(me, remainder) - 1
+          end associate
+        end block
+      end associate
+
+    end subroutine
 
   end procedure
 
