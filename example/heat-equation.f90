@@ -83,49 +83,39 @@ submodule(subdomain_2D_m) subdomain_2D_s
   implicit none
 
   real, allocatable :: halo_x(:,:)[:]
-  integer, parameter :: west=1, east=2
-
   real dx_, dy_
-  integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
+  integer, parameter :: west=1, east=2
+  integer my_nx, nx, ny, me, num_subdomains, my_internal_west, my_internal_east
 
 contains
 
   module procedure define
 
     integer, parameter :: nx_boundaries = 2
-    integer i, my_west, my_east
+    call assert(num_subdomains <= n-nx_boundaries, "subdomain_2D_t%define: num_subdomains <= n-nx_boundaries")
 
     nx = n
     ny = nx
     dx_ = side/(nx-1)
     dy_ = dx_
-    call assert(num_subdomains <= nx-nx_boundaries, "subdomain_2D_t%define: num_subdomains <= nx-nx_boundaries")
-      
     me = this_image()
     num_subdomains = num_images()
-
-    associate(remainder => mod(nx, num_subdomains), quotient => nx/num_subdomains)
-      my_west = sum([(quotient+merge(1, 0, i <= remainder), i=1, me-1)]) + 1
-      my_east = my_west + quotient + merge(1, 0, me <= remainder) - 1
-    end associate
-    my_nx = my_east - my_west + 1
+    my_nx = nx/num_subdomains + merge(1, 0, me <= mod(nx, num_subdomains))
+    my_internal_west = merge(2, 1, me==1)
+    my_internal_east = merge(my_nx-1, my_nx, me==num_subdomains)
 
     if (allocated(self%s_)) deallocate(self%s_)
     allocate(self%s_(my_nx, ny))
 
-    my_internal_left = merge(2, 1, me==1)
-    my_internal_right = merge(my_nx-1, my_nx, me==num_subdomains)
-
-    self%s_(my_internal_left:my_internal_right, 1) = boundary_val ! bottom subdomain boundary
-    self%s_(my_internal_left:my_internal_right, ny) = boundary_val ! top subdomain boundary
-    self%s_(my_internal_left:my_internal_right, 2:ny-1) = internal_val ! internal points
-    self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! left subdomain boundary
-    self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! right subdomain boundary
+    self%s_(my_internal_west:my_internal_east, 1) = boundary_val ! bottom subdomain boundary
+    self%s_(my_internal_west:my_internal_east, ny) = boundary_val ! top subdomain boundary
+    self%s_(my_internal_west:my_internal_east, 2:ny-1) = internal_val ! internal points
+    self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! west subdomain boundary
+    self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! east subdomain boundary
 
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
-    if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
-    if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
+    call self%exchange_halo
   end procedure
 
   module procedure dx
@@ -139,32 +129,32 @@ contains
   module procedure laplacian
 
     integer i, j
-    real, allocatable :: halo_left(:), halo_right(:)
+    real, allocatable :: halo_west(:), halo_east(:)
 
     call assert(allocated(rhs%s_), "subdomain_2D_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_2D_t%laplacian: allocated(halo_x)")
 
     allocate(laplacian_rhs(my_nx, ny))
 
-    halo_left = merge(halo_x(west,:), rhs%s_(1,:), me/=1)
-    i = my_internal_left
-    call assert(i+1<=my_nx,"laplacian: leftmost subdomain too small")
+    halo_west = merge(halo_x(west,:), rhs%s_(1,:), me/=1)
+    i = my_internal_west
+    call assert(i+1<=my_nx,"laplacian: westmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs(i,j) = (halo_left(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
-                              (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+      laplacian_rhs(i,j) = (halo_west(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+                           (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    do concurrent(i=my_internal_left+1:my_internal_right-1, j=2:ny-1)
+    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1)
       laplacian_rhs(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
-                              (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+                           (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    halo_right = merge(halo_x(east,:), rhs%s_(my_nx,:), me/=num_subdomains)
-    i = my_internal_right
-    call assert(i-1>0,"laplacian: rightmost subdomain too small")
+    halo_east = merge(halo_x(east,:), rhs%s_(my_nx,:), me/=num_subdomains)
+    i = my_internal_east
+    call assert(i-1>0,"laplacian: eastmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
-                              (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
+      laplacian_rhs(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_east(j))/dx_**2 + &
+                           (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
     laplacian_rhs(:, 1) = 0.
@@ -193,32 +183,26 @@ program main
   use subdomain_2D_m, only : subdomain_2D_t
   implicit none
 
+  integer step
+  integer, parameter :: nx = 51, ny = nx, steps = 5000
+  real, parameter :: T_initial = 2., T_boundary = 1., alpha = 1.
+  real t_start, t_finish
   type(subdomain_2D_t) T
-  real, parameter :: T_initial = 2., T_boundary = 1.
-  integer, parameter :: nx = 51, ny = nx
 
-  call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=nx) 
-    ! spatially constant internal temperatuers with a step change at the boundaries
+  call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=nx) ! 2D step function
   sync all
 
-  block
-    integer, parameter :: steps = 5000
-    real, parameter :: alpha = 1.
-    integer step
-    real t_start, t_finish
-    associate(dt => T%dx()*T%dy()/(4*alpha))
-      call cpu_time(t_start)
-      do step = 1, steps
-        T =  T + dt * alpha * .laplacian. T
-        call T%exchange_halo
-        sync all
-      end do
-      call cpu_time(t_finish)
-      print *, "cpu_time: ", t_finish - t_start
-    end associate
-    associate(T_values => T%values())
-      print *,"T_initial, T_boundary, T_min, T_max: ", T_initial, T_boundary, minval(T_values(:,2:ny-1)), maxval(T_values(:,2:ny-1))
-    end associate
-  end block
-
+  associate(dt => T%dx()*T%dy()/(4*alpha))
+    call cpu_time(t_start)
+    do step = 1, steps
+      T =  T + dt * alpha * .laplacian. T
+      call T%exchange_halo
+      sync all
+    end do
+    call cpu_time(t_finish)
+    print *, "cpu_time: ", t_finish - t_start
+  end associate
+  associate(T_values => T%values())
+    print *,"T_initial, T_boundary, T_min, T_max: ", T_initial, T_boundary, minval(T_values(:,2:ny-1)), maxval(T_values(:,2:ny-1))
+  end associate
 end program
