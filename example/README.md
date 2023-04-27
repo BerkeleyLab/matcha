@@ -9,33 +9,34 @@ explicit Euler advancement in time.
 Downloading, Building, and Running
 ----------------------------------
 ### Prerequisites
-* The [GCC] Fortran compiler (`gfortran`)
-* The [OpenCoarrays] compiler wrapper (`caf`) and program launcher (`cafrun`)
-* The [Fortran Package Manager] (`fpm`)
+* The [GCC], NAG, HPE, or Intel Fortran 2018 compilers.
+* _Only if using [GCC]_: The [OpenCoarrays] compiler wrapper (`caf`) and program launcher (`cafrun`)
 
 ### Parallel execution with GCC and OpenCoarrays
 With the [GCC](https://gcc.gnu.org) Fortran compiler (`gfortran`) and the
 [OpenCoarrays] parallel runtime library installed,
 ```
 git clone https://github.com/BerkeleyLab/matcha
-cd matcha
-fpm run --example heat-equation --compiler caf --runner "cafrun -n 2"
+cd matcha/example
+caf -o heat heat-conduction.f90
+cafrun -n 2 ./heat
 ```
 where you can replace `2` in the above line with the desired number of 
-images 
+images.
 
 ### Parallel execution with the Intel `ifx` compiler
-With the Intel `ifx` Fortran compiler installed, replace the above
-`fpm` command with
+With the Intel `ifx` Fortran compiler installed, 
 ```
+ifx -o heat -coarray heat-equation.f90 
 export FOR_COARRAY_NUM_IMAGES=2
-fpm run --example heat-equation --compiler ifx --flag "-coarray"
+./heat
 ```
 
 ### Serial execution with `gfortran` *without* requiring OpenCoarrays
 With `gfortran` installed, replace the above `fpm` commands with
 ```
-fpm run --example heat-equation
+gfortran -o heat -fcoarray=single heat-equation.f90
+./a.out
 ```
 
 Exercise
@@ -48,7 +49,11 @@ approach, try modifying the modifying the main program to use 2nd-order
 Runge-Kutta time advancement:
 ```
 T_half = T + 0.5*dt*alpha* .laplacian. T
+call T%exchange_halo
+sync all
 T = T + dt*alpha* .laplacian. T_half
+call T%exchange_halo
+sync all
 ```
 You'll need to append `, T_half` to the declaration `type(subdomain_2D_t) T`.
 With some care, you could modify the main program to use any desired order of
@@ -63,11 +68,9 @@ would be true even if an operator executing on one image performs communication
 to _get_ data from another image via a coarray.  To reduce communication waiting
 times, however, each image in our example proactively _puts_ data onto
 neighboring images.  Puts generally outperform gets because the data can be
-shipped off as soon the data are ready.  All image control (synchronization in
-this example) happens in the user-defined assignment.  Our assignment modifies
-state that is observable by other images: halo values.  Modifying existing state
-is outside the functional programming pattern so the assignment is a natural
-place for synchronization or other forms of image control.
+shipped off as soon the data are ready.  With the exception of one coarray
+allocation in the `define` procedure, all procedures are asynchronous and all
+image control is exposed in the main program.
 
 [heat-equation.f90]: ./heat-equation.f90
 [GCC]: https://gcc.gnu.org
