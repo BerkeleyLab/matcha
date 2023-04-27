@@ -98,28 +98,28 @@ submodule(subdomain_2D_m) subdomain_2D_s
 
   real dx_, dy_
   integer my_nx, nx, ny, me, num_subdomains, my_internal_left, my_internal_right
-  integer first_datum, last_datum
 
 contains
 
   module procedure define
 
     integer, parameter :: nx_boundaries = 2
+    integer i, my_west, my_east
 
     nx = n
     ny = nx
     dx_ = side/(nx-1)
     dy_ = dx_
-    call assert(num_subdomains <= nx-nx_boundaries, &
-      "subdomain_2D_t%define: num_subdomains <= nx-nx_boundaries")
+    call assert(num_subdomains <= nx-nx_boundaries, "subdomain_2D_t%define: num_subdomains <= nx-nx_boundaries")
+      
     me = this_image()
     num_subdomains = num_images()
 
-    call define_partitions(nx)
-    my_nx = last_datum - first_datum + 1
- 
-    print *,"image",me,"gets",first_datum,"through",last_datum,"of",num_subdomains
-    stop "ok"
+    associate(remainder => mod(nx, num_subdomains), quotient => nx/num_subdomains)
+      my_west = sum([(quotient+merge(1, 0, i <= remainder), i=1, me-1)]) + 1
+      my_east = my_west + quotient + merge(1, 0, me <= remainder) - 1
+    end associate
+    my_nx = my_east - my_west + 1
 
     if (allocated(self%s_)) deallocate(self%s_)
     allocate(self%s_(my_nx, ny))
@@ -138,32 +138,6 @@ contains
     if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
     if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
     sync all
-
-  contains
-
-    pure function overflow(im, excess) result(extra_datum)
-      integer, intent(in) :: im, excess
-      integer extra_datum
-      extra_datum= merge(1,0,im<=excess)
-    end function
-
-    subroutine define_partitions(cardinality)
-      !! define the range of data identification numbers owned by the executing image
-      integer, intent(in) :: cardinality
-
-      associate( ni => num_images() )
-
-        block
-          integer i, me
-          me = this_image()
-          associate(remainder => mod(cardinality, ni), quotient => cardinality/ni)
-            first_datum = sum([(quotient+overflow(i, remainder), i=1, me-1)]) + 1
-            last_datum = first_datum + quotient + overflow(me, remainder) - 1
-          end associate
-        end block
-      end associate
-
-    end subroutine
 
   end procedure
 
