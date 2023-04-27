@@ -18,23 +18,21 @@ module subdomain_2D_m
     private
     real, allocatable :: s_(:,:)
   contains
-    procedure, pass(self) :: define
-    procedure laplacian
-    generic :: operator(.laplacian.) => laplacian
-    procedure, pass(rhs) :: multiply
-    generic :: operator(*) => multiply
-    procedure add
-    generic :: operator(+) => add
-    procedure assign_and_sync
-    generic :: assignment(=) => assign_and_sync
+    procedure define
     procedure dx
     procedure dy
     procedure values
+    generic :: operator(.laplacian.) => laplacian
+    generic :: operator(+) => add
+    generic :: assignment(=) => assign_and_exchange
+    procedure, private :: add
+    procedure, private :: laplacian
+    procedure, private :: assign_and_exchange
   end type
 
   interface
 
-    module subroutine define(side, boundary_val, internal_val, n, self)
+    module subroutine define(self, side, boundary_val, internal_val, n)
       implicit none
       real, intent(in) :: side, boundary_val, internal_val
       integer, intent(in) :: n !! number of grid points in each coordinate direction
@@ -62,24 +60,17 @@ module subdomain_2D_m
     pure module function laplacian(rhs) result(laplacian_rhs)
       implicit none
       class(subdomain_2D_t), intent(in) :: rhs
-      type(subdomain_2D_t) laplacian_rhs
-    end function
-
-    pure module function multiply(lhs, rhs) result(product)
-      implicit none
-      class(subdomain_2D_t), intent(in) :: rhs
-      real, intent(in) :: lhs
-      type(subdomain_2D_t) product
+      real, allocatable :: laplacian_rhs(:,:)
     end function
 
     pure module function add(lhs, rhs) result(total)
       implicit none
       class(subdomain_2D_t), intent(in) :: lhs
-      type(subdomain_2D_t), intent(in) :: rhs
-      type(subdomain_2D_t) total
+      real, intent(in) :: rhs(:,:)
+      type(subdomain_2D_t) total 
     end function
 
-    module subroutine assign_and_sync(lhs, rhs)
+    module subroutine assign_and_exchange(lhs, rhs)
       implicit none
       class(subdomain_2D_t), intent(out) :: lhs
       type(subdomain_2D_t), intent(in) :: rhs
@@ -157,18 +148,18 @@ contains
     call assert(allocated(rhs%s_), "subdomain_2D_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_2D_t%laplacian: allocated(halo_x)")
 
-    allocate(laplacian_rhs%s_(my_nx, ny))
+    allocate(laplacian_rhs(my_nx, ny))
 
     halo_left = merge(halo_x(west,:), rhs%s_(1,:), me/=1)
     i = my_internal_left
     call assert(i+1<=my_nx,"laplacian: leftmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs%s_(i,j) = (halo_left(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+      laplacian_rhs(i,j) = (halo_left(j)   - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
                               (rhs%s_(i,j-1)  - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
     do concurrent(i=my_internal_left+1:my_internal_right-1, j=2:ny-1)
-      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
+      laplacian_rhs(i,j) = (rhs%s_(i-1,j) - 2*rhs%s_(i,j) + rhs%s_(i+1,j))/dx_**2 + &
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
@@ -176,33 +167,24 @@ contains
     i = my_internal_right
     call assert(i-1>0,"laplacian: rightmost subdomain too small")
     do concurrent(j=2:ny-1)
-      laplacian_rhs%s_(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
+      laplacian_rhs(i,j) = (rhs%s_(i-1,j)  - 2*rhs%s_(i,j) + halo_right(j))/dx_**2 + &
                               (rhs%s_(i,j-1) - 2*rhs%s_(i,j) + rhs%s_(i,j+1))/dy_**2
     end do
 
-    laplacian_rhs%s_(:, 1) = 0.
-    laplacian_rhs%s_(:,ny) = 0.
-    if (me==1) laplacian_rhs%s_(1,:) = 0.
-    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:) = 0.
-  end procedure
-
-  module procedure multiply
-    call assert(allocated(rhs%s_), "subdomain_2D_t%multiply: allocated(rhs%s_)")
-    product%s_ =  lhs * rhs%s_
+    laplacian_rhs(:, 1) = 0.
+    laplacian_rhs(:,ny) = 0.
+    if (me==1) laplacian_rhs(1,:) = 0.
+    if (me==num_subdomains) laplacian_rhs(my_nx,:) = 0.
   end procedure
 
   module procedure add
-    call assert(allocated(rhs%s_), "subdomain_2D_t%add: allocated(rhs%s_)")
-    total%s_ =  lhs%s_ + rhs%s_
+    total%s_ =  lhs%s_ + rhs
   end procedure
-
-  module procedure assign_and_sync
-    call assert(allocated(rhs%s_), "subdomain_2D_t%assign_and_sync: allocated(rhs%s_)")
-    sync all
-    lhs%s_ =  rhs%s_
+   
+  module procedure assign_and_exchange
+    lhs%s_ = rhs%s_
     if (me>1) halo_x(east,:)[me-1] = rhs%s_(1,:)
     if (me<num_subdomains) halo_x(west,:)[me+1] = rhs%s_(my_nx,:)
-    sync all
   end procedure
 
   module procedure values
@@ -232,6 +214,7 @@ program main
       call cpu_time(t_start)
       do step = 1, steps
         T =  T + dt * alpha * .laplacian. T
+        sync all
       end do
       call cpu_time(t_finish)
       print *, "cpu_time: ", t_finish - t_start
