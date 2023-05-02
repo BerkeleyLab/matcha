@@ -88,7 +88,8 @@ contains
         simulated_distribution(:,freq) = num_cells*simulated_distribution(:,freq)
         call co_sum(simulated_distribution(:,freq), result_image=1)
         call co_sum(num_cells, result_image=1)
-        if (this_image()/=1) then 
+        if (this_image()/=1) then
+        test_passes = .true.
           print *, "compare_global_distributions"
         else
           simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
