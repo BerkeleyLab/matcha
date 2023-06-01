@@ -18,4 +18,6 @@ program main
 
   print *
   print '(*(a,:,g0))',"_________ In total, ",passes," of ",tests, " tests pass. _________"
+
+  if (tests /= passes) error stop
 end program
