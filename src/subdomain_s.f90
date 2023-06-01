@@ -39,8 +39,17 @@ contains
     self%s_(my_internal_left:my_internal_right, 1) = boundary_val ! bottom subdomain boundary
     self%s_(my_internal_left:my_internal_right, ny) = boundary_val ! top subdomain boundary
     self%s_(my_internal_left:my_internal_right, 2:ny-1) = internal_val ! internal points
-    self%s_(1, 2:ny-1) = merge(boundary_val, internal_val, me==1) ! left subdomain boundary
-    self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! right subdomain boundary
+
+    if (me == 1) then
+      self%s_(1, 1:ny) = boundary_val ! left domain boundary
+    else
+      self%s_(1, 2:ny-1) = internal_val ! left subdomain boundary
+    end if
+    if (me == num_subdomains) then
+      self%s_(my_nx, 1:ny) = boundary_val ! right domain boundary
+    else
+      self%s_(my_nx, 2:ny-1) = internal_val ! right subdomain boundary
+    end if
 
     if (allocated(halo_x)) deallocate(halo_x)
     allocate(halo_x(west:east, ny)[*])
