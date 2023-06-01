@@ -47,6 +47,7 @@ contains
     type(output_t) output
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
+    real, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
@@ -58,16 +59,7 @@ contains
           diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
           diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
         )
-          test_passes = (diffmax_freqs .lt. 1.D-02) .and. (diffmax_speeds .lt. 1.D-02)
-            
-          if (diffmax_freqs .lt. 1.D-02) then
-            print *, "frequencies match empirical distribution"
-          end if
-              
-          if (diffmax_speeds .lt. 1.D-02) then
-            print *, "speeds match empirical distribution"
-          end if
-              
+          test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance)
         end associate
       end associate
     end associate
@@ -79,6 +71,7 @@ contains
     double precision, allocatable :: simulated_distribution(:,:)
     integer num_cells
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
+    real, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
@@ -89,24 +82,14 @@ contains
         call co_sum(simulated_distribution(:,freq), result_image=1)
         call co_sum(num_cells, result_image=1)
         if (this_image()/=1) then
-        test_passes = .true.
-          print *, "compare_global_distributions"
+          test_passes = .true.
         else
           simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
           associate( &
             diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
             diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
           )
-            test_passes = (diffmax_freqs .lt. 1.D-02) .and. (diffmax_speeds .lt. 1.D-02)
-            
-            if (diffmax_freqs .lt. 1.D-02) then
-              print *, "frequencies match empirical distribution"
-            end if
-              
-            if (diffmax_speeds .lt. 1.D-02) then
-              print *, "speeds match empirical distribution"
-            end if
-              
+            test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance)
           end associate
         end if
       end associate
