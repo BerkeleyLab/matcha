@@ -11,4 +11,4 @@ main = "main.F90"
 
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", tag = "1.4.0"}
-sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.6.0"}
+sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "3.8.0"}

@@ -16,8 +16,7 @@ program main
   call t_cell_collection_test%report(passes, tests)
   call matcha_test%report(passes, tests)
 
-  print *
-  print '(*(a,:,g0))',"_________ In total, ",passes," of ",tests, " tests pass. _________"
+  if (this_image()==1) print '(a,*(a,:,g0))',new_line('a'), "_________ In total, ",passes," of ",tests, " tests pass. _________"
 
   if (tests /= passes) error stop
 end program
