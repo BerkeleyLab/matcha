@@ -8,16 +8,21 @@ module input_m
   
   type input_t
     private
-    integer :: num_cells_ = 6000, num_positions_ = 6000, num_dimensions_ = 3, num_intervals_ = 4
-    double precision :: time_step_ = 0.1D0
-    !double precision, allocatable :: sample_distribution_(:,:)
-    !allocate(sample_distribution_(num_intervals_,2))
+    integer :: num_cells_ = 6000, num_positions_ = 6000, num_dimensions_ = 3, num_intervals_ = 4, ngrid_ = 50
+    
+    double precision :: time_step_ = 0.1D-4
+    double precision :: grid_begin_ = -500.d0, grid_end_ = 600.d0, cytokine_ = 1.d-6, gfac_ = 1.d-9
   contains
     procedure :: num_cells
     procedure :: num_positions
     procedure :: num_dimensions
     procedure :: num_intervals
+    procedure :: ngrid
     procedure :: time_step
+    procedure :: grid_begin
+    procedure :: grid_end
+    procedure :: cytokine
+    procedure :: gfac
     procedure :: sample_distribution
   end type
   
@@ -46,13 +51,44 @@ module input_m
       class(input_t), intent(in) :: self
       integer n
     end function 
+
+    pure module function ngrid(self) result(n)
+      implicit none
+      class(input_t), intent(in) :: self
+      integer n
+    end function 
     
     pure module function time_step(self) result(dt)
       implicit none
       class(input_t), intent(in) :: self
       double precision dt
     end function time_step
+
+    pure module function grid_begin(self) result(gg)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision gg
+    end function grid_begin
+
+    pure module function grid_end(self) result(gg)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision gg
+    end function grid_end
+
+    pure module function cytokine(self) result(gg)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision gg
+    end function cytokine
+
+    pure module function gfac(self) result(gg)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision gg
+    end function gfac
     
+
     pure module function sample_distribution(self) result(empirical_distribution)
       implicit none
       class(input_t), intent(in) :: self

@@ -6,7 +6,7 @@ module subdomain_m
 
   type subdomain_t 
     private
-    real, allocatable :: s_(:,:)
+    real, allocatable :: s_(:,:,:)
   contains
     procedure, pass(self) :: define
     procedure, pass(self) :: step
@@ -20,6 +20,10 @@ module subdomain_m
     generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
+    procedure dz
+    procedure mynx
+    procedure myny
+    procedure mynz
     procedure values
   end type
 
@@ -41,7 +45,7 @@ module subdomain_m
     pure module function values(self) result(my_values)
       implicit none
       class(subdomain_t), intent(in) :: self
-      real, allocatable :: my_values(:,:)
+      real, allocatable :: my_values(:,:,:)
     end function
 
     pure module function dx(self) result(my_dx)
@@ -54,9 +58,33 @@ module subdomain_m
       implicit none
       class(subdomain_t), intent(in) :: self
       real my_dy
+    end function 
+
+    pure module function dz(self) result(my_dz)
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      real my_dz
+    end function 
+
+    pure module function mynx(self) result(mynx_)
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      integer mynx_
     end function
 
-    pure module function laplacian(rhs) result(laplacian_rhs)
+    pure module function myny(self) result(myny_)
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      integer myny_
+    end function
+
+    pure module function mynz(self) result(mynz_)
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      integer mynz_
+    end function
+
+    module function laplacian(rhs) result(laplacian_rhs)
       implicit none
       class(subdomain_t), intent(in) :: rhs
       type(subdomain_t) laplacian_rhs

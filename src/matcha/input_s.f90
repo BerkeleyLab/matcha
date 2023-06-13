@@ -21,9 +21,31 @@ contains
       n = self%num_intervals_
   end procedure
 
+  module procedure ngrid
+      n = self%ngrid_
+  end procedure
+  
   module procedure time_step
       dt = self%time_step_
   end procedure
+    
+  module procedure grid_begin
+      gg = self%grid_begin_
+  end procedure
+    
+  module procedure grid_end
+      gg = self%grid_end_
+  end procedure
+
+  module procedure cytokine
+      gg = self%cytokine_
+  end procedure
+
+  module procedure gfac
+      gg = self%gfac_
+  end procedure        
+    
+    
 
   module procedure sample_distribution
      integer i,nintervals
