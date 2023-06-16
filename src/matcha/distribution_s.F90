@@ -3,6 +3,12 @@
 submodule(distribution_m) distribution_s
   use intrinsic_array_m, only : intrinsic_array_t
   use do_concurrent_m, only : do_concurrent_sampled_speeds, do_concurrent_my_velocities
+  
+!#ifdef USE_CAFFEINE
+!   use caffeine_assert_m, only : assert
+!#else
+!   use assert_m, only : assert
+!#endif
   use assert_m, only : assert
   implicit none
 
@@ -48,7 +54,7 @@ contains
     call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
 
      ! Sample from the distribution
-     call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution(), sampled_speeds)
+     sampled_speeds = do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution())
      
      associate(nsteps => size(speeds,2))
 
@@ -63,7 +69,7 @@ contains
          end associate
        end associate
        
-       call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
+       my_velocities = do_concurrent_my_velocities(nsteps, dir, sampled_speeds)
        
      end associate
 
