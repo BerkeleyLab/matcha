@@ -43,7 +43,11 @@ contains
 
   module procedure gfac
       gg = self%gfac_
-  end procedure        
+  end procedure
+
+  module procedure alpha
+      gg = self%alpha_
+  end procedure            
     
     
 

@@ -28,8 +28,8 @@ contains
     type(test_result_t), allocatable :: test_results(:)
 
     test_results = test_result_t( &
-      [ character(len=len("computing a correctly shaped Laplacian for a 2D flat-topped, step-like plateau")) :: &
-        "computing a correctly shaped Laplacian for a 2D flat-topped, step-like plateau", &
+      [ character(len=len("computing a correctly shaped Laplacian for a 3D flat-topped, step-like plateau")) :: &
+        "computing a correctly shaped Laplacian for a 3D flat-topped, step-like plateau", &
         "reaching the correct steady state solution", &
         "functional pattern results matching procedural results" &
       ], &
@@ -41,7 +41,7 @@ contains
   end function
 
   subroutine output(v)
-    real, intent(in) :: v(:,:)
+    double precision, intent(in) :: v(:,:)
     integer j
     sync all
     critical
@@ -55,14 +55,14 @@ contains
   function correctly_shaped_laplacian() result(test_passes)
     logical test_passes
     type(subdomain_t) f, laplacian_f
-    real, allocatable :: lap_f_vals(:,:,:)
+    double precision, allocatable :: lap_f_vals(:,:,:)
 
-    real boundary_value,internal_value
+    double precision boundary_value,internal_value
 
-    boundary_value = 1.
-    internal_value = 2.
-    call f%define(side=1., boundary_val=boundary_value, &
-                  internal_val=internal_value, n=11) ! internally constant subdomain with a step down at the edges
+    boundary_value = 1.d0
+    internal_value = 2.d0
+    call f%define(side=1.d0, boundary_val=boundary_value, &
+                  internal_val=internal_value, n=51) ! internally constant subdomain with a step down at the edges
     laplacian_f = .laplacian. f
     lap_f_vals = laplacian_f%values()
 
@@ -71,12 +71,12 @@ contains
               nz => size(lap_f_vals,3) )
       associate(first_zero_in_x => merge(3, 1, me==1), last_zero_in_x => merge(nx-2, nx, me==n_subdomains))
         block
-          real face_lap_x,face_lap_y,face_lap_z
-          real edge_lap_xy,edge_lap_xz,edge_lap_yz
-          real corner_lap
-          real dx_,dy_,dz_
-          real boundary_lap
-          real, parameter :: tolerance = 1.0E-06
+          double precision face_lap_x,face_lap_y,face_lap_z
+          double precision edge_lap_xy,edge_lap_xz,edge_lap_yz
+          double precision corner_lap
+          double precision dx_,dy_,dz_
+          double precision boundary_lap
+          double precision, parameter :: tolerance = 1.0E-06
           integer, parameter :: left_adjacent = 2, bottom_adjacent = 2, y1 = 2, y2 = 2, z1 = 2, z2 = 2 
           logical internally_zero
           logical face_lap_x_left_check,face_lap_x_right_check,face_lap_y_check,face_lap_z_check
@@ -176,18 +176,18 @@ contains
   function correct_steady_state() result(test_passes)
      logical test_passes
      type(subdomain_t) T
-     real, parameter :: T_boundary = 1., T_initial = 2.
+     double precision, parameter :: T_boundary = 1., T_initial = 2.
 
-     call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=11) 
+     call T%define(side=1.d0, boundary_val=T_boundary, internal_val=T_initial, n=51) 
        ! spatially constant internal temperatuers with a step change at the boundaries
 
      block
        integer step
        integer, parameter :: steps = 5000
-       real, parameter :: alpha = 1.
-       real dxdydz
-       dxdydz = 1.0/T%dx()**2 + 1.0/T%dy()**2 + 1.0/T%dz()**2
-       associate(dt => 0.5/(alpha*dxdydz))       
+       double precision, parameter :: alpha = 1.
+       double precision dxdydz
+       dxdydz = 1.d0/T%dx()**2 + 1.d0/T%dy()**2 + 1.d0/T%dz()**2
+       associate(dt => 0.5d0/(alpha*dxdydz))       
          do step = 1, steps
            T =  T + dt * alpha * .laplacian. T
          end do
@@ -195,11 +195,11 @@ contains
      end block
 
      block
-       real, parameter :: tolerance = 0.01, T_steady = T_boundary
+       double precision, parameter :: tolerance = 0.01, T_steady = T_boundary
        associate(T_values => T%values())
          associate(ny => size(T_values,2),nz => size(T_values,3))
            associate( residual => T_values(:,2:ny-1,2:nz-1) - T_steady)
-             test_passes = all(residual >= 0.  .and.  residual <= tolerance)
+             test_passes = all(residual >= 0.d0  .and.  residual <= tolerance)
            end associate
          end associate
        end associate
@@ -209,10 +209,10 @@ contains
 
   function functional_matches_procedural() result(test_passes)
      logical test_passes
-     real, parameter :: tolerance = 0.1
-     integer, parameter :: steps = 5000, n=11
-     real, parameter :: alpha = 1.
-     real, parameter :: side=1., boundary_val=1., internal_val=2.
+     double precision, parameter :: tolerance = 0.1d0
+     integer, parameter :: steps = 5000, n=51
+     double precision, parameter :: alpha = 1.d0
+     double precision, parameter :: side=1.d0, boundary_val=1.d0, internal_val=2.d0
 
      associate( T_f => T_functional(), T_p => T_procedural())
        associate(L_infinity_norm => maxval(abs(T_f - T_p)))
@@ -223,15 +223,15 @@ contains
   contains
 
     function T_functional()
-      real dxdydz
-      real, allocatable :: T_functional(:,:,:)
+      double precision dxdydz
+      double precision, allocatable :: T_functional(:,:,:)
       type(subdomain_t) T
       integer step
 
       call T%define(side, boundary_val, internal_val, n)
 
-      dxdydz = 1.0/T%dx()**2 + 1.0/T%dy()**2 + 1.0/T%dz()**2
-      associate(dt => 0.5/(alpha*dxdydz))
+      dxdydz = 1.d0/T%dx()**2 + 1.d0/T%dy()**2 + 1.d0/T%dz()**2
+      associate(dt => 0.5d0/(alpha*dxdydz))
         do step = 1, steps
           T =  T + dt * alpha * .laplacian. T
         end do
@@ -241,16 +241,16 @@ contains
     end function
 
     function T_procedural()
-      real dxdydz
-      real, allocatable :: T_procedural(:,:,:)
+      double precision dxdydz
+      double precision, allocatable :: T_procedural(:,:,:)
       type(subdomain_t) T
       integer step
 
       call T%define(side, boundary_val, internal_val, n)
 
-      dxdydz = 1.0/T%dx()**2 + 1.0/T%dy()**2 + 1.0/T%dz()**2
+      dxdydz = 1.d0/T%dx()**2 + 1.d0/T%dy()**2 + 1.d0/T%dz()**2
       
-      associate(dt => 0.5/(alpha*dxdydz))
+      associate(dt => 0.5d0/(alpha*dxdydz))
         do step = 1, steps
           call T%step(alpha*dt)
         end do

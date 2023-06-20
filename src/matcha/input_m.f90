@@ -12,6 +12,7 @@ module input_m
     
     double precision :: time_step_ = 0.1D-4
     double precision :: grid_begin_ = -500.d0, grid_end_ = 600.d0, cytokine_ = 1.d-6, gfac_ = 1.d-9
+    double precision :: alpha_ = .01d0
   contains
     procedure :: num_cells
     procedure :: num_positions
@@ -23,6 +24,7 @@ module input_m
     procedure :: grid_end
     procedure :: cytokine
     procedure :: gfac
+    procedure :: alpha
     procedure :: sample_distribution
   end type
   
@@ -87,6 +89,12 @@ module input_m
       class(input_t), intent(in) :: self
       double precision gg
     end function gfac
+    
+    pure module function alpha(self) result(gg)
+      implicit none
+      class(input_t), intent(in) :: self
+      double precision gg
+    end function alpha
     
 
     pure module function sample_distribution(self) result(empirical_distribution)

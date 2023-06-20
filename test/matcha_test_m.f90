@@ -47,7 +47,7 @@ contains
     type(output_t) output
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
-    real, parameter :: tolerance = 1.D-02
+    double precision, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
@@ -71,7 +71,7 @@ contains
     double precision, allocatable :: simulated_distribution(:,:)
     integer num_cells
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
-    real, parameter :: tolerance = 1.D-02
+    double precision, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
