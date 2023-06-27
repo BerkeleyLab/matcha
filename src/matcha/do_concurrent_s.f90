@@ -3,7 +3,22 @@ submodule(do_concurrent_m) do_concurrent_s
   implicit none
 
 contains
-  
+
+ module procedure do_concurrent_sample
+
+    integer cell, step
+
+    associate(ncells => size(rvalues,1), nsteps => size(rvalues,2))
+      allocate(sampled_values(ncells,nsteps))
+      do concurrent(cell = 1:ncells, step = 1:nsteps)
+        associate(k => findloc(rvalues(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
+          sampled_values(cell,step) = val(k)
+        end associate
+      end do
+    end associate
+
+  end procedure
+
   module procedure do_concurrent_sampled_speeds
   
     integer cell, step
@@ -68,14 +83,14 @@ contains
     
     real(c_double), pointer :: positions(:,:)
     real(c_double), allocatable :: x(:,:,:)
-  
+
     associate(npositions => size(history), ncells => history(1)%positions_shape(1))
 
       allocate(x(npositions,ncells,nspacedims))
 
       do i=1,npositions
-         call c_f_pointer(history(i)%positions_ptr, positions, history(1)%positions_shape)
-         x(i,:,:) = positions
+        call c_f_pointer(history(i)%positions_ptr, positions, history(1)%positions_shape)
+        x(i,:,:) = positions
       end do
   
       associate(t => history%time)
@@ -89,8 +104,46 @@ contains
           end associate
         end do
       end associate
+
     end associate
     
   end procedure
+
+  module procedure do_concurrent_angles
+  
+    integer i, j, k
+    integer, parameter :: nspacedims=3
+    
+    real(c_double), pointer :: positions(:,:)
+    real(c_double), allocatable :: x(:,:,:)
+    real(c_double) v1mag,v2mag,eps
+
+    eps = 1.d-16
+    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
+
+      allocate(x(npositions,ncells,nspacedims))
+
+      do i=1,npositions
+        call c_f_pointer(history(i)%positions_ptr, positions, history(1)%positions_shape)
+        x(i,:,:) = positions
+      end do
+
+      allocate(angles(ncells*(npositions-2)) )      
+      do concurrent(i = 1:npositions-2, j = 1:ncells)
+        associate( &
+          v1 => x(i+1,j,:) - x(i,j,:), &
+          v2 => x(i+2,j,:) - x(i+1,j,:), &
+          ij => i + (j-1)*(npositions-2) &
+         )
+          v1mag = sqrt(sum([(v1(k)**2, k=1,nspacedims)]))
+          v2mag = sqrt(sum([(v2(k)**2, k=1,nspacedims)]))
+          angles(ij) = acos( (v1(1)*v2(1)+v1(2)*v2(2)+v1(3)*v2(3))/(v1mag*v2mag+eps) )
+        end associate
+      end do
+
+    end associate
+    
+  end procedure
+  
   
 end submodule do_concurrent_s

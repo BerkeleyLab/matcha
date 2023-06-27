@@ -16,6 +16,7 @@ module output_m
     type(t_cell_collection_t), allocatable :: history_(:)
   contains
     procedure :: simulated_distribution
+    procedure :: simulated_distribution_angles
     procedure :: my_num_cells
   end type
   
@@ -34,11 +35,21 @@ module output_m
   interface
     
     module function simulated_distribution(self) result(output_distribution)
+    !result(output_distribution,output_angle_distribution)
       !! The result is a histogram calculated from the simulation output
       implicit none
       class(output_t), intent(in) :: self
       double precision, allocatable :: output_distribution(:,:)
+    end function 
+    
+    module function simulated_distribution_angles(self) result(output_angle_distribution)
+    !result(output_distribution,output_angle_distribution)
+      !! The result is a histogram calculated from the simulation output
+      implicit none
+      class(output_t), intent(in) :: self
+      double precision, allocatable :: output_angle_distribution(:,:)
     end function
+
     
     pure module function my_num_cells(self) result(num_cells)
       implicit none
