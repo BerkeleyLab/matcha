@@ -1,4 +1,4 @@
-module assertions_m
+module assertions_m_2
   implicit none
 contains
   pure subroutine assert(assertion, description)
@@ -108,7 +108,7 @@ module subdomain_3D_m
 end module
 
 submodule(subdomain_3D_m) subdomain_3D_s
-  use assertions_m, only : assert
+  use assertions_m_2, only : assert
   implicit none
 
   double precision, allocatable :: halo_x(:,:,:)[:]
