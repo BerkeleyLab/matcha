@@ -14,8 +14,6 @@ program explicit_diffusion
   double precision amax
   double precision, allocatable :: a(:,:,:)[:]
   double precision, allocatable :: a_old(:,:,:)
-  !  double precision a(0:nx+1,0:ny+1,0:nz+1)[*]
-  !  double precision a_old(0:nx+1,0:ny+1,0:nz+1)
   
   nx = nx_total/num_images()
 
