@@ -38,7 +38,7 @@ module subdomain_3D_m
     module subroutine define(self, side, boundary_val, internal_val, nx, ny, nz)
       implicit none
       double precision, intent(in) :: side, boundary_val, internal_val
-      integer, intent(in) :: nx, ny, nz !! number of grid points in each coordinate direction
+      integer, intent(in) :: nx, ny, nz ! number of grid points in each coordinate direction
       class(subdomain_3D_t), intent(out) :: self
     end subroutine
 
@@ -122,7 +122,6 @@ contains
 
   module procedure define
     integer, parameter :: nx_boundaries = 2
-    !call assert(num_subdomains <= n-nx_boundaries, "subdomain_3D_t%define: num_subdomains <= n-nx_boundaries")
 
     my_ny = ny
     my_nz = nz
@@ -130,33 +129,12 @@ contains
     dx_ = side/dble(nx-2)
     dy_ = side/dble(ny-2)
     dz_ = side/dble(nz-2)
-
-    !dx_ = 1.d0
-    !dy_ = 1.d0
-    !dz_ = 1.d0
     
     me = this_image()
     num_subdomains = num_images()
     my_nx = nx/num_subdomains + merge(1, 0, me <= mod(nx, num_subdomains))
 
-    !icounter = mod(nx,num_subdomains)
-    !ibase = nx/num_subdomains
-    !iproc = 1
-    !my_nx = ibase
-    !if (me .eq. 1 .or. me .eq. num_images()) then
-    !do while (icounter .gt. 0) 
-    !   if (me .eq. iproc) then
-    !      my_nx = ibase + 1
-    !      icounter = icounter - 1
-    !   end if
-    !   if (me .eq. num_images()-iproc+1 .and. icounter .gt. 0) then
-    !      my_nx = ibase + 1
-    !      icounter = icounter - 1
-    !   end if
-    !   iproc = iproc + 1
-    !end do
-    !end if
-    print*,'my_nx = ',my_nx,ny,nz,me !,ibase,icounter,me
+    print*,'my_nx = ',my_nx,ny,nz,me
           
     mynxl = my_nx
     mynyl = ny
@@ -302,7 +280,6 @@ program main
      max_nxa = max(max_nxa,nxa[ii])
   end do
   
-  !allocate(T_values(nxm,nym,nzm)[*])
   allocate(T_values(max_nxa,nym,nzm)[*])  
 
   
@@ -338,15 +315,12 @@ program main
            do k = 2,nzm-1
               do j = 2,nym-1
                  Tvalue_tot(icount,j,k) = T_values(i,j,k)[ii]
-                 write(8,*) icount,j-1,k-1,sngl(Tvalue_tot(icount,j,k))!,icount,j,k !,i,j,k,ii
+                 write(8,*) icount,j-1,k-1,sngl(Tvalue_tot(icount,j,k))
               end do
            end do
         end do
      end do
 
   end if
-    
-  !print *,"T_initial, T_boundary, T_min, T_max: ", T_initial, T_boundary, &
-  !minval(T_values(:,2:nym-1,2:nzm-1)), maxval(T_values(:,2:nym-1,2:nzm-1))
-  !end associate
+ 
 end program
