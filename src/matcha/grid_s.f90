@@ -17,6 +17,9 @@ contains
   end procedure construct
 
   module procedure gridparameters
+  
+    if (allocated(gridp)) deallocate(gridp)
+    allocate(gridp(2*ndim+1))
 
     gridp(1) = (ge - gb)/dble(ng(1)) ! dx for 3D diffusion grid 
     gridp(2) = (ge - gb)/dble(ng(2)) ! dy for 3D diffusion grid

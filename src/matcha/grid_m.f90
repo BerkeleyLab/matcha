@@ -33,7 +33,7 @@ module gridr_m
      integer, intent(in) :: ndim
      integer, intent(in) :: ng(:)
      double precision, intent(in) :: gb,ge
-     double precision gridp(2*ndim+1)
+     double precision, allocatable :: gridp(:)
     end function gridparameters     
   
     module function gradient(self, my_num_cells, ng, dx, gb, tconc, x, concentration_subgrid) result(gx)      
