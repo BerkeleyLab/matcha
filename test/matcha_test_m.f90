@@ -47,19 +47,24 @@ contains
     type(output_t) output
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
-    real, parameter :: tolerance = 1.D-02
+    double precision, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
       associate( &
         empirical_distribution => input%sample_distribution(), &
-        simulated_distribution => output%simulated_distribution() &
-      )
+        simulated_distribution => output%simulated_distribution(), &
+        empirical_angle_distribution => input%sample_angle_distribution(), &
+        simulated_angle_distribution => output%simulated_distribution_angles() &        
+        )
         associate( &
           diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
-          diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
-        )
-          test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance)
+          diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))), &
+          diffmax_angles => maxval(abs(empirical_angle_distribution(:,speed)-simulated_angle_distribution(:,speed))), &
+          diffmax_freqs_angles => maxval(abs(empirical_angle_distribution(:,freq)-simulated_angle_distribution(:,freq))) &          
+          )
+          test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance) .and. &
+                        (diffmax_angles < tolerance) .and. (diffmax_freqs_angles < tolerance)
         end associate
       end associate
     end associate
@@ -69,27 +74,36 @@ contains
     logical test_passes
     type(output_t) output
     double precision, allocatable :: simulated_distribution(:,:)
+    double precision, allocatable :: simulated_angle_distribution(:,:)    
     integer num_cells
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
-    real, parameter :: tolerance = 1.D-02
+    double precision, parameter :: tolerance = 1.D-02
 
     associate(input => input_t())
       output = output_t(input, matcha(input))
-      associate(empirical_distribution => input%sample_distribution())
-        simulated_distribution = output%simulated_distribution()  
+      associate(empirical_distribution => input%sample_distribution(), &
+                empirical_angle_distribution => input%sample_angle_distribution() )
+        simulated_distribution = output%simulated_distribution()
+        simulated_angle_distribution = output%simulated_distribution_angles()
         num_cells = output%my_num_cells()
         simulated_distribution(:,freq) = num_cells*simulated_distribution(:,freq)
+        simulated_angle_distribution(:,freq) = num_cells*simulated_angle_distribution(:,freq)        
         call co_sum(simulated_distribution(:,freq), result_image=1)
+        call co_sum(simulated_angle_distribution(:,freq), result_image=1)        
         call co_sum(num_cells, result_image=1)
         if (this_image()/=1) then
           test_passes = .true.
         else
           simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
+          simulated_angle_distribution(:,freq) = simulated_angle_distribution(:,freq)/dble(num_cells)           
           associate( &
             diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
-            diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
+            diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))), &
+            diffmax_angles => maxval(abs(empirical_angle_distribution(:,speed)-simulated_angle_distribution(:,speed))), &
+            diffmax_freqs_angles => maxval(abs(empirical_angle_distribution(:,freq)-simulated_angle_distribution(:,freq))) &
           )
-            test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance)
+          test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance) .and. &
+                        (diffmax_angles < tolerance) .and. (diffmax_freqs_angles < tolerance)
           end associate
         end if
       end associate

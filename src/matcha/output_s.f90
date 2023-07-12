@@ -1,7 +1,8 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
-  use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution, do_concurrent_speeds
+  use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution, &
+                              do_concurrent_speeds, do_concurrent_angles
   use t_cell_collection_m, only : t_cell_collection_bind_C_t
   use iso_c_binding, only : c_loc, c_double
   implicit none
@@ -36,5 +37,29 @@ contains
     end associate
 
   end procedure
+
+  module procedure simulated_distribution_angles
+    integer i
+    integer, allocatable :: ka(:)
+    real(c_double), allocatable, dimension(:) :: ang, angles
+    
+    integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
+
+    call do_concurrent_angles(t_cell_collection_bind_C_t(self%history_), angles)
+
+    associate(emp_angle_distribution => self%input_%sample_angle_distribution())
+      associate(nintervals_angle => size(emp_angle_distribution(:,1)), &
+                dangle_half => (emp_angle_distribution(2,speed)-emp_angle_distribution(1,speed))/2.d0)        
+        ang = [emp_angle_distribution(1,speed) - dangle_half, &
+              [(emp_angle_distribution(i,speed) + dangle_half, i=1,nintervals_angle)]]        
+        call do_concurrent_k(angles, ang, ka)        
+        call do_concurrent_output_distribution(nintervals_angle, speed, freq, &
+                                               emp_angle_distribution, ka, output_angle_distribution)        
+        output_angle_distribution(:,freq) = output_angle_distribution(:,freq)/sum(output_angle_distribution(:,freq))        
+      end associate
+    end associate
+
+  end procedure
+  
 
 end submodule output_s
