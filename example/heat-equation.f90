@@ -184,9 +184,10 @@ program main
   implicit none
 
   integer step
-  integer, parameter :: nx = 51, ny = nx, steps = 5000
+  integer, parameter :: nx = 4096, ny = nx, steps = 50
   real, parameter :: T_initial = 2., T_boundary = 1., alpha = 1.
   real t_start, t_finish
+   real, allocatable :: T_values(:,:)
   type(subdomain_2D_t) T
 
   call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=nx) ! 2D step function
@@ -200,9 +201,13 @@ program main
       sync all
     end do
     call cpu_time(t_finish)
-    print *, "cpu_time: ", t_finish - t_start
+    if (this_image()==1) print *, "cpu_time: ", t_finish - t_start
   end associate
-  associate(T_values => T%values())
-    print *,"T_initial, T_boundary, T_min, T_max: ", T_initial, T_boundary, minval(T_values(:,2:ny-1)), maxval(T_values(:,2:ny-1))
-  end associate
+  T_values = T%values()
+  call co_sum(T_values, result_image=1)
+  if (this_image()==1) then
+    associate(T_avg => sum(T_values)/(nx*ny))
+      print *,"T_initial, T_boundary, T_avg: ", T_initial, T_boundary, T_avg !minval(T_values(:,2:ny-1)), maxval(T_values(:,2:ny-1))
+    end associate
+  end if
 end program
