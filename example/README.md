@@ -10,18 +10,26 @@ Downloading, Building, and Running
 ----------------------------------
 ### Prerequisites
 * The [GCC], NAG, HPE, or Intel Fortran 2018 compilers.
-* _Only if using [GCC]_: The [OpenCoarrays] compiler wrapper (`caf`) and program launcher (`cafrun`)
+* _Only if using [GCC]_: The [OpenCoarrays] compiler wrapper (`caf`) and program
+  launcher (`cafrun`)
 
 ### Parallel execution with GCC and OpenCoarrays
 With the [GCC](https://gcc.gnu.org) Fortran compiler (`gfortran`) and the
-[OpenCoarrays] parallel runtime library installed,
+[OpenCoarrays] parallel runtime library installed, compile this program
+as a standalone file and run it as follows:
 ```
-git clone https://github.com/BerkeleyLab/matcha
-cd matcha/example
 caf -o heat heat-conduction.f90
 cafrun -n 2 ./heat
 ```
-where you can replace `2` in the above line with the desired number of 
+where you may replace `2` in the above line with the desired number of 
+images.
+
+Alternatively, one can compile and run `heat-conduction.f90` using the
+Fortran Package Manager (`fpm`) with the single command:
+```
+fpm run --example heat-equation --compiler caf --runner "cafrun -n 2"
+```
+where again one may replace `2` in the above line with the desired number of 
 images.
 
 ### Parallel execution with the Intel `ifx` compiler
@@ -36,7 +44,7 @@ export FOR_COARRAY_NUM_IMAGES=2
 With `gfortran` installed, replace the above `fpm` commands with
 ```
 gfortran -o heat -fcoarray=single heat-equation.f90
-./a.out
+./heat
 ```
 
 Exercise
