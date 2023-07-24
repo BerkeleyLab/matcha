@@ -232,26 +232,37 @@ end submodule subdomain_2D_s
 
 program heat_equation
   use subdomain_2D_m, only : subdomain_2D_t
+  use iso_fortran_env, only : int64
   implicit none
   type(subdomain_2D_t) T
-  integer, parameter :: nx = 4096, ny = nx, steps = 5
+  integer, parameter :: nx = 4096, ny = nx, steps = 50
   real, parameter :: alpha = 1.
   real T_sum
+  integer(int64) t_start, t_finish, clock_rate 
   integer step
 
   call T%define(side=1., boundary_val=1., internal_val=2., n=nx)
   call T%allocate_halo_coarray
 
   associate(dt => T%dx()*T%dy()/(4*alpha))
+
+    call system_clock(t_start)
+
     do step = 1, steps
       call T%exchange_halo
       sync all
       T =  T + dt * alpha * .laplacian. T
       sync all
     end do
+
   end associate
 
   T_sum = sum(T%values())
   call co_sum(T_sum, result_image=1)
-  if (this_image()==1) print *,"T_avg = ", T_sum/(nx*ny)
+
+  call system_clock(t_finish, clock_rate)
+  if (this_image()==1) then
+    print *, "walltime: ", real(t_finish - t_start) / real(clock_rate)
+    print *,"T_avg = ", T_sum/(nx*ny)
+  end if
 end program
