@@ -72,7 +72,7 @@ contains
     lap_f_vals = laplacian_f%values()
 
     block
-      real, parameter :: tolerance = 1.0E-01
+      real, parameter :: tolerance = 1.0E-06
       logical internally_zero, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners, constant_away_from_edges
     
       associate(me=>this_image(), n_subdomains=>num_images(), nx=>size(lap_f_vals,1), ny=>size(lap_f_vals,2),nz=>size(lap_f_vals,3))
@@ -147,7 +147,6 @@ contains
         end associate
       end associate
 
-
       test_passes = &
         all([internally_zero, constant_away_from_edges, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners])
     end block
@@ -176,7 +175,7 @@ contains
 
   function functional_matches_procedural() result(test_passes)
     logical test_passes
-    real, parameter :: tolerance = 0.1
+    real, parameter :: tolerance = 1.E-06
     integer, parameter :: steps = 6000, n=21
     real, parameter :: alpha = 1.
     real, parameter :: side=1., boundary_val=1., internal_val=2.
