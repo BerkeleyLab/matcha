@@ -23,7 +23,7 @@ contains
 
   pure function subject() result(specimen)
     character(len=:), allocatable :: specimen
-    specimen = "A t_cell_collection_t" 
+    specimen = "A t_cell_collection_t object"
   end function
 
   function results() result(test_results)
