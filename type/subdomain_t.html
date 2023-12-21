@@ -53,7 +53,7 @@
             <li><a href="../lists/modules.html">Modules</a></li>
             <li><a href="../lists/procedures.html">Procedures</a></li>
                    <li><a href="../lists/types.html">Derived Types</a></li>
-            <li><a href="../lists/programs.html">Programs</a></li>
+            <li><a href="../program/main.html">Program</a></li>
        
             </ul>
         
@@ -62,7 +62,7 @@
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
                              <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../program/main.html">Program</a></li>
           </ul>
         <form action="../search.html" class="navbar-form navbar-right" role="search">
         <div class="form-group">
@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title="<p>17.1% of total for derived types.</p>Including implementation: 18 statements, 23.7% of total for derived types.">18 statements</a>
+    title="<p>21.6% of total for derived types.</p>Including implementation: 19 statements, 32.2% of total for derived types.">19 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/subdomain_m.f90"> Source File</a></li>
   </ul>
@@ -120,6 +120,7 @@
       <a class="list-group-item" href="../type/subdomain_t.html#variable-s_">s_</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-dx">dx</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-dy">dy</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#variable-dz">dz</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-values">values</a>
     </div>
   </div>
@@ -161,6 +162,7 @@
       <a class="list-group-item" href="../type/subdomain_t.html#variable-s_">s_</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-dx">dx</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-dy">dy</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#variable-dz">dz</a>
       <a class="list-group-item" href="../type/subdomain_t.html#variable-values">values</a>
     </div>
   </div>
@@ -194,7 +196,7 @@
 <tr>
   <td><span class="anchor" id="variable-s_"></span>real,</td>
 <td>private,</td>  <td>allocatable</td><td>::</td>
-  <td><strong>s_</strong>(:,:)</td><td></td><td></td><td></td>
+  <td><strong>s_</strong>(:,:,:)</td><td></td><td></td><td></td>
 </tr>
 <tr>
   <td><span class="anchor" id="variable-dx"></span>procedure,</td>
@@ -205,6 +207,11 @@
   <td><span class="anchor" id="variable-dy"></span>procedure,</td>
 <td>public</td>  <td></td><td>::</td>
   <td><strong>dy</strong></td><td></td><td></td><td></td>
+</tr>
+<tr>
+  <td><span class="anchor" id="variable-dz"></span>procedure,</td>
+<td>public</td>  <td></td><td>::</td>
+  <td><strong>dz</strong></td><td></td><td></td><td></td>
 </tr>
 <tr>
   <td><span class="anchor" id="variable-values"></span>procedure,</td>

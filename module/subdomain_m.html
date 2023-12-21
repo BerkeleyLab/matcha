@@ -53,7 +53,7 @@
             <li><a href="../lists/modules.html">Modules</a></li>
             <li><a href="../lists/procedures.html">Procedures</a></li>
                    <li><a href="../lists/types.html">Derived Types</a></li>
-            <li><a href="../lists/programs.html">Programs</a></li>
+            <li><a href="../program/main.html">Program</a></li>
        
             </ul>
         
@@ -62,7 +62,7 @@
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
                              <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../program/main.html">Program</a></li>
           </ul>
         <form action="../search.html" class="navbar-form navbar-right" role="search">
         <div class="form-group">
@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 8.2% of total for modules and submodules.">73 statements</a>
+    title="11.2% of total for modules and submodules.">79 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/subdomain_m.f90"> Source File</a></li>
   </ul>
@@ -119,6 +119,7 @@
       <a class="list-group-item" href="../module/subdomain_m.html#interface-values">values</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-dx">dx</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-dy">dy</a>
+      <a class="list-group-item" href="../module/subdomain_m.html#interface-dz">dz</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-laplacian">laplacian</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-multiply">multiply</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-add">add</a>
@@ -309,6 +310,7 @@
       <a class="list-group-item" href="../module/subdomain_m.html#interface-values">values</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-dx">dx</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-dy">dy</a>
+      <a class="list-group-item" href="../module/subdomain_m.html#interface-dz">dz</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-laplacian">laplacian</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-multiply">multiply</a>
       <a class="list-group-item" href="../module/subdomain_m.html#interface-add">add</a>
@@ -353,7 +355,7 @@
 </tbody>
 </table>
 
-<h4>Return Value <small>real,allocatable, (:,:)</small></h4>  
+<h4>Return Value <small>real,allocatable, (:,:,:)</small></h4>  
 
     </li>
   </ul>
@@ -388,6 +390,30 @@
   <ul class="list-group">
     <li class="list-group-item">
     <h3>private pure module module function dy(self) result(my_dy)   <a href='../proc/dy.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+</h3>    
+<h4>Arguments</h4>      <table class="table table-striped varlist">
+<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
+<tbody>
+<tr>
+  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
+<td>intent(in)</td>
+  <td></td>  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+</tr>
+</tbody>
+</table>
+
+<h4>Return Value <small>real</small></h4>  
+
+    </li>
+  </ul>
+</div>
+
+     <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-dz"></span><h3>interface   </h3></div>
+  <ul class="list-group">
+    <li class="list-group-item">
+    <h3>private pure module module function dz(self) result(my_dz)   <a href='../proc/dz.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
 </h3>    
 <h4>Arguments</h4>      <table class="table table-striped varlist">
 <thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
@@ -612,7 +638,7 @@
 <tr>
   <td><span class="anchor" id="variable-s_"></span>real,</td>
 <td>private,</td>  <td>allocatable</td><td>::</td>
-  <td><strong>s_</strong>(:,:)</td><td></td><td></td><td></td>
+  <td><strong>s_</strong>(:,:,:)</td><td></td><td></td><td></td>
 </tr>
 <tr>
   <td><span class="anchor" id="variable-dx"></span>procedure,</td>
@@ -623,6 +649,11 @@
   <td><span class="anchor" id="variable-dy"></span>procedure,</td>
 <td>public</td>  <td></td><td>::</td>
   <td><strong>dy</strong></td><td></td><td></td><td></td>
+</tr>
+<tr>
+  <td><span class="anchor" id="variable-dz"></span>procedure,</td>
+<td>public</td>  <td></td><td>::</td>
+  <td><strong>dz</strong></td><td></td><td></td><td></td>
 </tr>
 <tr>
   <td><span class="anchor" id="variable-values"></span>procedure,</td>
