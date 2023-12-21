@@ -21,7 +21,7 @@ contains
 
   pure function subject() result(specimen)
     character(len=:), allocatable :: specimen
-    specimen = "A matcha_t" 
+    specimen = "A matcha_t object"
   end function
   
   function results() result(test_results)
