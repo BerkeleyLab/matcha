@@ -11,9 +11,11 @@ program time_paradigm_m
 
   associate(t_functional => functional_programming_time())
     associate(t_procedural => functional_programming_time())
-      print *,"Functional program time: ", t_functional
-      print *,"Procedural program time: ", t_procedural
-      print *,"Procedural speedup: ", (t_functional - t_procedural)/t_functional
+      if (this_image()==1) then 
+        print *,"Functional program time: ", t_functional
+        print *,"Procedural program time: ", t_procedural
+        print *,"Procedural speedup: ", (t_functional - t_procedural)/t_functional
+      end if
     end associate
   end associate
   
