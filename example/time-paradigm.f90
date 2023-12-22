@@ -6,7 +6,7 @@ program time_paradigm_m
   use assert_m, only : assert
   use iso_fortran_env, only : int64
   implicit none
-  integer, parameter :: steps = 1000, resolution=128
+  integer, parameter :: steps = 1000, resolution=256
   real, parameter :: alpha=1., T_internal_initial=1., T_boundary=0., T_steady=T_boundary, tolerance = 1.E-03
 
   associate(me => this_image())
