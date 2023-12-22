@@ -6,7 +6,6 @@ module subdomain_test_m
   use test_result_m, only : test_result_t
   use subdomain_m, only : subdomain_t
   use assert_m, only : assert
-  use iso_fortran_env, only : output_unit
   implicit none
 
   private
