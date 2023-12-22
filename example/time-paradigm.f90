@@ -6,16 +6,20 @@ program time_paradigm_m
   use assert_m, only : assert
   use iso_fortran_env, only : int64
   implicit none
-  integer, parameter :: steps = 1000, resolution=101
+  integer, parameter :: steps = 1000, resolution=256
   real, parameter :: alpha=1., T_internal_initial=1., T_boundary=0., T_steady=T_boundary, tolerance = 1.E-03
 
-  associate(t_functional => functional_programming_time())
-    associate(t_procedural => functional_programming_time())
-      if (this_image()==1) then 
-        print *,"Functional program time: ", t_functional
-        print *,"Procedural program time: ", t_procedural
-        print *,"Procedural speedup: ", (t_functional - t_procedural)/t_functional
-      end if
+  associate(me => this_image())
+    if (me==1) print *,"Starting functional solver."
+    associate(t_functional => functional_programming_time())
+      if (me==1) print *,"Starting procedural solver."
+      associate(t_procedural => functional_programming_time())
+        if (me==1) then 
+          print *,"Functional program time: ", t_functional
+          print *,"Procedural program time: ", t_procedural
+          print *,"Procedural speedup: ", (t_functional - t_procedural)/t_functional
+        end if
+      end associate
     end associate
   end associate
   
