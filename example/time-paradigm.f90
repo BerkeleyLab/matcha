@@ -15,24 +15,25 @@ program time_paradigm_m
   integer :: steps=200, resolution=64
 
   associate(me => this_image())
-  if (command_line%argument_present(["--help"])) then
-    print *, &
-      new_line('a') // new_line('a') // &
-      'Usage: fpm run --example time-paradigm -- [--steps <integer>] [--resolution <integer>]' // &
-      new_line('a') // new_line('a') // &
-      'where square brackets indicate optional arguments'
-    stop
-  end if
+    if (command_line%argument_present(["--help"])) then
+      print *, &
+        new_line('a') // new_line('a') // &
+        'Usage: fpm run --example time-paradigm -- [--steps <integer>] [--resolution <integer>]' // &
+        new_line('a') // new_line('a') // &
+        'where square brackets indicate optional arguments'
+      stop
+    end if
 
-  steps_string = string_t(command_line%flag_value("--steps"))
-  resolution_string = string_t(command_line%flag_value("--resolution"))
-  if (len(steps_string)/=0) read(steps_string,*) steps
-  if (len(resolution_string)/=0) read(resolution_string,*) resolution
+    steps_string = string_t(command_line%flag_value("--steps"))
+    resolution_string = string_t(command_line%flag_value("--resolution"))
+    if (len(steps_string)/=0) read(steps_string,*) steps
+    if (len(resolution_string)/=0) read(resolution_string,*) resolution
 
-  if (me==1) print *,"Number of steps to execute: ",steps
-  if (me==1) print *,"Number of grid points in each coordinate direction: ",resolution
-
-    if (me==1) print *,"Starting functional solver."
+    if (me==1) then 
+      print *,"Number of steps to execute: ",steps
+      print *,"Number of grid points in each coordinate direction: ",resolution
+      print *,"Starting functional solver."
+    end if
     associate(t_functional => functional_programming_time())
       if (me==1) print *,"Starting procedural solver."
       associate(t_procedural => functional_programming_time())
