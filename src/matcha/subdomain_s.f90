@@ -11,6 +11,7 @@ submodule(subdomain_m) subdomain_s
 
   real dx_, dy_, dz_
   integer my_nx, nx, ny, nz, me, num_subdomains, my_internal_west, my_internal_east
+  real, allocatable :: increment(:,:,:)
 
 contains
 
@@ -138,14 +139,12 @@ contains
 
   module procedure step
 
-    real, allocatable :: increment(:,:,:)
-
     call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
     call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain too small")
     call assert(my_internal_east-1>0,"laplacian: easternmost subdomain too small")
 
-    allocate(increment(my_nx,ny,nz))
+    if (.not. allocated(increment)) allocate(increment(my_nx,ny,nz))
  
     call internal_points(increment)
     call edge_points(increment)
