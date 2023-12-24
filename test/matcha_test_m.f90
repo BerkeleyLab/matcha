@@ -1,8 +1,7 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 module matcha_test_m
-  use test_m, only : test_t
-  use test_result_m, only : test_result_t
+  use sourcery_m, only : test_t, test_result_t
   use input_m, only : input_t
   use output_m, only : output_t
   use matcha_m, only : matcha

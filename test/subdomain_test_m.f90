@@ -2,8 +2,7 @@
 ! Terms of use are as specified in LICENSE.txt
 module subdomain_test_m
   !! Define subdomain tests and procedures required for reporting results
-  use test_m, only : test_t
-  use test_result_m, only : test_result_t
+  use sourcery_m, only : test_t, test_result_t
   use subdomain_m, only : subdomain_t
   use assert_m, only : assert
   implicit none

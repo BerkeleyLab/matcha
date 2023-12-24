@@ -4,13 +4,36 @@ program time_paradigm_m
   !! Time various alternative programming paradigms
   use subdomain_m, only : subdomain_t
   use assert_m, only : assert
+  use sourcery_m, only : string_t, file_t, command_line_t, bin_t, csv 
   use iso_fortran_env, only : int64
   implicit none
-  integer, parameter :: steps = 1000, resolution=256
+
   real, parameter :: alpha=1., T_internal_initial=1., T_boundary=0., T_steady=T_boundary, tolerance = 1.E-03
+  character(len=:), allocatable :: steps_string, resolution_string
+  type(command_line_t) command_line
+  integer(int64) counter_start, counter_end, clock_rate
+  integer :: steps=200, resolution=64
 
   associate(me => this_image())
-    if (me==1) print *,"Starting functional solver."
+    if (command_line%argument_present(["--help"])) then
+      print *, &
+        new_line('a') // new_line('a') // &
+        'Usage: fpm run --example time-paradigm -- [--steps <integer>] [--resolution <integer>]' // &
+        new_line('a') // new_line('a') // &
+        'where square brackets indicate optional arguments'
+      stop
+    end if
+
+    steps_string = string_t(command_line%flag_value("--steps"))
+    resolution_string = string_t(command_line%flag_value("--resolution"))
+    if (len(steps_string)/=0) read(steps_string,*) steps
+    if (len(resolution_string)/=0) read(resolution_string,*) resolution
+
+    if (me==1) then 
+      print *,"Number of steps to execute: ",steps
+      print *,"Number of grid points in each coordinate direction: ",resolution
+      print *,"Starting functional solver."
+    end if
     associate(t_functional => functional_programming_time())
       if (me==1) print *,"Starting procedural solver."
       associate(t_procedural => functional_programming_time())

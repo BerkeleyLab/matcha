@@ -2,8 +2,7 @@
 ! Terms of use are as specified in LICENSE.txt
 module t_cell_collection_test_m
   !! Define t_cell_collection tests and procedures required for reporting results
-  use test_m, only : test_t
-  use test_result_m, only : test_result_t
+  use sourcery_m, only : test_t, test_result_t
   use t_cell_collection_m, only : t_cell_collection_t
   use iso_fortran_env, only : output_unit
   use input_m, only : input_t
