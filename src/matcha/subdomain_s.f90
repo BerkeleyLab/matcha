@@ -164,9 +164,9 @@ contains
 
       do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
         ds(i,j,k) = alpha_dt*( &
-          (self%s_(i-1,j  ,k  ) - 2*self%s_(i,j,k) + self%s_(i+1,j,k  ))/dx_**2 + &
-          (self%s_(i  ,j-1,k  ) - 2*self%s_(i,j,k) + self%s_(i,j+1,k  ))/dy_**2 + &
-          (self%s_(i  ,j  ,k-1) - 2*self%s_(i,j,k) + self%s_(i,j  ,k+1))/dz_**2 &
+          (self%s_(i-1,j  ,k  ) - 2*self%s_(i,j,k) + self%s_(i+1,j  ,k  ))/dx_**2 + &
+          (self%s_(i  ,j-1,k  ) - 2*self%s_(i,j,k) + self%s_(i  ,j+1,k  ))/dy_**2 + &
+          (self%s_(i  ,j  ,k-1) - 2*self%s_(i,j,k) + self%s_(i  ,j  ,k+1))/dz_**2 &
         )
       end do
     end subroutine
@@ -202,7 +202,7 @@ contains
       real, intent(inout) :: ds(:,:,:)
       integer i, j
 
-      ds(:,1:ny:ny-1,:        ) = 0.
+      ds(:,1:ny:ny-1, :       ) = 0.
       ds(:, :       ,1:nz:nz-1) = 0.
       if (me==1) ds(1,:,:) = 0.
       if (me==num_subdomains) ds(my_nx,:,:) = 0.
