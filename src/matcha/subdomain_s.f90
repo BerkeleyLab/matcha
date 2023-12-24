@@ -1,5 +1,5 @@
 submodule(subdomain_m) subdomain_s
-  use data_partition_m, only : data_partition_t
+  use sourcery_m, only : data_partition_t
   use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
   implicit none
