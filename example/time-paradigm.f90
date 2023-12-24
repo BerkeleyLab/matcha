@@ -14,6 +14,7 @@ program time_paradigm_m
   integer(int64) counter_start, counter_end, clock_rate
   integer :: steps=200, resolution=64
 
+  associate(me => this_image())
   if (command_line%argument_present(["--help"])) then
     print *, &
       new_line('a') // new_line('a') // &
@@ -28,10 +29,9 @@ program time_paradigm_m
   if (len(steps_string)/=0) read(steps_string,*) steps
   if (len(resolution_string)/=0) read(resolution_string,*) resolution
 
-  print *,"Number of steps to execute: ",steps
-  print *,"Number of grid points in each coordinate direction: ",resolution
+  if (me==1) print *,"Number of steps to execute: ",steps
+  if (me==1) print *,"Number of grid points in each coordinate direction: ",resolution
 
-  associate(me => this_image())
     if (me==1) print *,"Starting functional solver."
     associate(t_functional => functional_programming_time())
       if (me==1) print *,"Starting procedural solver."
