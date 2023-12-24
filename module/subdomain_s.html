@@ -88,7 +88,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title="21.3% of total for modules and submodules.">150 statements</a>
+    title="21.4% of total for modules and submodules.">150 statements</a>
      </li> 
     <li><i class="fa fa-code"></i><a href="../src/subdomain_s.f90"> Source File</a></li>
   </ul>
@@ -131,6 +131,7 @@
       <a class="list-group-item" href="../module/subdomain_s.html#variable-num_subdomains">num_subdomains</a>
       <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_west">my_internal_west</a>
       <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_east">my_internal_east</a>
+      <a class="list-group-item" href="../module/subdomain_s.html#variable-increment">increment</a>
     </div>
   </div>
 </div>
@@ -165,9 +166,9 @@
       <ul class="list-group">
       <li class="list-group-item">
   <ul class="list-inline">
-    <li>intrinsic_array_m</li>
+    <li>sourcery_m</li>
     <li>assert_m</li>
-    <li>data_partition_m</li>
+    <li>intrinsic_array_m</li>
   </ul>
       </li>
       <li class="list-group-item">
@@ -194,15 +195,15 @@
 <polygon fill="none" stroke="black" points="222,-87 140,-87 140,-63 222,-63 222,-87"/>
 <text text-anchor="middle" x="181" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50">subdomain_s</text>
 </g>
-<!-- intrinsic_array_m -->
+<!-- sourcery_m -->
 <g id="module~~subdomain_s~~UsesGraph_node2" class="node">
-<title>intrinsic_array_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="104,-150 0,-150 0,-126 104,-126 104,-150"/>
-<text text-anchor="middle" x="52" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">intrinsic_array_m</text>
+<title>sourcery_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="89,-150 15,-150 15,-126 89,-126 89,-150"/>
+<text text-anchor="middle" x="52" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sourcery_m</text>
 </g>
-<!-- module~subdomain_s&#45;&gt;intrinsic_array_m -->
+<!-- module~subdomain_s&#45;&gt;sourcery_m -->
 <g id="module~~subdomain_s~~UsesGraph_edge1" class="edge">
-<title>module~subdomain_s&#45;&gt;intrinsic_array_m</title>
+<title>module~subdomain_s&#45;&gt;sourcery_m</title>
 <path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-87.06C144.57,-95.82 123.3,-107.73 104,-117 100.61,-118.63 97.05,-120.25 93.47,-121.84"/>
 <polygon fill="#000000" stroke="#000000" points="91.8,-118.74 83.99,-125.9 94.56,-125.17 91.8,-118.74"/>
 </g>
@@ -221,29 +222,29 @@
 <path fill="none" stroke="#000000" d="M139.82,-81.64C129.25,-83.39 117.67,-85.31 106.52,-87.15"/>
 <polygon fill="#000000" stroke="#000000" points="105.73,-83.73 96.44,-88.82 106.88,-90.64 105.73,-83.73"/>
 </g>
-<!-- data_partition_m -->
-<g id="module~~subdomain_s~~UsesGraph_node4" class="node">
-<title>data_partition_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="103.5,-66 0.5,-66 0.5,-42 103.5,-42 103.5,-66"/>
-<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">data_partition_m</text>
-</g>
-<!-- module~subdomain_s&#45;&gt;data_partition_m -->
-<g id="module~~subdomain_s~~UsesGraph_edge2" class="edge">
-<title>module~subdomain_s&#45;&gt;data_partition_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-68.36C131.47,-66.98 122.51,-65.49 113.62,-64.02"/>
-<polygon fill="#000000" stroke="#000000" points="114.09,-60.55 103.65,-62.38 112.94,-67.46 114.09,-60.55"/>
-</g>
 <!-- assert_m -->
-<g id="module~~subdomain_s~~UsesGraph_node5" class="node">
+<g id="module~~subdomain_s~~UsesGraph_node4" class="node">
 <title>assert_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="82.5,-24 21.5,-24 21.5,0 82.5,0 82.5,-24"/>
-<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">assert_m</text>
+<polygon fill="#337ab7" stroke="#337ab7" points="82.5,-66 21.5,-66 21.5,-42 82.5,-42 82.5,-66"/>
+<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">assert_m</text>
 </g>
 <!-- module~subdomain_s&#45;&gt;assert_m -->
-<g id="module~~subdomain_s~~UsesGraph_edge3" class="edge">
+<g id="module~~subdomain_s~~UsesGraph_edge2" class="edge">
 <title>module~subdomain_s&#45;&gt;assert_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.16,-31.16 96.12,-29.32 92.06,-27.55"/>
-<polygon fill="#000000" stroke="#000000" points="93.22,-24.24 82.65,-23.54 90.48,-30.68 93.22,-24.24"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-68.36C124.82,-65.88 107.81,-63.06 92.84,-60.59"/>
+<polygon fill="#000000" stroke="#000000" points="93.29,-57.12 82.86,-58.94 92.15,-64.02 93.29,-57.12"/>
+</g>
+<!-- intrinsic_array_m -->
+<g id="module~~subdomain_s~~UsesGraph_node5" class="node">
+<title>intrinsic_array_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="104,-24 0,-24 0,0 104,0 104,-24"/>
+<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">intrinsic_array_m</text>
+</g>
+<!-- module~subdomain_s&#45;&gt;intrinsic_array_m -->
+<g id="module~~subdomain_s~~UsesGraph_edge3" class="edge">
+<title>module~subdomain_s&#45;&gt;intrinsic_array_m</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.61,-31.37 97.05,-29.75 93.47,-28.16"/>
+<polygon fill="#000000" stroke="#000000" points="94.56,-24.83 83.99,-24.1 91.8,-31.26 94.56,-24.83"/>
 </g>
 </g>
 </svg>
@@ -334,6 +335,7 @@
       <a class="list-group-item" href="../module/subdomain_s.html#variable-num_subdomains">num_subdomains</a>
       <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_west">my_internal_west</a>
       <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_east">my_internal_east</a>
+      <a class="list-group-item" href="../module/subdomain_s.html#variable-increment">increment</a>
     </div>
   </div>
 </div>
@@ -438,6 +440,11 @@
   <td><span class="anchor" id="variable-my_internal_east"></span>integer,</td>
 <td>private</td>  <td></td><td>::</td>
   <td><strong>my_internal_east</strong></td><td></td><td></td><td></td>
+</tr>
+<tr>
+  <td><span class="anchor" id="variable-increment"></span>real,</td>
+<td>private,</td>  <td>allocatable</td><td>::</td>
+  <td><strong>increment</strong>(:,:,:)</td><td></td><td></td><td></td>
 </tr>
 </tbody>
 </table>

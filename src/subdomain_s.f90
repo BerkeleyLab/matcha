@@ -1,5 +1,5 @@
 submodule(subdomain_m) subdomain_s
-  use data_partition_m, only : data_partition_t
+  use sourcery_m, only : data_partition_t
   use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
   implicit none
@@ -11,6 +11,7 @@ submodule(subdomain_m) subdomain_s
 
   real dx_, dy_, dz_
   integer my_nx, nx, ny, nz, me, num_subdomains, my_internal_west, my_internal_east
+  real, allocatable :: increment(:,:,:)
 
 contains
 
@@ -138,14 +139,12 @@ contains
 
   module procedure step
 
-    real, allocatable :: increment(:,:,:)
-
     call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
     call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain too small")
     call assert(my_internal_east-1>0,"laplacian: easternmost subdomain too small")
 
-    allocate(increment(my_nx,ny,nz))
+    if (.not. allocated(increment)) allocate(increment(my_nx,ny,nz))
  
     call internal_points(increment)
     call edge_points(increment)
@@ -164,9 +163,9 @@ contains
 
       do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
         ds(i,j,k) = alpha_dt*( &
-          (self%s_(i-1,j  ,k  ) - 2*self%s_(i,j,k) + self%s_(i+1,j,k  ))/dx_**2 + &
-          (self%s_(i  ,j-1,k  ) - 2*self%s_(i,j,k) + self%s_(i,j+1,k  ))/dy_**2 + &
-          (self%s_(i  ,j  ,k-1) - 2*self%s_(i,j,k) + self%s_(i,j  ,k+1))/dz_**2 &
+          (self%s_(i-1,j  ,k  ) - 2*self%s_(i,j,k) + self%s_(i+1,j  ,k  ))/dx_**2 + &
+          (self%s_(i  ,j-1,k  ) - 2*self%s_(i,j,k) + self%s_(i  ,j+1,k  ))/dy_**2 + &
+          (self%s_(i  ,j  ,k-1) - 2*self%s_(i,j,k) + self%s_(i  ,j  ,k+1))/dz_**2 &
         )
       end do
     end subroutine
@@ -202,7 +201,7 @@ contains
       real, intent(inout) :: ds(:,:,:)
       integer i, j
 
-      ds(:,1:ny:ny-1,:        ) = 0.
+      ds(:,1:ny:ny-1, :       ) = 0.
       ds(:, :       ,1:nz:nz-1) = 0.
       if (me==1) ds(1,:,:) = 0.
       if (me==num_subdomains) ds(my_nx,:,:) = 0.
