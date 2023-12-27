@@ -4,11 +4,6 @@ license = "see LICENSE.txt"
 author = "Damian Rouson, David Torres,  Dominick Martinez, Jeremiah Bailey, and Brad Richardson"
 maintainer = "rouson@lbl.gov"
 
-[[executable]]
-name = "matcha"
-source-dir="app"
-main = "main.F90"
-
 [dependencies]
 assert = {git = "https://github.com/sourceryinstitute/assert", tag = "1.5.0"}
-sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "4.5.0"}
+sourcery = {git = "https://github.com/sourceryinstitute/sourcery", tag = "4.5.1"}
