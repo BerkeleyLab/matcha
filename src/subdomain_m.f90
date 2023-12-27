@@ -10,18 +10,18 @@ module subdomain_m
   contains
     procedure, pass(self) :: define
     procedure, pass(self) :: step
-    procedure :: laplacian
-    generic :: operator(.laplacian.) => laplacian
     procedure, pass(rhs) :: multiply
+    generic :: operator(.laplacian.) => laplacian
     generic :: operator(*) => multiply
-    procedure :: add
     generic :: operator(+) => add
-    procedure :: assign_and_sync
     generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
     procedure dz
     procedure values
+    procedure, private :: laplacian
+    procedure, private :: add
+    procedure, private :: assign_and_sync
   end type
 
   interface

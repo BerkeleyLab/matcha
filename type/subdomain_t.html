@@ -131,14 +131,14 @@
     <div class="list-group">
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-define">define</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-step">step</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-laplacian">laplacian</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29">operator(.laplacian.)</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-multiply">multiply</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29">operator(.laplacian.)</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28ASTERISK%29">operator(*)</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-add">add</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28%2B%29">operator(+)</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assign_and_sync">assign_and_sync</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assignment%28%3D%29">assignment(=)</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-laplacian">laplacian</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-add">add</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assign_and_sync">assign_and_sync</a>
     </div>
   </div>
 </div>
@@ -173,14 +173,14 @@
     <div class="list-group">
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-define">define</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-step">step</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-laplacian">laplacian</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29">operator(.laplacian.)</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-multiply">multiply</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29">operator(.laplacian.)</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28ASTERISK%29">operator(*)</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-add">add</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28%2B%29">operator(+)</a>
-      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assign_and_sync">assign_and_sync</a>
       <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assignment%28%3D%29">assignment(=)</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-laplacian">laplacian</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-add">add</a>
+      <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assign_and_sync">assign_and_sync</a>
     </div>
   </div>
 </div>
@@ -312,44 +312,6 @@
 </div>
 
      <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-laplacian"></span><h3>procedure, public :: <strong>laplacian</strong>    </h3></div>
-  <ul class="list-group">
-      <li class="list-group-item">
-          <h3>interface
-          </h3>
-  
-          <h3>private pure module module function laplacian(rhs) result(laplacian_rhs)   <a href='../proc/laplacian.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
-</h3>    
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>rhs</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small></h4>  
-
-      </li>
-  </ul>
-</div>
-
-     <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.laplacian.%29"></span><h3>generic, public :: <strong>operator(.laplacian.)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-laplacian'>laplacian</a>   </h3></div>
-  <ul class="list-group">
-      <li class="list-group-item">
-            <h3>private interface <a href='../interface/laplacian.html'>laplacian</a>()</h3>    
-<h4>Arguments</h4>      <em>None</em>
-
-      </li>
-  </ul>
-</div>
-
-     <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-multiply"></span><h3>procedure, public, pass(rhs) :: <strong>multiply</strong>    </h3></div>
   <ul class="list-group">
       <li class="list-group-item">
@@ -383,6 +345,17 @@
 </div>
 
      <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.laplacian.%29"></span><h3>generic, public :: <strong>operator(.laplacian.)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-laplacian'>laplacian</a>   </h3></div>
+  <ul class="list-group">
+      <li class="list-group-item">
+            <h3>private interface <a href='../interface/laplacian.html'>laplacian</a>()</h3>    
+<h4>Arguments</h4>      <em>None</em>
+
+      </li>
+  </ul>
+</div>
+
+     <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28ASTERISK%29"></span><h3>generic, public :: <strong>operator(*)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-multiply'>multiply</a>   </h3></div>
   <ul class="list-group">
       <li class="list-group-item">
@@ -394,7 +367,56 @@
 </div>
 
      <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-add"></span><h3>procedure, public :: <strong>add</strong>    </h3></div>
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%2B%29"></span><h3>generic, public :: <strong>operator(+)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-add'>add</a>   </h3></div>
+  <ul class="list-group">
+      <li class="list-group-item">
+            <h3>private interface <a href='../interface/add.html'>add</a>()</h3>    
+<h4>Arguments</h4>      <em>None</em>
+
+      </li>
+  </ul>
+</div>
+
+     <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-assignment%28%3D%29"></span><h3>generic, public :: <strong>assignment(=)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-assign_and_sync'>assign_and_sync</a>   </h3></div>
+  <ul class="list-group">
+      <li class="list-group-item">
+            <h3>private interface <a href='../interface/assign_and_sync.html'>assign_and_sync</a>()</h3>    
+<h4>Arguments</h4>      <em>None</em>
+
+      </li>
+  </ul>
+</div>
+
+     <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-laplacian"></span><h3>procedure, private :: <strong>laplacian</strong>    </h3></div>
+  <ul class="list-group">
+      <li class="list-group-item">
+          <h3>interface
+          </h3>
+  
+          <h3>private pure module module function laplacian(rhs) result(laplacian_rhs)   <a href='../proc/laplacian.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+</h3>    
+<h4>Arguments</h4>      <table class="table table-striped varlist">
+<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
+<tbody>
+<tr>
+  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
+<td>intent(in)</td>
+  <td></td>  <td></td><td>::</td>
+  <td><strong>rhs</strong></td><td></td>
+</tr>
+</tbody>
+</table>
+
+<h4>Return Value <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small></h4>  
+
+      </li>
+  </ul>
+</div>
+
+     <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-add"></span><h3>procedure, private :: <strong>add</strong>    </h3></div>
   <ul class="list-group">
       <li class="list-group-item">
           <h3>interface
@@ -427,18 +449,7 @@
 </div>
 
      <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%2B%29"></span><h3>generic, public :: <strong>operator(+)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-add'>add</a>   </h3></div>
-  <ul class="list-group">
-      <li class="list-group-item">
-            <h3>private interface <a href='../interface/add.html'>add</a>()</h3>    
-<h4>Arguments</h4>      <em>None</em>
-
-      </li>
-  </ul>
-</div>
-
-     <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-assign_and_sync"></span><h3>procedure, public :: <strong>assign_and_sync</strong>    </h3></div>
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-assign_and_sync"></span><h3>procedure, private :: <strong>assign_and_sync</strong>    </h3></div>
   <ul class="list-group">
       <li class="list-group-item">
           <h3>interface
@@ -464,17 +475,6 @@
 </tbody>
 </table>
 
-
-      </li>
-  </ul>
-</div>
-
-     <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-assignment%28%3D%29"></span><h3>generic, public :: <strong>assignment(=)</strong>  => <a href='../type/subdomain_t.html#boundprocedure-assign_and_sync'>assign_and_sync</a>   </h3></div>
-  <ul class="list-group">
-      <li class="list-group-item">
-            <h3>private interface <a href='../interface/assign_and_sync.html'>assign_and_sync</a>()</h3>    
-<h4>Arguments</h4>      <em>None</em>
 
       </li>
   </ul>

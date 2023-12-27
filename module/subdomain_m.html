@@ -671,21 +671,21 @@
        <td></td></tr>
        <tr><td>procedure, public, pass(self) :: <strong><a href='../type/subdomain_t.html#boundprocedure-step'>step</a></strong>  </td>
        <td></td></tr>
-       <tr><td>procedure, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-laplacian'>laplacian</a></strong>  </td>
+       <tr><td>procedure, public, pass(rhs) :: <strong><a href='../type/subdomain_t.html#boundprocedure-multiply'>multiply</a></strong>  </td>
        <td></td></tr>
        <tr><td>generic, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29'>operator(.laplacian.)</a></strong>  => laplacian </td>
        <td></td></tr>
-       <tr><td>procedure, public, pass(rhs) :: <strong><a href='../type/subdomain_t.html#boundprocedure-multiply'>multiply</a></strong>  </td>
-       <td></td></tr>
        <tr><td>generic, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-operator%28ASTERISK%29'>operator(*)</a></strong>  => multiply </td>
-       <td></td></tr>
-       <tr><td>procedure, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-add'>add</a></strong>  </td>
        <td></td></tr>
        <tr><td>generic, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-operator%28%2B%29'>operator(+)</a></strong>  => add </td>
        <td></td></tr>
-       <tr><td>procedure, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-assign_and_sync'>assign_and_sync</a></strong>  </td>
-       <td></td></tr>
        <tr><td>generic, public :: <strong><a href='../type/subdomain_t.html#boundprocedure-assignment%28%3D%29'>assignment(=)</a></strong>  => assign_and_sync </td>
+       <td></td></tr>
+       <tr><td>procedure, private :: <strong><a href='../type/subdomain_t.html#boundprocedure-laplacian'>laplacian</a></strong>  </td>
+       <td></td></tr>
+       <tr><td>procedure, private :: <strong><a href='../type/subdomain_t.html#boundprocedure-add'>add</a></strong>  </td>
+       <td></td></tr>
+       <tr><td>procedure, private :: <strong><a href='../type/subdomain_t.html#boundprocedure-assign_and_sync'>assign_and_sync</a></strong>  </td>
        <td></td></tr>
        </tbody>
        </table>
