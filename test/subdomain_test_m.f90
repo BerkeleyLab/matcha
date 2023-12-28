@@ -53,7 +53,8 @@ contains
     critical
       do j = 1, size(v,2)
         do k = 1, size(v,3)
-          print *,"image ",this_image(),": ",j,k,v(:,j,k)
+          !print *,"image ",this_image(),": ",j,k,v(:,j,k)
+          print *,j,k,v(:,j,k)
         end do
       end do
     end critical
@@ -65,7 +66,8 @@ contains
     type(subdomain_t) f, laplacian_f
     real, allocatable :: lap_f_vals(:,:,:)
 
-    call f%define(side=1., boundary_val=1., internal_val=2., n=21) ! internally constant subdomain with a step down at all surfaces
+    call f%define(side=1., boundary_val=1., internal_val=2., n=32) ! internally constant subdomain with a step down at all surfaces
+    sync all
     laplacian_f = .laplacian. f
     lap_f_vals = laplacian_f%values()
 
@@ -154,14 +156,15 @@ contains
   function correct_steady_state() result(test_passes)
     logical test_passes
     type(subdomain_t) T
-    real, parameter :: T_boundary = 1., T_initial = 2., tolerance = 0.01, T_steady = T_boundary, alpha = 1.
-    integer, parameter :: steps = 6000
+    real, parameter :: T_boundary = 1., T_initial = 2., tolerance = 5.E-03, T_steady = T_boundary, alpha = 1.
+    integer, parameter :: steps = 25000
     integer step
 
-    call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=21) ! const. internally with a step down at boundaries
+    call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=32) ! const. internally with a step down at boundaries
 
     associate(dt => T%dx()*T%dy()*T%dz()/(4*alpha))
       do step = 1, steps
+        sync all
         T =  T + dt * alpha * .laplacian. T
       end do
     end associate
@@ -174,7 +177,7 @@ contains
   function functional_matches_procedural() result(test_passes)
     logical test_passes
     real, parameter :: tolerance = 1.E-06
-    integer, parameter :: steps = 6000, n=21
+    integer, parameter :: steps = 6000, n=32
     real, parameter :: alpha = 1.
     real, parameter :: side=1., boundary_val=1., internal_val=2.
 
@@ -195,6 +198,7 @@ contains
 
       associate(dt => T%dx()*T%dy()/(4*alpha))
         do step = 1, steps
+          sync all
           T =  T + dt * alpha * .laplacian. T
         end do
       end associate
@@ -211,6 +215,7 @@ contains
 
       associate(dt => T%dx()*T%dy()/(4*alpha))
         do step = 1, steps
+          sync all
           call T%step(alpha*dt)
         end do
       end associate
