@@ -55,7 +55,6 @@ contains
     allocate(halo_x(west:east, ny, nz)[*])
     if (me>1) halo_x(east,:,:)[me-1] = self%s_(1,:,:)
     if (me<num_subdomains) halo_x(west,:,:)[me+1] = self%s_(my_nx,:,:)
-    sync all
   end procedure
 
   module procedure dx
@@ -123,19 +122,22 @@ contains
     total%s_ =  lhs%s_ + rhs%s_
   end procedure
 
-  module procedure assign_and_sync
-    call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
-    sync all
+  module procedure assign_
+    call assert(allocated(rhs%s_), "subdomain_t%assign_: allocated(rhs%s_)")
     lhs%s_ =  rhs%s_
-    if (me>1) halo_x(east,:,:)[me-1] = rhs%s_(1,:,:)
-    if (me<num_subdomains) halo_x(west,:,:)[me+1] = rhs%s_(my_nx,:,:)
-    sync all
+    call exchange_halo(rhs%s_)
   end procedure
 
   module procedure values
     call assert(allocated(self%s_), "subdomain_t%values: allocated(self%s_)")
     my_values =  self%s_
   end procedure
+
+  subroutine exchange_halo(s)
+    real, intent(in) :: s(:,:,:)
+    if (me>1) halo_x(east,:,:)[me-1] = s(1,:,:)
+    if (me<num_subdomains) halo_x(west,:,:)[me+1] = s(my_nx,:,:)
+  end subroutine
 
   module procedure step
 
@@ -149,10 +151,7 @@ contains
     call internal_points(increment)
     call edge_points(increment)
     call apply_boundary_condition(increment)
-
-    sync all
     self%s_ = self%s_ + increment
-    sync all
     call exchange_halo(self%s_)
 
   contains
@@ -207,11 +206,6 @@ contains
       if (me==num_subdomains) ds(my_nx,:,:) = 0.
     end subroutine
 
-    subroutine exchange_halo(s)
-      real, intent(in) :: s(:,:,:)
-      if (me>1) halo_x(east,:,:)[me-1] = s(1,:,:)
-      if (me<num_subdomains) halo_x(west,:,:)[me+1] = s(my_nx,:,:)
-    end subroutine
 
   end procedure
 

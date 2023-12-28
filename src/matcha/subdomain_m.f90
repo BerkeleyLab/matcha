@@ -14,14 +14,14 @@ module subdomain_m
     generic :: operator(.laplacian.) => laplacian
     generic :: operator(*) => multiply
     generic :: operator(+) => add
-    generic :: assignment(=) => assign_and_sync
+    generic :: assignment(=) => assign_
     procedure dx
     procedure dy
     procedure dz
     procedure values
     procedure, private :: laplacian
     procedure, private :: add
-    procedure, private :: assign_and_sync
+    procedure, private :: assign_
   end type
 
   interface
@@ -83,7 +83,7 @@ module subdomain_m
       type(subdomain_t) total
     end function
 
-    module subroutine assign_and_sync(lhs, rhs)
+    module subroutine assign_(lhs, rhs)
       implicit none
       class(subdomain_t), intent(out) :: lhs
       type(subdomain_t), intent(in) :: rhs
