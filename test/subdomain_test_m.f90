@@ -63,7 +63,8 @@ contains
 
   function concave_laplacian() result(test_passes)
     logical test_passes
-    type(subdomain_t) f, laplacian_f
+    type(subdomain_t), save :: f[*]
+    type(subdomain_t) :: laplacian_f
     real, allocatable :: lap_f_vals(:,:,:)
 
     call f%define(side=1., boundary_val=1., internal_val=2., n=32) ! internally constant subdomain with a step down at all surfaces
@@ -155,7 +156,7 @@ contains
 
   function correct_steady_state() result(test_passes)
     logical test_passes
-    type(subdomain_t) T
+    type(subdomain_t), save :: T[*]
     real, parameter :: T_boundary = 1., T_initial = 2., tolerance = 5.E-03, T_steady = T_boundary, alpha = 1.
     integer, parameter :: steps = 25000
     integer step
@@ -191,7 +192,7 @@ contains
 
     function T_functional()
       real, allocatable :: T_functional(:,:,:)
-      type(subdomain_t) T
+      type(subdomain_t), save :: T[*]
       integer step
 
       call T%define(side, boundary_val, internal_val, n)
@@ -208,7 +209,7 @@ contains
 
     function T_procedural()
       real, allocatable :: T_procedural(:,:,:)
-      type(subdomain_t) T
+      type(subdomain_t), save :: T[*]
       integer step
 
       call T%define(side, boundary_val, internal_val, n)

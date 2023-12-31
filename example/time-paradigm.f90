@@ -52,7 +52,7 @@ contains
     integer(int64) t_start_functional, t_end_functional, clock_rate
     integer step
     real system_time
-    type(subdomain_t) T
+    type(subdomain_t), save :: T[*]
 
     call T%define(side=1., boundary_val=T_boundary, internal_val=T_internal_initial, n=resolution)
 
@@ -80,7 +80,7 @@ contains
     integer(int64) t_start_procedural, t_end_procedural, clock_rate
     integer step
     real system_time
-    type(subdomain_t) T
+    type(subdomain_t), save :: T[*]
 
     call T%define(side=1., boundary_val=0., internal_val=1., n=resolution)
 

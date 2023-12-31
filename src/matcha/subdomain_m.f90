@@ -36,7 +36,7 @@ module subdomain_m
     module subroutine step(alpha_dt, self)
       implicit none
       real, intent(in) :: alpha_dt
-      class(subdomain_t), intent(inout) :: self
+      class(subdomain_t), intent(inout) :: self[*]
     end subroutine
 
     pure module function values(self) result(my_values)
@@ -65,7 +65,7 @@ module subdomain_m
 
     pure module function laplacian(rhs) result(laplacian_rhs)
       implicit none
-      class(subdomain_t), intent(in) :: rhs
+      class(subdomain_t), intent(in) :: rhs[*]
       type(subdomain_t) laplacian_rhs
     end function
 
