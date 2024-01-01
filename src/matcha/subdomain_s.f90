@@ -1,13 +1,10 @@
 submodule(subdomain_m) subdomain_s
   use sourcery_m, only : data_partition_t
-  use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
   type(data_partition_t) data_partition
 
-  real dx_, dy_, dz_
-  integer my_nx, nx, ny, nz, me, num_subdomains, my_internal_west, my_internal_east
   real, allocatable :: increment(:,:,:)
 
 contains
@@ -59,66 +56,6 @@ contains
 
   module procedure dz
     my_dz = dz_
-  end procedure
-
-  module procedure laplacian
-
-    integer i, j, k
-    real, allocatable :: halo_west(:,:), halo_east(:,:)
-
-    call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
-
-    allocate(laplacian_rhs%s_(my_nx, ny, nz))
-
-    if (me==1) then
-      halo_west = rhs%s_(1,:,:)
-    else
-      halo_west = rhs[me-1]%s_(ubound(rhs[me-1]%s_,1),:,:)
-    end if
-    i = my_internal_west
-    call assert(i+1<=my_nx,"laplacian: westernmost subdomain too small")
-    do concurrent(j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = ( halo_west(j,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
-
-    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
-
-    if (me==1) then
-      halo_east = rhs%s_(1,:,:)
-    else
-      halo_east = rhs[me+1]%s_(lbound(rhs[me+1]%s_,1),:,:)
-    end if
-    i = my_internal_east
-    call assert(i-1>0,"laplacian: easternmost subdomain too small")
-    do concurrent(j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) +  halo_east(j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
-
-    laplacian_rhs%s_(:, 1,:) = 0.
-    laplacian_rhs%s_(:,ny,:) = 0.
-    laplacian_rhs%s_(:,:, 1) = 0.
-    laplacian_rhs%s_(:,:,nz) = 0.
-    if (me==1) laplacian_rhs%s_(1,:,:) = 0.
-    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0.
-
-  end procedure
-
-  module procedure multiply
-    call assert(allocated(rhs%s_), "subdomain_t%multiply: allocated(rhs%s_)")
-    product%s_ =  lhs * rhs%s_
-  end procedure
-
-  module procedure add
-    call assert(allocated(rhs%s_), "subdomain_t%add: allocated(rhs%s_)")
-    total%s_ =  lhs%s_ + rhs%s_
   end procedure
 
   module procedure assign_

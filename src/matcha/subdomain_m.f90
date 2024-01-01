@@ -1,17 +1,18 @@
 module subdomain_m
+  use assert_m, only : assert
   implicit none
 
   private
   public :: subdomain_t
+  public :: operator(.laplacian.)
+  public :: step
 
   type subdomain_t 
     private
     real, allocatable :: s_(:,:,:)
   contains
     procedure, pass(self) :: define
-    procedure, pass(self) :: step
     procedure, pass(rhs) :: multiply
-    generic :: operator(.laplacian.) => laplacian
     generic :: operator(*) => multiply
     generic :: operator(+) => add
     generic :: assignment(=) => assign_
@@ -19,10 +20,20 @@ module subdomain_m
     procedure dy
     procedure dz
     procedure values
-    procedure, private :: laplacian
     procedure, private :: add
     procedure, private :: assign_
   end type
+
+  interface operator(.laplacian.)
+
+    module procedure laplacian
+    !pure module function laplacian(rhs) result(laplacian_rhs)
+    !  implicit none
+    !  type(subdomain_t), intent(in) :: rhs[*]
+    !  type(subdomain_t) laplacian_rhs
+    !end function
+
+  end interface
 
   interface
 
@@ -36,7 +47,7 @@ module subdomain_m
     module subroutine step(alpha_dt, self)
       implicit none
       real, intent(in) :: alpha_dt
-      class(subdomain_t), intent(inout) :: self[*]
+      type(subdomain_t), intent(inout) :: self[*]
     end subroutine
 
     pure module function values(self) result(my_values)
@@ -63,12 +74,6 @@ module subdomain_m
       real my_dz
     end function
 
-    pure module function laplacian(rhs) result(laplacian_rhs)
-      implicit none
-      class(subdomain_t), intent(in) :: rhs[*]
-      type(subdomain_t) laplacian_rhs
-    end function
-
     pure module function multiply(lhs, rhs) result(product)
       implicit none
       class(subdomain_t), intent(in) :: rhs
@@ -90,5 +95,63 @@ module subdomain_m
     end subroutine
 
   end interface
+
+  real dx_, dy_, dz_
+  integer my_nx, nx, ny, nz, me, num_subdomains, my_internal_west, my_internal_east
+
+contains
+
+  pure module function laplacian(rhs) result(laplacian_rhs)
+    type(subdomain_t), intent(in) :: rhs[*]
+    type(subdomain_t) laplacian_rhs
+
+    integer i, j, k
+    real, allocatable :: halo_west(:,:), halo_east(:,:)
+
+    call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
+
+    allocate(laplacian_rhs%s_, mold=rhs%s_)
+
+    if (me==1) then
+      halo_west = rhs%s_(1,:,:)
+    else
+      halo_west = rhs[me-1]%s_(ubound(rhs[me-1]%s_,1),:,:)
+    end if
+    i = my_internal_west
+    call assert(i+1<=my_nx,"laplacian: westernmost subdomain too small")
+    do concurrent(j=2:ny-1, k=2:nz-1)
+      laplacian_rhs%s_(i,j,k) = ( halo_west(j,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
+                                (rhs%s_(i,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
+                                (rhs%s_(i,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
+    end do
+
+    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
+      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
+                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
+                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
+    end do
+
+    if (me==1) then
+      halo_east = rhs%s_(1,:,:)
+    else
+      halo_east = rhs[me+1]%s_(lbound(rhs[me+1]%s_,1),:,:)
+    end if
+    i = my_internal_east
+    call assert(i-1>0,"laplacian: easternmost subdomain too small")
+    do concurrent(j=2:ny-1, k=2:nz-1)
+      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) +  halo_east(j  ,k  ))/dx_**2 + &
+                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
+                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
+    end do
+
+    laplacian_rhs%s_(:, 1,:) = 0.
+    laplacian_rhs%s_(:,ny,:) = 0.
+    laplacian_rhs%s_(:,:, 1) = 0.
+    laplacian_rhs%s_(:,:,nz) = 0.
+    if (me==1) laplacian_rhs%s_(1,:,:) = 0.
+    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0.
+
+  end function
+
 
 end module

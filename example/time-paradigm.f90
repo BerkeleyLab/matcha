@@ -2,7 +2,7 @@
 ! Terms of use are as specified in LICENSE.txt
 program time_paradigm_m
   !! Time various alternative programming paradigms
-  use subdomain_m, only : subdomain_t
+  use subdomain_m, only : subdomain_t, operator(.laplacian.), step
   use assert_m, only : assert
   use sourcery_m, only : string_t, file_t, command_line_t, bin_t, csv 
   use iso_fortran_env, only : int64
@@ -90,7 +90,7 @@ contains
       procedural_programming: &
       do step = 1, steps
         sync all
-        call T%step(alpha*dt)
+        call step(alpha*dt, T)
       end do procedural_programming
 
       call system_clock(t_end_procedural, clock_rate)

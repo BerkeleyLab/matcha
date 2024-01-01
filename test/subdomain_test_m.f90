@@ -3,7 +3,7 @@
 module subdomain_test_m
   !! Define subdomain tests and procedures required for reporting results
   use sourcery_m, only : test_t, test_result_t
-  use subdomain_m, only : subdomain_t
+  use subdomain_m, only : subdomain_t, operator(.laplacian.), step
   use assert_m, only : assert
   implicit none
 
@@ -217,7 +217,7 @@ contains
       associate(dt => T%dx()*T%dy()/(4*alpha))
         do step = 1, steps
           sync all
-          call T%step(alpha*dt)
+          call step(alpha*dt, T)
         end do
       end associate
 
