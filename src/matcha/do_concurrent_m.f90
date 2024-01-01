@@ -1,6 +1,6 @@
 module do_concurrent_m
   use iso_c_binding, only : c_double, c_int
-  use t_cell_collection_m, only : t_cell_collection_t, t_cell_collection_bind_C_t
+  use t_cell_collection_m, only : t_cell_collection_bind_C_t
   implicit none
   private
   public :: do_concurrent_sampled_speeds, do_concurrent_my_velocities, do_concurrent_k, do_concurrent_speeds
