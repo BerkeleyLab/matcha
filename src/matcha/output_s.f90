@@ -3,7 +3,7 @@
 submodule(output_m) output_s
   use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution, do_concurrent_speeds
   use t_cell_collection_m, only : t_cell_collection_bind_C_t
-  use iso_c_binding, only : c_loc, c_double
+  use iso_c_binding, only : c_double
   implicit none
   
 contains
