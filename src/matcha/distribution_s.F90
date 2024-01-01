@@ -47,8 +47,11 @@ contains
       "distribution_t%cumulative_distribution: allocated(cumulative_distribution_)")
     call assert(allocated(self%vel_), "distribution_t%cumulative_distribution: allocated(vel_)")
 
-     ! Sample from the distribution
-     call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution(), sampled_speeds)
+    ! Sample from the distribution
+    associate(ncells => size(speeds,1), nsteps => size(speeds,2))
+      allocate(sampled_speeds(ncells,nsteps))
+      call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution(), sampled_speeds)
+    end associate
      
      associate(nsteps => size(speeds,2))
 
@@ -63,6 +66,9 @@ contains
          end associate
        end associate
        
+       if(allocated(my_velocities)) deallocate(my_velocities)
+       allocate(my_velocities, mold=dir)
+    
        call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
        
      end associate

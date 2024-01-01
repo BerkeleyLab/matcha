@@ -1,4 +1,5 @@
 submodule(do_concurrent_m) do_concurrent_s
+  use assert_m, only : assert
   use iso_c_binding, only : c_f_pointer
   implicit none
 
@@ -7,9 +8,10 @@ contains
   module procedure do_concurrent_sampled_speeds
   
     integer cell, step
+   
+    call assert(all(shape(sampled_speeds)==shape(speeds)), "do_concurrent_sampled_speeds: {sampled_,}speeds shape match")
     
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
-      allocate(sampled_speeds(ncells,nsteps))
       do concurrent(cell = 1:ncells, step = 1:nsteps)
         associate(k => findloc(speeds(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
           sampled_speeds(cell,step) = vel(k)
@@ -23,9 +25,8 @@ contains
   
     integer step
     
-    if(allocated(my_velocities)) deallocate(my_velocities)
-    allocate(my_velocities, mold=dir)
-    
+    call assert(all(shape(sampled_speeds)==shape(my_velocities)), "do_concurrent_my_velocities: argument shape match")
+
     do concurrent(step=1:nsteps)
       my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
       my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
@@ -39,8 +40,6 @@ contains
   integer i
   
     associate(nspeeds => size(speeds))
-      if(allocated(k)) deallocate(k)
-      allocate(k(nspeeds))
         do concurrent(i = 1:nspeeds)
           k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
         end do
@@ -51,8 +50,6 @@ contains
   
     integer i
     
-    if(allocated(output_distribution)) deallocate(output_distribution)
-    allocate(output_distribution(nintervals,2))
     output_distribution(:,freq) = 0.d0
     output_distribution(:,speed) = emp_distribution(:,speed)
     do concurrent(i = 1:size(output_distribution,1))
@@ -79,7 +76,6 @@ contains
       end do
   
       associate(t => history%time)
-        allocate(speeds(ncells*(npositions-1)))
         do concurrent(i = 1:npositions-1, j = 1:ncells)
           associate( &
             u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &

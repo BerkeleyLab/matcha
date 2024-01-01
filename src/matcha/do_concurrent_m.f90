@@ -11,20 +11,20 @@ module do_concurrent_m
     pure module subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds) bind(C)
       implicit none
       real(c_double), intent(in) :: speeds(:,:), vel(:), cumulative_distribution(:)
-      real(c_double), intent(out), allocatable :: sampled_speeds(:,:)
+      real(c_double), intent(out) :: sampled_speeds(:,:)
     end subroutine
     
     pure module subroutine do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities) bind(C)
       implicit none
       integer(c_int), intent(in) :: nsteps
       real(c_double), intent(in) :: dir(:,:,:), sampled_speeds(:,:)
-      real(c_double), intent(out), allocatable :: my_velocities(:,:,:)
+      real(c_double), intent(out) :: my_velocities(:,:,:)
     end subroutine
     
     pure module subroutine do_concurrent_k(speeds, vel, k) bind(C)
       implicit none
       real(c_double), intent(in) :: speeds(:), vel(:)
-      integer(c_int), intent(out), allocatable :: k(:)
+      integer(c_int), intent(out) :: k(:)
     end subroutine
     
     pure module subroutine &
@@ -32,13 +32,13 @@ module do_concurrent_m
       implicit none
       integer(c_int), intent(in) :: nintervals, speed, freq, k(:)
       real(c_double), intent(in) :: emp_distribution(:,:)
-      real(c_double), intent(out), allocatable :: output_distribution(:,:)
+      real(c_double), intent(out) :: output_distribution(:,:)
     end subroutine
     
     module subroutine do_concurrent_speeds(history, speeds) bind(C)
       implicit none
       type(t_cell_collection_bind_C_t), intent(in) :: history(:)
-      real(c_double), intent(out), allocatable :: speeds(:)
+      real(c_double), intent(out) :: speeds(:)
     end subroutine
       
   end interface

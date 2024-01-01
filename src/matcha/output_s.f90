@@ -24,12 +24,19 @@ contains
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
 
+    associate(npositions => size(history), ncells => history(1)%positions_shape(1))
+      allocate(speeds(ncells*(npositions-1)))
+    end associate
     call do_concurrent_speeds(t_cell_collection_bind_C_t(self%history_), speeds)
 
     associate(emp_distribution => self%input_%sample_distribution())
       associate(nintervals => size(emp_distribution(:,1)), dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
         vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
+        if (allocated(k)) deallocate(k)
+        allocate(k(nspeeds))
         call do_concurrent_k(speeds, vel, k)
+        if(allocated(output_distribution)) deallocate(output_distribution)
+        allocate(output_distribution(nintervals,2))
         call do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution)
         output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
       end associate
