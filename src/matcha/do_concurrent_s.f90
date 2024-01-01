@@ -51,12 +51,10 @@ contains
     end associate
   end subroutine
   
-  pure module subroutine do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution) &
-    bind(C)
-    integer(c_int), intent(in) :: nintervals, speed, freq, k(:)
+  pure module subroutine do_concurrent_output_distribution(speed, freq, emp_distribution, k, output_distribution) bind(C)
+    integer(c_int), intent(in) :: speed, freq, k(:)
     real(c_double), intent(in) :: emp_distribution(:,:)
     real(c_double), intent(out) :: output_distribution(:,:)
-  
     integer i
     
     output_distribution(:,freq) = 0.d0
