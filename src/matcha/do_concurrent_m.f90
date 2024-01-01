@@ -27,8 +27,8 @@ module do_concurrent_m
       integer(c_int), intent(out) :: k(:)
     end subroutine
     
-    pure module subroutine &
-      do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution) bind(C)
+    pure module subroutine do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution) &
+      bind(C)
       implicit none
       integer(c_int), intent(in) :: nintervals, speed, freq, k(:)
       real(c_double), intent(in) :: emp_distribution(:,:)
