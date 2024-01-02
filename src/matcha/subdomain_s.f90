@@ -134,7 +134,6 @@ contains
 
     subroutine apply_boundary_condition(ds)
       real, intent(inout) :: ds(:,:,:)
-      integer i, j
 
       ds(:,1:ny:ny-1, :       ) = 0.
       ds(:, :       ,1:nz:nz-1) = 0.
