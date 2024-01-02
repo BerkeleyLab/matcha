@@ -30,7 +30,7 @@ contains
     
     call assert(all([size(my_velocities,1),size(sampled_speeds,2)] == shape(sampled_speeds)), &
       "do_concurrent_my_velocities: argument size match")
-    call assert(all(shape(my_velocities,1)==shape(dir)), "do_concurrent_my_velocities: argument shape match")
+    call assert(all(size(my_velocities,1)==shape(dir)), "do_concurrent_my_velocities: argument shape match")
 
     do concurrent(step=1:nsteps)
       my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
@@ -82,16 +82,14 @@ contains
          x(i,:,:) = positions
       end do
   
-      associate(t => history%time)
-        do concurrent(i = 1:npositions-1, j = 1:ncells)
-          associate( &
-            u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-            ij => i + (j-1)*(npositions-1) &
-           )   
-            speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-          end associate
-        end do
-      end associate
+      do concurrent(i = 1:npositions-1, j = 1:ncells)
+        associate( &
+          u => (x(i+1,j,:) - x(i,j,:))/(history(i+1)%time - history(i)%time), &
+          ij => i + (j-1)*(npositions-1) &
+         )   
+          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+        end associate
+      end do
     end associate
     
   end subroutine
