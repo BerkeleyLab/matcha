@@ -214,7 +214,7 @@ contains
 
       call T%define(side, boundary_val, internal_val, n)
 
-      associate(dt => T%dx()*T%dy()/(4*alpha))
+      associate(dt => T%dx()*T%dy()*T%dz()/(4*alpha))
         do step = 1, steps
           sync all
           call step(alpha*dt, T)

@@ -71,9 +71,9 @@ contains
 
   module procedure step
 
-    call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
-    call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain too small")
-    call assert(my_internal_east-1>0,"laplacian: easternmost subdomain too small")
+    call assert(allocated(self%s_), "subdomain_s(step): allocated(rhs%s_)")
+    call assert(my_internal_west+1<=my_nx,"subdomain_s(step): westernmost subdomain too small")
+    call assert(my_internal_east-1>0,"subdomain_s(step): easternmost subdomain too small")
 
     if (.not. allocated(increment)) allocate(increment(my_nx,ny,nz))
  
@@ -175,8 +175,8 @@ contains
                                 (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
     end do
 
-    if (me==1) then
-      halo_east = rhs%s_(1,:,:)
+    if (me==num_subdomains) then
+      halo_east = rhs%s_(my_nx,:,:)
     else
       halo_east = rhs[me+1]%s_(lbound(rhs[me+1]%s_,1),:,:)
     end if
@@ -188,10 +188,10 @@ contains
                                 (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
     end do
 
-    laplacian_rhs%s_(:, 1,:) = 0.
-    laplacian_rhs%s_(:,ny,:) = 0.
-    laplacian_rhs%s_(:,:, 1) = 0.
-    laplacian_rhs%s_(:,:,nz) = 0.
+    laplacian_rhs%s_(:, 1, :) = 0.
+    laplacian_rhs%s_(:,ny, :) = 0.
+    laplacian_rhs%s_(:, :, 1) = 0.
+    laplacian_rhs%s_(:, :,nz) = 0.
     if (me==1) laplacian_rhs%s_(1,:,:) = 0.
     if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0.
 
