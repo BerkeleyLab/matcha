@@ -67,7 +67,7 @@ contains
   function compare_global_distributions() result(test_passes)
     logical test_passes
     type(output_t) output
-    double precision, allocatable :: simulated_distribution(:,:)
+    double precision, allocatable :: simulated_distribution(:,:), frequency(:)
     integer num_cells
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
     real, parameter :: tolerance = 1.D-02
@@ -77,16 +77,16 @@ contains
       associate(empirical_distribution => input%sample_distribution())
         simulated_distribution = output%simulated_distribution()  
         num_cells = output%my_num_cells()
-        simulated_distribution(:,freq) = num_cells*simulated_distribution(:,freq)
-        call co_sum(simulated_distribution(:,freq), result_image=1)
+        frequency_distribution = num_cells*simulated_distribution(:,freq) ! copy to work around nagfor 7.1 Build 7145 compiler bug
+        call co_sum(frequency_distribution, result_image=1)
         call co_sum(num_cells, result_image=1)
         if (this_image()/=1) then
           test_passes = .true.
         else
-          simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
+          frequency_distribution = frequency_distribution/dble(num_cells)
           associate( &
             diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
-            diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
+            diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-frequency_distribution)) &
           )
             test_passes = (diffmax_freqs < tolerance) .and. (diffmax_speeds < tolerance)
           end associate
