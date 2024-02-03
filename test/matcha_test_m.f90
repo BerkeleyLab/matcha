@@ -67,7 +67,7 @@ contains
   function compare_global_distributions() result(test_passes)
     logical test_passes
     type(output_t) output
-    double precision, allocatable :: simulated_distribution(:,:), frequency(:)
+    double precision, allocatable :: simulated_distribution(:,:), frequency_distribution(:)
     integer num_cells
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
     real, parameter :: tolerance = 1.D-02
