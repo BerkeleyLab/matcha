@@ -3,6 +3,7 @@ module subdomain_m
 
   private
   public :: subdomain_t
+  public :: march
 
   type subdomain_t 
     private
@@ -38,7 +39,7 @@ module subdomain_m
       class(subdomain_t), intent(out) :: self
     end subroutine
 
-    module subroutine step(alpha_dt, self)
+    module subroutine march(alpha_dt, self)
       implicit none
       real, intent(in) :: alpha_dt
       type(subdomain_t), intent(inout) :: self[*]

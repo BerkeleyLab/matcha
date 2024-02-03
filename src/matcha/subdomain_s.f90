@@ -69,7 +69,7 @@ contains
     my_values =  self%s_
   end procedure
 
-  module procedure step
+  module procedure march
 
     call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
     call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain too small")
