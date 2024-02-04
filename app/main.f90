@@ -9,14 +9,14 @@ program main
   associate(input => input_t())
     output = output_t(input, matcha(input))
     block
-      double precision, allocatable :: simulated_distribution(:,:)
+      double precision, allocatable :: simulated_distribution(:,:), frequency_distribution(:)
       integer, parameter :: freq=2
       integer num_cells
 
       num_cells = output%my_num_cells()
       simulated_distribution = output%simulated_distribution()
-      simulated_distribution(:,freq) = num_cells*simulated_distribution(:,freq)
-      call co_sum(simulated_distribution(:,freq), result_image=1)
+      frequency_distribution =  num_cells*simulated_distribution(:,freq) ! copy to work around nagfor bug
+      call co_sum(frequency_distribution, result_image=1)
       call co_sum(num_cells, result_image=1)
       if (this_image()==1) simulated_distribution(:,freq) = simulated_distribution(:,freq)/dble(num_cells)
     end block

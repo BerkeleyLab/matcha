@@ -2,7 +2,7 @@
 ! Terms of use are as specified in LICENSE.txt
 program time_paradigm_m
   !! Time various alternative programming paradigms
-  use subdomain_m, only : subdomain_t
+  use subdomain_m, only : subdomain_t, march
   use assert_m, only : assert
   use sourcery_m, only : string_t, file_t, command_line_t, bin_t, csv 
   use iso_fortran_env, only : int64
@@ -12,7 +12,7 @@ program time_paradigm_m
   character(len=:), allocatable :: steps_string, resolution_string
   type(command_line_t) command_line
   integer(int64) counter_start, counter_end, clock_rate
-  integer :: steps=200, resolution=64
+  integer :: steps=300, resolution=128
 
   associate(me => this_image())
     if (command_line%argument_present(["--help"])) then
@@ -52,20 +52,22 @@ contains
     integer(int64) t_start_functional, t_end_functional, clock_rate
     integer step
     real system_time
-    type(subdomain_t) T
+    type(subdomain_t), save :: T[*]
 
     call T%define(side=1., boundary_val=T_boundary, internal_val=T_internal_initial, n=resolution)
 
-    call system_clock(t_start_functional)
-
     associate(dt => T%dx()*T%dy()/(4*alpha))
+      call system_clock(t_start_functional)
+
       functional_programming: &
       do step = 1, steps
+        sync all
         T =  T + dt * alpha * .laplacian. T
       end do functional_programming
+
+      call system_clock(t_end_functional, clock_rate)
     end associate
 
-    call system_clock(t_end_functional, clock_rate)
     system_time = real(t_end_functional - t_start_functional)/real(clock_rate)
 
     associate(L_infinity_norm => maxval(abs(T%values() - T_steady)))
@@ -78,18 +80,22 @@ contains
     integer(int64) t_start_procedural, t_end_procedural, clock_rate
     integer step
     real system_time
-    type(subdomain_t) T
+    type(subdomain_t), save :: T[*]
+
+    call T%define(side=1., boundary_val=0., internal_val=1., n=resolution)
 
     associate(dt => T%dx()*T%dy()/(4*alpha))
-      call T%define(side=1., boundary_val=0., internal_val=1., n=resolution)
       call system_clock(t_start_procedural)
+
       procedural_programming: &
       do step = 1, steps
-        call T%step(alpha*dt)
+        sync all
+        call march(alpha*dt, T)
       end do procedural_programming
+
+      call system_clock(t_end_procedural, clock_rate)
     end associate
 
-    call system_clock(t_end_procedural, clock_rate)
     system_time = real(t_end_procedural - t_start_procedural)/real(clock_rate)
 
     associate(L_infinity_norm => maxval(abs(T%values() - T_steady)))

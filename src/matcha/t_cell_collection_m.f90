@@ -42,8 +42,9 @@ module t_cell_collection_m
     
   interface t_cell_collection_bind_C_t
     
-    elemental module function construct_bind_C(t_cell_collection) result(t_cell_collection_bind_C)
+    impure elemental module function construct_bind_C(t_cell_collection) result(t_cell_collection_bind_C)
       !! Result is bind(C) representation of the data inside a t_cell_collection_t object
+      !! This function is impure because it invokes c_loc. Fortran 2023 compliance will allow this function to be pure.
       implicit none
       type(t_cell_collection_t), intent(in), target :: t_cell_collection
       type(t_cell_collection_bind_C_t) t_cell_collection_bind_C
@@ -59,7 +60,6 @@ module t_cell_collection_m
       class(t_cell_collection_t), intent(in) :: self
       double precision, allocatable :: my_positions(:,:)
     end function
-    
     
     elemental module function time(self) result(my_time)
       !! Return the t_cell_collection_t object's time stamp

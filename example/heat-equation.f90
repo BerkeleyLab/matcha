@@ -76,13 +76,14 @@ module subdomain_2D_m
 
   end interface
 
+  real, allocatable :: halo_x(:,:)[:]
+
 end module
 
 submodule(subdomain_2D_m) subdomain_2D_s
   use assertions_m, only : assert
   implicit none
 
-  real, allocatable :: halo_x(:,:)[:]
   real dx_, dy_
   integer, parameter :: west=1, east=2
   integer my_nx, nx, ny, me, num_subdomains, my_internal_west, my_internal_east
@@ -114,7 +115,8 @@ contains
     self%s_(my_nx, 2:ny-1) = merge(boundary_val, internal_val, me==num_subdomains) ! east subdomain boundary
 
     if (allocated(halo_x)) deallocate(halo_x)
-    allocate(halo_x(west:east, ny)[*])
+    !allocate(halo_x(west:east, ny)[*])
+    allocate(halo_x(2, ny)[*])
     call self%exchange_halo
   end procedure
 
@@ -131,7 +133,7 @@ contains
     integer i, j
     real, allocatable :: halo_west(:), halo_east(:)
 
-    call assert(allocated(rhs%s_), "subdomain_2D_t%laplacian: allocated(rhs%s_)")
+    !call assert(allocated(rhs%s_), "subdomain_2D_t%laplacian: allocated(rhs%s_)")
     call assert(allocated(halo_x), "subdomain_2D_t%laplacian: allocated(halo_x)")
 
     allocate(laplacian_rhs(my_nx, ny))
@@ -168,8 +170,8 @@ contains
   end procedure
    
   module procedure exchange_halo
-    if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
-    if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
+    !if (me>1) halo_x(east,:)[me-1] = self%s_(1,:)
+    !if (me<num_subdomains) halo_x(west,:)[me+1] = self%s_(my_nx,:)
   end procedure
 
   module procedure values

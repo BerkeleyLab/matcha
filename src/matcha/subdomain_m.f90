@@ -3,28 +3,34 @@ module subdomain_m
 
   private
   public :: subdomain_t
+  public :: march
 
   type subdomain_t 
     private
     real, allocatable :: s_(:,:,:)
   contains
     procedure, pass(self) :: define
-    procedure, pass(self) :: step
-    procedure, pass(rhs) :: multiply
-    generic :: operator(.laplacian.) => laplacian
-    generic :: operator(*) => multiply
-    generic :: operator(+) => add
-    generic :: assignment(=) => assign_and_sync
     procedure dx
     procedure dy
     procedure dz
     procedure values
+    generic :: operator(*) => multiply
+    generic :: operator(+) => add
+    generic :: operator(.laplacian.) => laplacian
+    generic :: assignment(=) => assign_
+    procedure, private, pass(rhs) :: multiply
     procedure, private :: laplacian
     procedure, private :: add
-    procedure, private :: assign_and_sync
+    procedure, private :: assign_
   end type
 
   interface
+
+    pure module function laplacian(rhs) result(laplacian_rhs)
+      implicit none
+      class(subdomain_t), intent(in) :: rhs[*]
+      type(subdomain_t) laplacian_rhs
+    end function
 
     module subroutine define(side, boundary_val, internal_val, n, self)
       implicit none
@@ -33,10 +39,10 @@ module subdomain_m
       class(subdomain_t), intent(out) :: self
     end subroutine
 
-    module subroutine step(alpha_dt, self)
+    module subroutine march(alpha_dt, self)
       implicit none
       real, intent(in) :: alpha_dt
-      class(subdomain_t), intent(inout) :: self
+      type(subdomain_t), intent(inout) :: self[*]
     end subroutine
 
     pure module function values(self) result(my_values)
@@ -63,12 +69,6 @@ module subdomain_m
       real my_dz
     end function
 
-    pure module function laplacian(rhs) result(laplacian_rhs)
-      implicit none
-      class(subdomain_t), intent(in) :: rhs
-      type(subdomain_t) laplacian_rhs
-    end function
-
     pure module function multiply(lhs, rhs) result(product)
       implicit none
       class(subdomain_t), intent(in) :: rhs
@@ -83,7 +83,7 @@ module subdomain_m
       type(subdomain_t) total
     end function
 
-    module subroutine assign_and_sync(lhs, rhs)
+    module subroutine assign_(lhs, rhs)
       implicit none
       class(subdomain_t), intent(out) :: lhs
       type(subdomain_t), intent(in) :: rhs

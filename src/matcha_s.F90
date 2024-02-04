@@ -32,7 +32,9 @@ contains
         associate(me => this_image())
           associate(my_num_cells => data_partition%last(me) - data_partition%first(me) + 1)
           
+#ifndef NAGFOR
             call random_init(repeatable=.true., image_distinct=.true.)
+#endif
             
             allocate(random_positions(my_num_cells,ndim))
             call random_number(random_positions)  
