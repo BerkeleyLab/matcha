@@ -59,6 +59,16 @@ contains
     my_dz = dz_
   end procedure
 
+  module procedure add
+    call assert(allocated(lhs%s_) .and. allocated(rhs%s_), "subdomain_t%add: allocated(rhs%s_)")
+    total%s_ = lhs%s_ +  rhs%s_
+  end procedure
+
+  module procedure multiply
+    call assert(allocated(rhs%s_), "subdomain_t%multiply: allocated(rhs%s_)")
+    product%s_ = lhs +  rhs%s_
+  end procedure
+
   module procedure assign_
     call assert(allocated(rhs%s_), "subdomain_t%assign_: allocated(rhs%s_)")
     lhs%s_ =  rhs%s_
@@ -141,7 +151,6 @@ contains
       if (me==1) ds(1,:,:) = 0.
       if (me==num_subdomains) ds(my_nx,:,:) = 0.
     end subroutine
-
 
   end procedure
 
