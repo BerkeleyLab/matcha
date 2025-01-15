@@ -4,7 +4,7 @@ program time_paradigm_m
   !! Time various alternative programming paradigms
   use subdomain_m, only : subdomain_t
   use assert_m, only : assert
-  use sourcery_m, only : string_t, file_t, command_line_t, bin_t, csv 
+  use julienne_m, only : string_t, file_t, command_line_t, bin_t, csv 
   use iso_fortran_env, only : int64
   implicit none
 
