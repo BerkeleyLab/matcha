@@ -1,0 +1,2 @@
+fpm test --flag -ffree-line-length-0 --flag -fcoarray=lib
+

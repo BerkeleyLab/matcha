@@ -3,7 +3,7 @@
 submodule(matcha_m) matcha_s
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
-  use julienne_m, only : data_partition_t
+  use sourcery_m, only : data_partition_t
   implicit none
   
 contains
