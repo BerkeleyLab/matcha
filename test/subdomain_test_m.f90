@@ -72,8 +72,6 @@ contains
     block
       real, parameter :: tolerance = 1.0E-06
       logical internally_zero, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners, constant_away_from_edges
-      
-      write(*,*) size(lap_f_vals,1)
 
       associate(me=>this_image(), n_subdomains=>num_images(), nx=>size(lap_f_vals,1), ny=>size(lap_f_vals,2),nz=>size(lap_f_vals,3))
         associate(first_zero_in_x => merge(3, 1, me==1), last_zero_in_x => merge(nx-2, nx, me==n_subdomains))
