@@ -41,7 +41,7 @@ contains
           
               associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
                 associate(v => distribution%velocities(random_speeds, random_directions))
-                 stop "-------> made it <-------"
+                  run_completed = .true.
                 end associate
               end associate
             end associate
