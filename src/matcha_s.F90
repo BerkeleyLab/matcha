@@ -1,7 +1,4 @@
-! Copyright (c), The Regents of the University of California
-! Terms of use are as specified in LICENSE.txt
 submodule(matcha_m) matcha_s
-  use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
   use sourcery_m, only : data_partition_t
   implicit none
@@ -44,7 +41,7 @@ contains
           
               associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
                 associate(v => distribution%velocities(random_speeds, random_directions))
-                  history = [t_cell_collection_t(scale*random_positions, time=0.D0)]
+                 stop "-------> made it <-------"
                 end associate
               end associate
             end associate

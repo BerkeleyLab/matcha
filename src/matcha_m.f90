@@ -4,7 +4,6 @@ module matcha_m
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
   use input_m, only : input_t
-  use output_m, only : output_t
   use subdomain_m, only : subdomain_t
   
   implicit none
