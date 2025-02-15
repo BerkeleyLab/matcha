@@ -1,16 +1,10 @@
 module t_cell_collection_test_m
-  use sourcery_m, only : test_result_t
   use t_cell_collection_m, only : t_cell_collection_t
   use input_m, only : input_t
   use matcha_m, only : matcha
   implicit none
 
 contains
-
-  function results() result(test_results)
-    type(test_result_t), allocatable :: test_results(:)
-    test_results = test_result_t(["distributes cells across images"], [check_cell_distribution()])
-  end function
 
   function check_cell_distribution() result(test_passes)
     logical test_passes
@@ -27,9 +21,8 @@ contains
 
 end module t_cell_collection_test_m
 
-  use sourcery_m, only : test_result_t
-  use t_cell_collection_test_m, only : results
+  use t_cell_collection_test_m, only : check_cell_distribution
   implicit none
-  type(test_result_t), allocatable :: test_results(:)
-  test_results = results()
+  logical test_passes
+  test_passes = check_cell_distribution()
 end
