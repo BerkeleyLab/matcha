@@ -1,26 +1,11 @@
 module t_cell_collection_test_m
-  use sourcery_m, only : test_t, test_result_t
+  use sourcery_m, only : test_result_t
   use t_cell_collection_m, only : t_cell_collection_t
-  use iso_fortran_env, only : output_unit
   use input_m, only : input_t
   use matcha_m, only : matcha
   implicit none
 
-  private
-  public :: t_cell_collection_test_t
-
-  type, extends(test_t) :: t_cell_collection_test_t
-  contains
-    procedure, nopass :: subject
-    procedure, nopass :: results
-  end type
-
 contains
-
-  pure function subject() result(specimen)
-    character(len=:), allocatable :: specimen
-    specimen = "A t_cell_collection_t object"
-  end function
 
   function results() result(test_results)
     type(test_result_t), allocatable :: test_results(:)
@@ -68,9 +53,9 @@ contains
 
 end module t_cell_collection_test_m
 
-  use t_cell_collection_test_m, only : t_cell_collection_test_t
+  use sourcery_m, only : test_result_t
+  use t_cell_collection_test_m, only : results
   implicit none
-  type(t_cell_collection_test_t) t_cell_collection_test
-  integer :: passes=0, tests=0
-  call t_cell_collection_test%report(passes, tests)
+  type(test_result_t), allocatable :: test_results(:)
+  test_results = results()
 end
