@@ -1,6 +1,5 @@
 module do_concurrent_m
   use iso_c_binding, only : c_double, c_int
-  use t_cell_collection_m, only : t_cell_collection_bind_C_t
   implicit none
   
   interface
