@@ -1,17 +1,10 @@
-module distribution_m
   use iso_c_binding, only : c_double, c_int
   implicit none
-  
+
   type distribution_t
     double precision, allocatable, dimension(:) :: vel_, cumulative_distribution_
   end type  
 
-contains
-  
-end module distribution_m
-
-  use distribution_m
-  implicit none
   integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4, nsteps = npositions - 1
   double precision random_4vectors(ncells,nsteps,nveldim)
 
