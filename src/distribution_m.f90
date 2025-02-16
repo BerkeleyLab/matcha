@@ -3,11 +3,7 @@ module distribution_m
   implicit none
   
   type distribution_t
-    private
     double precision, allocatable, dimension(:) :: vel_, cumulative_distribution_
-  contains
-    procedure :: cumulative_distribution
-    procedure :: velocities
   end type  
 
   interface distribution_t
@@ -67,7 +63,7 @@ contains
     
     if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
     if (.not. allocated(self%vel_)) error stop "unallocated vel_"
-    call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution(), sampled_speeds)
+    call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
     associate(nsteps => size(speeds,2))
       dir = directions(:,1:nsteps,:)
       associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
