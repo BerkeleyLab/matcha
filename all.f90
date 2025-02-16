@@ -20,7 +20,6 @@ contains
      double precision, parameter :: two_pi = 2D0*acos(-1.d0), speed_lower = 0.d0, speed_upper = 6.d0
      integer, parameter :: nintervals = 4
      integer i
-
      allocate(distribution(nintervals,2))
      associate(range => speed_upper - speed_lower)
        associate(dspeed => range/dble(nintervals))
@@ -40,15 +39,10 @@ contains
   pure function construct(sample_distribution) result(distribution)
     double precision, intent(in) :: sample_distribution(:,:)
     type(distribution_t) distribution
-    
     integer i
-    if (.not. all(sample_distribution(:,2)>=0.D0)) error stop "negative sample_distribution value(s)"
     associate(nintervals => size(sample_distribution,1))      
       distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin         
       distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i,2)), i=1, nintervals)]]
-      associate(f => distribution%cumulative_distribution_)
-        if (.not. all([(f(i+1) >= f(i), i=1, size(f)-1)])) error stop "non-monotonic cum dist"
-      end associate
     end associate
   end function
 
@@ -71,10 +65,8 @@ contains
     real(c_double), intent(in) :: dir(:,:,:), sampled_speeds(:,:)
     real(c_double), intent(out), allocatable :: my_velocities(:,:,:)
     integer step
-    
     if(allocated(my_velocities)) deallocate(my_velocities)
     allocate(my_velocities, mold=dir)
-    
     do concurrent(step=1:nsteps)
       my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
       my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
@@ -86,12 +78,7 @@ contains
     class(distribution_t), intent(in) :: self
     double precision, intent(in) :: speeds(:,:), directions(:,:,:)
     double precision, allocatable :: my_velocities(:,:,:), sampled_speeds(:,:),  dir(:,:,:)
-    
-    if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
-    if (.not. allocated(self%vel_)) error stop "unallocated vel_"
-
     call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
-
     associate(nsteps => size(speeds,2))
       dir = directions(:,1:nsteps,:)
       associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
