@@ -6,19 +6,12 @@ module distribution_m
     double precision, allocatable, dimension(:) :: vel_, cumulative_distribution_
   end type  
 
-  interface distribution_t
-  
-   pure module function construct(sample_distribution) result(distribution)
-      implicit none
-      double precision, intent(in) :: sample_distribution(:,:)
-      type(distribution_t) distribution
-    end function
-    
-  end interface
-
 contains
   
-  module procedure construct
+  pure function construct(sample_distribution) result(distribution)
+    double precision, intent(in) :: sample_distribution(:,:)
+    type(distribution_t) distribution
+    
     integer i
     if (.not. all(sample_distribution(:,2)>=0.D0)) error stop "negative sample_distribution value(s)"
     associate(nintervals => size(sample_distribution,1))      
@@ -28,7 +21,7 @@ contains
         if (.not. all([(f(i+1) >= f(i), i=1, size(f)-1)])) error stop "non-monotonic cum dist"
       end associate
     end associate
-  end procedure construct
+  end function
 
   pure function cumulative_distribution(self) result(my_cumulative_distribution)
     class(distribution_t), intent(in) :: self

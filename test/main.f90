@@ -1,4 +1,4 @@
-  use distribution_m, only : distribution_t, velocities
+  use distribution_m, only : distribution_t, velocities, construct
   implicit none
 
   integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4
@@ -20,7 +20,7 @@ contains
       associate(nsteps => npositions -1)
         allocate(random_4vectors(ncells,nsteps,nveldim))
         call random_number(random_4vectors)  
-        distribution = distribution_t(empirical_distribution)
+        distribution = construct(empirical_distribution)
         associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
           associate(v => velocities(distribution, random_speeds, random_directions))
             run_completed = .true.
