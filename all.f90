@@ -60,24 +60,11 @@ contains
     end associate
   end subroutine
   
-  pure subroutine do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities) bind(C)
-    integer(c_int), intent(in) :: nsteps
-    real(c_double), intent(in) :: dir(:,:,:), sampled_speeds(:,:)
-    real(c_double), intent(out), allocatable :: my_velocities(:,:,:)
-    integer step
-    if(allocated(my_velocities)) deallocate(my_velocities)
-    allocate(my_velocities, mold=dir)
-    do concurrent(step=1:nsteps)
-      my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
-      my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
-      my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
-    end do
-  end subroutine
-
   pure function velocities(self, speeds, directions) result(my_velocities)
     class(distribution_t), intent(in) :: self
     double precision, intent(in) :: speeds(:,:), directions(:,:,:)
     double precision, allocatable :: my_velocities(:,:,:), sampled_speeds(:,:),  dir(:,:,:)
+    integer step
     call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
     associate(nsteps => size(speeds,2))
       dir = directions(:,1:nsteps,:)
@@ -88,7 +75,12 @@ contains
           dir(:,:,3) = dir(:,:,3)/dir_mag_
         end associate
       end associate
-      call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
+      allocate(my_velocities, mold=dir)
+      do concurrent(step=1:nsteps)
+        my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
+        my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
+        my_velocities(:,step,3) = sampled_speeds(:,step)*dir(:,step,3)
+      end do
     end associate
   end function
 
