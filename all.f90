@@ -16,27 +16,25 @@
 contains
 
   function distribution()
-     double precision, allocatable :: distribution(:,:), speeds(:), probability(:)
+     double precision, allocatable :: distribution(:,:)
      double precision, parameter :: two_pi = 2D0*acos(-1.d0), speed_lower = 0.d0, speed_upper = 6.d0
      integer, parameter :: nintervals = 4
      integer i
 
-     allocate(speeds(nintervals), probability(nintervals), distribution(nintervals,2))
-     
+     allocate(distribution(nintervals,2))
      associate(range => speed_upper - speed_lower)
        associate(dspeed => range/dble(nintervals))
-        do i = 1,nintervals
+        do i = 1, size(distribution,1)
           associate(speed_lower_bin => speed_lower + dble(i-1)*dspeed, speed_upper_bin => speed_lower + dble(i)*dspeed)
             associate(speeds => 0.5D0*(speed_lower_bin + speed_upper_bin))
-              probability(i) = exp(-(speeds-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
+              distribution(i,1) = speeds
+              distribution(i,2) = exp(-(speeds-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
             end associate
           end associate
         end do
        end associate
      end associate
-
-     distribution(:,1) = speeds
-     distribution(:,2) = probability/sum(probability)
+     distribution(:,2) = distribution(:,2)/sum(distribution(:,2))
   end function
 
   pure function construct(sample_distribution) result(distribution)
