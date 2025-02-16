@@ -2,7 +2,6 @@
 ! Terms of use are as specified in LICENSE.txt
 module matcha_m 
   use distribution_m, only : distribution_t
-  use subdomain_m, only : subdomain_t
   
   implicit none
 
