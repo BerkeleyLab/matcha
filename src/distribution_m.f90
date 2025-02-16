@@ -23,13 +23,6 @@ contains
     end associate
   end function
 
-  pure function cumulative_distribution(self) result(my_cumulative_distribution)
-    class(distribution_t), intent(in) :: self
-    double precision, allocatable :: my_cumulative_distribution(:)
-    if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
-    my_cumulative_distribution = self%cumulative_distribution_
-  end function
-  
   pure function velocities(self, speeds, directions) result(my_velocities)
     class(distribution_t), intent(in) :: self
     double precision, intent(in) :: speeds(:,:), directions(:,:,:)
