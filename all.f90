@@ -99,48 +99,27 @@ end module distribution_m
       end associate
     end associate
   end associate
-
 contains
-
   function sample_distribution()
-     double precision, allocatable :: sample_distribution(:,:)
+     double precision, allocatable :: sample_distribution(:,:), speeds(:), probability(:)
+     double precision, parameter :: two_pi = 2D0*acos(-1.d0), speed_lower = 0.d0, speed_upper = 6.d0
      integer, parameter :: nintervals = 4
      integer i
-     double precision speed_lower,speed_upper
-     double precision range,pi,dspeed,sumy
-     double precision speed_lower_bin
-     double precision speed_upper_bin
-     double precision speed_middle_bin
-     double precision, allocatable :: speeds(:),probability(:)
 
-     speed_lower = 0.d0
-     speed_upper = 6.d0
-     range = speed_upper - speed_lower
-     pi = acos(-1.d0)
-     dspeed = range/dble(nintervals)
-     allocate(speeds(nintervals),probability(nintervals))
-!    Create normal distribution     
-     sumy = 0.d0
-     do i = 1,nintervals
-        speed_lower_bin = speed_lower + dble(i-1)*dspeed
-        speed_upper_bin = speed_lower + dble(i)*dspeed
-        speed_middle_bin = 0.5d0*(speed_lower_bin + speed_upper_bin)
-        speeds(i) = speed_middle_bin
-        probability(i) = exp(-(speeds(i)-3.d0)**2/2.d0)/dsqrt(2.d0*pi) ! Use normal distribution
-        sumy = sumy + probability(i)
-     end do
+     allocate(speeds(nintervals), probability(nintervals), sample_distribution(nintervals,2))
+     
+     associate(range => speed_upper - speed_lower)
+       associate(dspeed => range/dble(nintervals))
+        do i = 1,nintervals
+          associate(speed_lower_bin => speed_lower + dble(i-1)*dspeed, speed_upper_bin => speed_lower + dble(i)*dspeed)
+            speeds(i) = 0.5D0*(speed_lower_bin + speed_upper_bin)
+          end associate
+          probability(i) = exp(-(speeds(i)-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
+        end do
+       end associate
+     end associate
 
-     do i = 1,nintervals
-        probability(i) = probability(i)/sumy
-     end do
-      
-     allocate(sample_distribution(nintervals,2))
-      
-     do i = 1,nintervals
-         sample_distribution(i,1) = speeds(i)
-         sample_distribution(i,2) = probability(i)
-     end do
-      
+     sample_distribution(:,1) = speeds
+     sample_distribution(:,2) = probability/sum(probability)
   end function
- 
 end
