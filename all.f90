@@ -1,10 +1,8 @@
-  use iso_c_binding, only : c_double, c_int
   implicit none
 
   type distribution_t
     double precision, allocatable, dimension(:) :: vel_, cumulative_distribution_
   end type  
-
   integer, parameter  :: ncells = 6000, npositions = 6000, nveldim = 4, nsteps = npositions - 1
   double precision random_4vectors(ncells,nsteps,nveldim)
 
@@ -12,7 +10,6 @@
   call random_number(random_4vectors)  
   associate(v => velocities(construct(distribution()), random_4vectors(:,:,1), random_4vectors(:,:,2:4)))
   end associate
-
 contains
 
   function distribution()
@@ -46,26 +43,19 @@ contains
     end associate
   end function
 
-  pure subroutine do_concurrent_sampled_speeds(speeds, vel, cumulative_distribution, sampled_speeds) bind(C)
-    real(c_double), intent(in) :: speeds(:,:), vel(:), cumulative_distribution(:)
-    real(c_double), intent(out), allocatable :: sampled_speeds(:,:)
-    integer cell, step
-    associate(ncells => size(speeds,1), nsteps => size(speeds,2))
-      allocate(sampled_speeds(ncells,nsteps))
-      do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= cumulative_distribution, value=.false., dim=1)-1)
-          sampled_speeds(cell,step) = vel(k)
-        end associate
-      end do
-    end associate
-  end subroutine
-  
   pure function velocities(self, speeds, directions) result(my_velocities)
     class(distribution_t), intent(in) :: self
     double precision, intent(in) :: speeds(:,:), directions(:,:,:)
     double precision, allocatable :: my_velocities(:,:,:), sampled_speeds(:,:),  dir(:,:,:)
-    integer step
-    call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
+    integer step, cell
+    associate(ncells => size(speeds,1), nsteps => size(speeds,2))
+      allocate(sampled_speeds(ncells,nsteps))
+      do concurrent(cell = 1:ncells, step = 1:nsteps)
+        associate(k => findloc(speeds(cell,step) >= self%cumulative_distribution_, value=.false., dim=1)-1)
+          sampled_speeds(cell,step) = self%vel_(k)
+        end associate
+      end do
+    end associate
     associate(nsteps => size(speeds,2))
       dir = directions(:,1:nsteps,:)
       associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
@@ -83,5 +73,4 @@ contains
       end do
     end associate
   end function
-
 end
