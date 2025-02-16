@@ -81,23 +81,17 @@ end module distribution_m
   use distribution_m, only : distribution_t, velocities, construct
   implicit none
 
-  integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4
+  integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4, nsteps = npositions - 1
   double precision, allocatable :: random_positions(:,:), random_4vectors(:,:,:)
   type(distribution_t) distribution
 
-  associate(empirical_distribution => sample_distribution())
-    call random_init(repeatable=.true., image_distinct=.true.)
-    allocate(random_positions(ncells,ndim))
-    call random_number(random_positions)  
-    associate(nsteps => npositions -1)
-      allocate(random_4vectors(ncells,nsteps,nveldim))
-      call random_number(random_4vectors)  
-      distribution = construct(empirical_distribution)
-      associate(random_speeds => random_4vectors(:,:,1), random_directions => random_4vectors(:,:,2:4))
-        associate(v => velocities(distribution, random_speeds, random_directions))
-        end associate
-      end associate
-    end associate
+  call random_init(repeatable=.true., image_distinct=.true.)
+  allocate(random_positions(ncells,ndim))
+  call random_number(random_positions)  
+  allocate(random_4vectors(ncells,nsteps,nveldim))
+  call random_number(random_4vectors)  
+  distribution = construct(sample_distribution())
+  associate(v => velocities(distribution, random_4vectors(:,:,1), random_4vectors(:,:,2:4)))
   end associate
 contains
   function sample_distribution()
