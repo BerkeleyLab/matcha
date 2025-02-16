@@ -27,9 +27,10 @@ contains
        associate(dspeed => range/dble(nintervals))
         do i = 1,nintervals
           associate(speed_lower_bin => speed_lower + dble(i-1)*dspeed, speed_upper_bin => speed_lower + dble(i)*dspeed)
-            speeds(i) = 0.5D0*(speed_lower_bin + speed_upper_bin)
+            associate(speeds => 0.5D0*(speed_lower_bin + speed_upper_bin))
+              probability(i) = exp(-(speeds-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
+            end associate
           end associate
-          probability(i) = exp(-(speeds(i)-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
         end do
        end associate
      end associate
