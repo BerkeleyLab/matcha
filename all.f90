@@ -8,6 +8,43 @@ module distribution_m
 
 contains
   
+end module distribution_m
+
+  use distribution_m
+  implicit none
+  integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4, nsteps = npositions - 1
+  double precision random_4vectors(ncells,nsteps,nveldim)
+
+  call random_init(repeatable=.true., image_distinct=.true.)
+  call random_number(random_4vectors)  
+  associate(v => velocities(construct(distribution()), random_4vectors(:,:,1), random_4vectors(:,:,2:4)))
+  end associate
+
+contains
+
+  function distribution()
+     double precision, allocatable :: distribution(:,:), speeds(:), probability(:)
+     double precision, parameter :: two_pi = 2D0*acos(-1.d0), speed_lower = 0.d0, speed_upper = 6.d0
+     integer, parameter :: nintervals = 4
+     integer i
+
+     allocate(speeds(nintervals), probability(nintervals), distribution(nintervals,2))
+     
+     associate(range => speed_upper - speed_lower)
+       associate(dspeed => range/dble(nintervals))
+        do i = 1,nintervals
+          associate(speed_lower_bin => speed_lower + dble(i-1)*dspeed, speed_upper_bin => speed_lower + dble(i)*dspeed)
+            speeds(i) = 0.5D0*(speed_lower_bin + speed_upper_bin)
+          end associate
+          probability(i) = exp(-(speeds(i)-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
+        end do
+       end associate
+     end associate
+
+     distribution(:,1) = speeds
+     distribution(:,2) = probability/sum(probability)
+  end function
+
   pure function construct(sample_distribution) result(distribution)
     double precision, intent(in) :: sample_distribution(:,:)
     type(distribution_t) distribution
@@ -20,29 +57,6 @@ contains
       associate(f => distribution%cumulative_distribution_)
         if (.not. all([(f(i+1) >= f(i), i=1, size(f)-1)])) error stop "non-monotonic cum dist"
       end associate
-    end associate
-  end function
-
-  pure function velocities(self, speeds, directions) result(my_velocities)
-    class(distribution_t), intent(in) :: self
-    double precision, intent(in) :: speeds(:,:), directions(:,:,:)
-    double precision, allocatable :: my_velocities(:,:,:), sampled_speeds(:,:),  dir(:,:,:)
-    
-    if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
-    if (.not. allocated(self%vel_)) error stop "unallocated vel_"
-
-    call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
-
-    associate(nsteps => size(speeds,2))
-      dir = directions(:,1:nsteps,:)
-      associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
-        associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
-          dir(:,:,1) = dir(:,:,1)/dir_mag_
-          dir(:,:,2) = dir(:,:,2)/dir_mag_
-          dir(:,:,3) = dir(:,:,3)/dir_mag_
-        end associate
-      end associate
-      call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
     end associate
   end function
 
@@ -76,41 +90,27 @@ contains
     end do
   end subroutine
 
-end module distribution_m
+  pure function velocities(self, speeds, directions) result(my_velocities)
+    class(distribution_t), intent(in) :: self
+    double precision, intent(in) :: speeds(:,:), directions(:,:,:)
+    double precision, allocatable :: my_velocities(:,:,:), sampled_speeds(:,:),  dir(:,:,:)
+    
+    if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
+    if (.not. allocated(self%vel_)) error stop "unallocated vel_"
 
-  use distribution_m, only : distribution_t, velocities, construct
-  implicit none
-  integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4, nsteps = npositions - 1
-  double precision random_4vectors(ncells,nsteps,nveldim)
+    call do_concurrent_sampled_speeds(speeds, self%vel_, self%cumulative_distribution_, sampled_speeds)
 
-  call random_init(repeatable=.true., image_distinct=.true.)
-  call random_number(random_4vectors)  
-  associate(v => velocities(construct(sample_distribution()), random_4vectors(:,:,1), random_4vectors(:,:,2:4)))
-  end associate
-
-contains
-
-  function sample_distribution()
-     double precision, allocatable :: sample_distribution(:,:), speeds(:), probability(:)
-     double precision, parameter :: two_pi = 2D0*acos(-1.d0), speed_lower = 0.d0, speed_upper = 6.d0
-     integer, parameter :: nintervals = 4
-     integer i
-
-     allocate(speeds(nintervals), probability(nintervals), sample_distribution(nintervals,2))
-     
-     associate(range => speed_upper - speed_lower)
-       associate(dspeed => range/dble(nintervals))
-        do i = 1,nintervals
-          associate(speed_lower_bin => speed_lower + dble(i-1)*dspeed, speed_upper_bin => speed_lower + dble(i)*dspeed)
-            speeds(i) = 0.5D0*(speed_lower_bin + speed_upper_bin)
-          end associate
-          probability(i) = exp(-(speeds(i)-3.d0)**2/2.d0)/dsqrt(two_pi) ! Use normal distribution
-        end do
-       end associate
-     end associate
-
-     sample_distribution(:,1) = speeds
-     sample_distribution(:,2) = probability/sum(probability)
+    associate(nsteps => size(speeds,2))
+      dir = directions(:,1:nsteps,:)
+      associate(dir_mag => sqrt(dir(:,:,1)**2 +dir(:,:,2)**2 + dir(:,:,3)**2))
+        associate(dir_mag_ => merge(dir_mag, epsilon(dir_mag), dir_mag/=0.))
+          dir(:,:,1) = dir(:,:,1)/dir_mag_
+          dir(:,:,2) = dir(:,:,2)/dir_mag_
+          dir(:,:,3) = dir(:,:,3)/dir_mag_
+        end associate
+      end associate
+      call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
+    end associate
   end function
 
 end
