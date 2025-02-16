@@ -15,50 +15,33 @@ module distribution_m
     end function
     
   end interface
-  
-  interface
-  
-    pure module function cumulative_distribution(self) result(my_cumulative_distribution)
-      implicit none
-      class(distribution_t), intent(in) :: self
-      double precision, allocatable :: my_cumulative_distribution(:)
-    end function
-    
-    pure module function velocities(self, speeds, directions) result(my_velocities)
-      !! Return the t_cell_collection_t object's velocity vectors
-      implicit none
-      class(distribution_t), intent(in) :: self
-      double precision, intent(in) :: speeds(:,:), directions(:,:,:)
-      double precision, allocatable :: my_velocities(:,:,:)
-    end function velocities
-
-  end interface
 
 contains
   
-  pure function monotonically_increasing(f) result(monotonic)
-    double precision, intent(in) :: f(:)
-    logical monotonic
-    integer i
-    monotonic = all([(f(i+1) >= f(i), i=1, size(f)-1)])
-  end function
-
   module procedure construct
     integer i
     if (.not. all(sample_distribution(:,2)>=0.D0)) error stop "negative sample_distribution value(s)"
     associate(nintervals => size(sample_distribution,1))      
       distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin         
       distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i,2)), i=1, nintervals)]]
-      if (.not. monotonically_increasing(distribution%cumulative_distribution_)) error stop "non-monotonic cum dist"
+      associate(f => distribution%cumulative_distribution_)
+        if (.not. all([(f(i+1) >= f(i), i=1, size(f)-1)])) error stop "non-monotonic cum dist"
+      end associate
     end associate
   end procedure construct
 
-  module procedure cumulative_distribution
+  pure function cumulative_distribution(self) result(my_cumulative_distribution)
+    class(distribution_t), intent(in) :: self
+    double precision, allocatable :: my_cumulative_distribution(:)
     if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
     my_cumulative_distribution = self%cumulative_distribution_
-  end procedure 
+  end function
   
-  module procedure velocities
+  pure function velocities(self, speeds, directions) result(my_velocities)
+    class(distribution_t), intent(in) :: self
+    double precision, intent(in) :: speeds(:,:), directions(:,:,:)
+    double precision, allocatable :: my_velocities(:,:,:)
+
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
     
     if (.not. allocated(self%cumulative_distribution_)) error stop "unallocatd cum dist"
@@ -75,6 +58,6 @@ contains
       end associate
       call do_concurrent_my_velocities(nsteps, dir, sampled_speeds, my_velocities)
     end associate
-  end procedure
+  end function
 
 end module distribution_m
