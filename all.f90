@@ -5,7 +5,7 @@
     double precision, allocatable, dimension(:) :: vel_, cumulative_distribution_
   end type  
 
-  integer, parameter  :: ncells = 6000, npositions = 6000, ndim = 3, nveldim = 4, nsteps = npositions - 1
+  integer, parameter  :: ncells = 6000, npositions = 6000, nveldim = 4, nsteps = npositions - 1
   double precision random_4vectors(ncells,nsteps,nveldim)
 
   call random_init(repeatable=.true., image_distinct=.true.)
