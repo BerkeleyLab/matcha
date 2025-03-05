@@ -155,12 +155,12 @@ contains
     logical test_passes
     type(subdomain_t) T
     real, parameter :: T_boundary = 1., T_initial = 2., tolerance = 0.01, T_steady = T_boundary, alpha = 1.
-    integer, parameter :: steps = 6000
+    integer, parameter :: steps = 1000
     integer step
 
-    call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=21) ! const. internally with a step down at boundaries
+    call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=11) ! const. internally with a step down at boundaries
 
-    associate(dt => T%dx()*T%dy()*T%dz()/(4*alpha))
+    associate(dt => t%dt_stable(alpha)) 
       do step = 1, steps
         T =  T + dt * alpha * .laplacian. T
       end do
@@ -174,7 +174,7 @@ contains
   function functional_matches_procedural() result(test_passes)
     logical test_passes
     real, parameter :: tolerance = 1.E-06
-    integer, parameter :: steps = 6000, n=21
+    integer, parameter :: steps = 1000, n=21
     real, parameter :: alpha = 1.
     real, parameter :: side=1., boundary_val=1., internal_val=2.
 
@@ -193,7 +193,7 @@ contains
 
       call T%define(side, boundary_val, internal_val, n)
 
-      associate(dt => T%dx()*T%dy()/(4*alpha))
+      associate(dt => t%dt_stable(alpha)) 
         do step = 1, steps
           T =  T + dt * alpha * .laplacian. T
         end do
@@ -209,7 +209,7 @@ contains
 
       call T%define(side, boundary_val, internal_val, n)
 
-      associate(dt => T%dx()*T%dy()/(4*alpha))
+      associate(dt => t%dt_stable(alpha)) 
         do step = 1, steps
           call T%step(alpha*dt)
         end do
