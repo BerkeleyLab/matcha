@@ -160,7 +160,7 @@ contains
 
     call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=11) ! const. internally with a step down at boundaries
 
-    associate(dt => t%dt_stable(alpha)) 
+    associate(dt => T%dt_stable(alpha))
       do step = 1, steps
         T =  T + dt * alpha * .laplacian. T
       end do
@@ -193,7 +193,7 @@ contains
 
       call T%define(side, boundary_val, internal_val, n)
 
-      associate(dt => t%dt_stable(alpha)) 
+      associate(dt => T%dt_stable(alpha))
         do step = 1, steps
           T =  T + dt * alpha * .laplacian. T
         end do
@@ -209,7 +209,7 @@ contains
 
       call T%define(side, boundary_val, internal_val, n)
 
-      associate(dt => t%dt_stable(alpha)) 
+      associate(dt => T%dt_stable(alpha))
         do step = 1, steps
           call T%step(alpha*dt)
         end do

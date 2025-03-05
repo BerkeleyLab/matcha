@@ -19,8 +19,7 @@ module subdomain_2D_m
     real, allocatable :: s_(:,:)
   contains
     procedure define
-    procedure dx
-    procedure dy
+    procedure dt_stable
     procedure values
     procedure exchange_halo
     generic :: operator(.laplacian.) => laplacian
@@ -44,16 +43,11 @@ module subdomain_2D_m
       real, allocatable :: my_values(:,:)
     end function
 
-    pure module function dx(self) result(my_dx)
+    pure module function dt_stable(self, alpha) result(my_dt)
       implicit none
       class(subdomain_2D_t), intent(in) :: self
-      real my_dx
-    end function
-
-    pure module function dy(self) result(my_dy)
-      implicit none
-      class(subdomain_2D_t), intent(in) :: self
-      real my_dy
+      real, intent(in) :: alpha
+      real my_dt
     end function
 
     pure module function laplacian(rhs) result(laplacian_rhs)
@@ -118,12 +112,11 @@ contains
     call self%exchange_halo
   end procedure
 
-  module procedure dx
-    my_dx = dx_
-  end procedure
-
-  module procedure dy
-    my_dy = dy_
+  module procedure dt_stable
+    !! Set the time step at 90% of the stability limit obtained provided by
+    !! Kassinos, S., & Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics
+    !! arXiv preprint arXiv:2410.04167.
+    my_dt = 0.9 * (1./(1./dx_**2 + 1./dy_**2)) *  (1./(2.*alpha))
   end procedure
 
   module procedure laplacian
@@ -192,7 +185,7 @@ program main
   call T%define(side=1., boundary_val=T_boundary, internal_val=T_initial, n=nx) ! 2D step function
   sync all
 
-  associate(dt => T%dx()*T%dy()/(4*alpha))
+  associate(dt => T%dt_stable(alpha))
     call cpu_time(t_start)
     do step = 1, steps
       T =  T + dt * alpha * .laplacian. T
