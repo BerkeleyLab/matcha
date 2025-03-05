@@ -15,6 +15,13 @@ submodule(subdomain_m) subdomain_s
 
 contains
 
+  module procedure dt_stable
+    !! Set the time step at 90% of the stability limit obtained generalizing to 3D the value provided for 2D by
+    !! Kassinos, S., & Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics. 
+    !! arXiv preprint arXiv:2410.04167.
+    my_dt = 0.9 * (1./(1./dx_**2 + 1./dy_**2 + 1./dz_**2)) *  (1./(2.*alpha))
+  end procedure
+
   module procedure define
 
     integer, parameter :: nx_boundaries = 2

@@ -15,6 +15,7 @@ module subdomain_m
     generic :: operator(*) => multiply
     generic :: operator(+) => add
     generic :: assignment(=) => assign_and_sync
+    procedure dt_stable
     procedure dx
     procedure dy
     procedure dz
@@ -61,6 +62,16 @@ module subdomain_m
       implicit none
       class(subdomain_t), intent(in) :: self
       real my_dz
+    end function
+
+    pure module function dt_stable(self, alpha) result(my_dt)
+      !! Set the time step at 90% of the stability limit obtained generalizing to 3D the value provided for 2D by
+      !! Kassinos, S., & Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics. 
+      !! arXiv preprint arXiv:2410.04167.
+      implicit none
+      class(subdomain_t), intent(in) :: self
+      real, intent(in) :: alpha
+      real my_dt
     end function
 
     pure module function laplacian(rhs) result(laplacian_rhs)
