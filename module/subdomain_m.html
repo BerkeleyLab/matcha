@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="11.3% of total for modules and submodules.">79 statements</a>
+                 title="12.1% of total for modules and submodules.">86 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -126,6 +126,7 @@
             <a class="list-group-item" href="../module/subdomain_m.html#interface-dx">dx</a>
             <a class="list-group-item" href="../module/subdomain_m.html#interface-dy">dy</a>
             <a class="list-group-item" href="../module/subdomain_m.html#interface-dz">dz</a>
+            <a class="list-group-item" href="../module/subdomain_m.html#interface-dt_stable">dt_stable</a>
             <a class="list-group-item" href="../module/subdomain_m.html#interface-laplacian">laplacian</a>
             <a class="list-group-item" href="../module/subdomain_m.html#interface-multiply">multiply</a>
             <a class="list-group-item" href="../module/subdomain_m.html#interface-add">add</a>
@@ -367,7 +368,7 @@ modules which it uses.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~5"></span>
+              <span class="anchor" id="variable-self~11"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -421,7 +422,7 @@ modules which it uses.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~6"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -475,7 +476,7 @@ modules which it uses.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~7"></span>
+              <span class="anchor" id="variable-self~13"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -529,7 +530,7 @@ modules which it uses.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~8"></span>
+              <span class="anchor" id="variable-self~14"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -538,6 +539,77 @@ modules which it uses.
             </td>
             <td>::</td>
             <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-dt_stable"></span>
+      <h3>        interface
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>
+    private pure module function dt_stable(self, alpha) result(my_dt)  
+    <a href="../proc/dt_stable.html"><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+
+    </h3>
+  <p>Set the time step at 90% of the stability limit obtained generalizing to 3D the value provided for 2D by
+Kassinos, S., &amp; Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics. 
+arXiv preprint arXiv:2410.04167.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~15"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-alpha"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>alpha</strong></td>
             <td>
                 
             </td>
@@ -820,7 +892,7 @@ modules which it uses.
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n"></span>
+              <span class="anchor" id="variable-n~5"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -835,7 +907,7 @@ modules which it uses.
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~3"></span>
+              <span class="anchor" id="variable-self~9"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(out)</td>
@@ -899,7 +971,7 @@ modules which it uses.
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~4"></span>
+              <span class="anchor" id="variable-self~10"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1046,7 +1118,7 @@ modules which it uses.
               </tr>
               <tr>
                 <td>  procedure, public, pass(self) ::
-  <strong><a href='../type/subdomain_t.html#boundprocedure-step~2'>step</a></strong></td>
+  <strong><a href='../type/subdomain_t.html#boundprocedure-step'>step</a></strong></td>
                 <td></td>
               </tr>
               <tr>
@@ -1072,6 +1144,11 @@ modules which it uses.
               <tr>
                 <td>  generic, public ::
   <strong><a href='../type/subdomain_t.html#boundprocedure-assignment%28%3D%29'>assignment(=)</a></strong> => <a href='/home/runner/work/matcha/matcha/doc/html/type/subdomain_t.html#boundprocedure-assign_and_sync'>assign_and_sync</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/subdomain_t.html#boundprocedure-dt_stable'>dt_stable</a></strong></td>
                 <td></td>
               </tr>
               <tr>

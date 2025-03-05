@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p>21.6% of total for derived types.</p>Including implementation: 19 statements, 32.2% of total for derived types.">19 statements</a>
+                 title="<p>22.5% of total for derived types.</p>Including implementation: 20 statements, 33.3% of total for derived types.">20 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -144,12 +144,13 @@
       <div id="boundprocs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-define">define</a>
-            <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-step~2">step</a>
+            <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-step">step</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-multiply">multiply</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28.laplacian.%29">operator(.laplacian.)</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28ASTERISK%29">operator(*)</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-operator%28%2B%29">operator(+)</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-assignment%28%3D%29">assignment(=)</a>
+            <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-dt_stable">dt_stable</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-dx">dx</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-dy">dy</a>
             <a class="list-group-item" href="../type/subdomain_t.html#boundprocedure-dz">dz</a>
@@ -332,7 +333,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-step~2"></span>
+      <span class="anchor" id="boundprocedure-step"></span>
       <h3>
           procedure, public, pass(self) ::
   <strong>step</strong>
@@ -576,6 +577,83 @@
 
   <h4>Arguments</h4>
     <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dt_stable"></span>
+      <h3>
+          procedure, public ::
+  <strong>dt_stable</strong>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  <h3>
+    private pure module function dt_stable(self, alpha) result(my_dt)  
+    <a href="../proc/dt_stable.html"><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+</h3>
+
+  <p>Set the time step at 90% of the stability limit obtained generalizing to 3D the value provided for 2D by
+Kassinos, S., &amp; Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics. 
+arXiv preprint arXiv:2410.04167.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>alpha</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
 
         </li>
     </ul>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="21.4% of total for modules and submodules.">150 statements</a>
+                 title="21.5% of total for modules and submodules.">153 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -155,6 +155,7 @@
       </a>
       <div id="modprocs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-dt_stable">dt_stable</a>
             <a class="list-group-item" href="../module/subdomain_s.html#proc-define">define</a>
             <a class="list-group-item" href="../module/subdomain_s.html#proc-dx">dx</a>
             <a class="list-group-item" href="../module/subdomain_s.html#proc-dy">dy</a>
@@ -188,8 +189,8 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item">intrinsic_array_m</li>
-                  <li class="list-inline-item">assert_m</li>
                   <li class="list-inline-item">sourcery_m</li>
+                  <li class="list-inline-item">assert_m</li>
               </ul>
             </li>
             <li class="list-group-item">
@@ -649,6 +650,69 @@ parameter
         <section>
           <h2>Module Procedures</h2>
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dt_stable"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/dt_stable.html'>dt_stable</a> <small>pure module function dt_stable(self, alpha) result(my_dt)</small>  
+    <a href="../interface/dt_stable.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  <p>Set the time step at 90% of the stability limit obtained generalizing to 3D the value provided for 2D by
+Kassinos, S., &amp; Alexiadis, A. (2024). Beyond Language: Applying MLX Transformers to Engineering Physics. 
+arXiv preprint arXiv:2410.04167.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~15"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-alpha"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>alpha</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-define"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/define.html'>define</a> <small>module subroutine define(side, boundary_val, internal_val, n, self)</small>  
     <a href="../interface/define.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h3></div>
@@ -714,7 +778,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n"></span>
+              <span class="anchor" id="variable-n~5"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -729,7 +793,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~3"></span>
+              <span class="anchor" id="variable-self~9"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(out)</td>
@@ -770,7 +834,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~6"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -816,7 +880,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~7"></span>
+              <span class="anchor" id="variable-self~13"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -862,7 +926,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~8"></span>
+              <span class="anchor" id="variable-self~14"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1132,7 +1196,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~5"></span>
+              <span class="anchor" id="variable-self~11"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1193,7 +1257,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~4"></span>
+              <span class="anchor" id="variable-self~10"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(inout)</td>
