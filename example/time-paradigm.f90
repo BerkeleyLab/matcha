@@ -58,7 +58,7 @@ contains
 
     call system_clock(t_start_functional)
 
-    associate(dt => T%dx()*T%dy()/(4*alpha))
+    associate(dt => T%dt_stable(alpha))
       functional_programming: &
       do step = 1, steps
         T =  T + dt * alpha * .laplacian. T
@@ -80,7 +80,7 @@ contains
     real system_time
     type(subdomain_t) T
 
-    associate(dt => T%dx()*T%dy()/(4*alpha))
+    associate(dt => T%dt_stable(alpha))
       call T%define(side=1., boundary_val=0., internal_val=1., n=resolution)
       call system_clock(t_start_procedural)
       procedural_programming: &
