@@ -1,184 +1,205 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="Motility analysis of T Cell Histories in Activation">
+      <meta name="description" content="Motility analysis of T Cell Histories in Activation">
     <meta name="author" content="" >
     <link rel="icon" href="../favicon.png">
 
     <title>subdomain_s &ndash; Matcha</title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
-    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    
-    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
-
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../index.html">Matcha </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-              data-toggle="dropdown" role="button"
-              aria-haspopup="true"
-     aria-expanded="false">Contents <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a href="../lists/files.html">Source Files</a></li>
-            <li><a href="../lists/modules.html">Modules</a></li>
-            <li><a href="../lists/procedures.html">Procedures</a></li>
-                   <li><a href="../lists/types.html">Derived Types</a></li>
-            <li><a href="../program/main.html">Program</a></li>
-       
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/main.html">Program</a>
+                </li>
             </ul>
-        
-            </li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
-                             <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../program/main.html">Program</a></li>
-          </ul>
-        <form action="../search.html" class="navbar-form navbar-right" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
         </div>
-<!--
-        <button type="submit" class="btn btn-default">Submit</button>
--->
-        </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+      </nav>
+    </div>
 
     <div class="container">
   <div class="row">
-    <h1>subdomain_s 
-    <small>Submodule</small>
+    <h1>subdomain_s
+      <small>Submodule</small>
+      
     </h1>
-    <div class="row">
-  <div class="col-lg-12">
-<div class="well well-sm">
-  <ul class="list-inline" style="margin-bottom:0px;display:inline">
-     <li><i class="fa fa-list-ol"></i>
-       <a data-toggle="tooltip"
-    data-placement="bottom" data-html="true"
-    title="21.4% of total for modules and submodules.">150 statements</a>
-     </li> 
-    <li><i class="fa fa-code"></i><a href="../src/subdomain_s.f90"> Source File</a></li>
-  </ul>
-  <ol class="breadcrumb in-well text-right">
-     <li><a href='../sourcefile/subdomain_s.f90.html'>subdomain_s.f90</a></li>
-     <li class="active">subdomain_s</li>
-  </ol>
-</div>
-</div>
-</div>
-<script>
-  $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-  })
-</script>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
 
-  </div>
-  
-  <div class="row">
-    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
-    <div id="sidebar">
-  <h3>Contents</h3>
- 
-<div class="panel panel-primary">
-  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#vars-0">Variables</a></h3></div>
-  <div id="vars-0" class="panel-collapse collapse">
-    <div class="list-group">
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-halo_x">halo_x</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-west">west</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-east">east</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-data_partition">data_partition</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dx_">dx_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dy_">dy_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dz_">dz_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_nx">my_nx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-nx">nx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-ny">ny</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-nz">nz</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-me">me</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-num_subdomains">num_subdomains</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_west">my_internal_west</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_east">my_internal_east</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-increment">increment</a>
-    </div>
-  </div>
-</div>
-<div class="panel panel-primary">
-  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#modprocs-0">Module Procedures</a></h3></div>
-  <div id="modprocs-0" class="panel-collapse collapse">
-    <div class="list-group">
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-define">define</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dx">dx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dy">dy</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dz">dz</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-laplacian">laplacian</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-multiply">multiply</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-add">add</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-assign_and_sync">assign_and_sync</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-values">values</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-step">step</a>
-    </div>
-  </div>
-</div>
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="21.4% of total for modules and submodules.">150 statements</a>
+            </li>
 
-</div>
-
-    </div>
-    
-    <div class="col-md-9" id='text'>
-    
-<br>        <div class="panel panel-default">
-      <div class="panel-heading">
-  <h3 class="panel-title">Uses</h3>
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/subdomain_s.f90"> Source File</a>
+            </li>
+        </ul>
       </div>
-      <ul class="list-group">
-      <li class="list-group-item">
-  <ul class="list-inline">
-    <li>sourcery_m</li>
-    <li>intrinsic_array_m</li>
-    <li>assert_m</li>
-  </ul>
-      </li>
-      <li class="list-group-item">
-  <ul class="list-inline">
-    <li><h5>Ancestors:</h5></li>
-    <li><a href='../module/subdomain_m.html'>subdomain_m</a></li>
-  </ul>
-      </li>
-      <li class="list-group-item">
-  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/subdomain_s.f90.html'>subdomain_s.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">subdomain_s</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-halo_x">halo_x</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-west">west</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-east">east</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-data_partition">data_partition</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-dx_">dx_</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-dy_">dy_</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-dz_">dz_</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-my_nx">my_nx</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-nx">nx</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-ny">ny</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-nz">nz</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-me">me</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-num_subdomains">num_subdomains</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_west">my_internal_west</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_east">my_internal_east</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#variable-increment">increment</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#modprocs-0"
+         aria-expanded="false" aria-controls="modprocs-0">
+         <h4 class="card-header bg-primary text-white">Module Procedures</h4>
+      </a>
+      <div id="modprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-define">define</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-dx">dx</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-dy">dy</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-dz">dz</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-laplacian">laplacian</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-multiply">multiply</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-add">add</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-assign_and_sync">assign_and_sync</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-values">values</a>
+            <a class="list-group-item" href="../module/subdomain_s.html#proc-step">step</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+
+    <div class="col-md-9" id='text'>
+      
+<br>          <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item">intrinsic_array_m</li>
+                  <li class="list-inline-item">assert_m</li>
+                  <li class="list-inline-item">sourcery_m</li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <ul class="list-inline">
+                <li><h5>Ancestors:</h5></li>
+                  <li class="list-inline-item"><a href='subdomain_m.html'>subdomain_m</a></li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
@@ -195,62 +216,72 @@
 <polygon fill="none" stroke="black" points="222,-87 140,-87 140,-63 222,-63 222,-87"/>
 <text text-anchor="middle" x="181" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50">subdomain_s</text>
 </g>
-<!-- sourcery_m -->
+<!-- assert_m -->
 <g id="module~~subdomain_s~~UsesGraph_node2" class="node">
-<title>sourcery_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="89,-150 15,-150 15,-126 89,-126 89,-150"/>
-<text text-anchor="middle" x="52" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sourcery_m</text>
+<title>assert_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="82.5,-150 21.5,-150 21.5,-126 82.5,-126 82.5,-150"/>
+<text text-anchor="middle" x="52" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">assert_m</text>
 </g>
-<!-- module~subdomain_s&#45;&gt;sourcery_m -->
+<!-- module~subdomain_s&#45;&gt;assert_m -->
 <g id="module~~subdomain_s~~UsesGraph_edge1" class="edge">
-<title>module~subdomain_s&#45;&gt;sourcery_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-87.06C144.57,-95.82 123.3,-107.73 104,-117 100.61,-118.63 97.05,-120.25 93.47,-121.84"/>
-<polygon fill="#000000" stroke="#000000" points="91.8,-118.74 83.99,-125.9 94.56,-125.17 91.8,-118.74"/>
+<title>module~subdomain_s&#45;&gt;assert_m</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-87.06C144.57,-95.82 123.3,-107.73 104,-117 100.16,-118.84 96.12,-120.68 92.06,-122.45"/>
+<polygon fill="#000000" stroke="#000000" points="90.48,-119.32 82.65,-126.46 93.22,-125.76 90.48,-119.32"/>
+</g>
+<!-- intrinsic_array_m -->
+<g id="module~~subdomain_s~~UsesGraph_node3" class="node">
+<title>intrinsic_array_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="104,-108 0,-108 0,-84 104,-84 104,-108"/>
+<text text-anchor="middle" x="52" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">intrinsic_array_m</text>
+</g>
+<!-- module~subdomain_s&#45;&gt;intrinsic_array_m -->
+<g id="module~~subdomain_s~~UsesGraph_edge2" class="edge">
+<title>module~subdomain_s&#45;&gt;intrinsic_array_m</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-81.64C131.67,-82.99 122.93,-84.44 114.24,-85.87"/>
+<polygon fill="#000000" stroke="#000000" points="113.4,-82.46 104.11,-87.55 114.54,-89.37 113.4,-82.46"/>
 </g>
 <!-- module~subdomain_m -->
-<g id="module~~subdomain_s~~UsesGraph_node3" class="node">
+<g id="module~~subdomain_s~~UsesGraph_node4" class="node">
 <title>module~subdomain_m</title>
-<g id="a_module~~subdomain_s~~UsesGraph_node3"><a xlink:href=".././module/subdomain_m.html" xlink:title="subdomain_m">
-<polygon fill="#337ab7" stroke="#337ab7" points="96,-108 8,-108 8,-84 96,-84 96,-108"/>
-<text text-anchor="middle" x="52" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">subdomain_m</text>
+<g id="a_module~~subdomain_s~~UsesGraph_node4"><a xlink:href="../module/subdomain_m.html" xlink:title="subdomain_m">
+<polygon fill="#337ab7" stroke="#337ab7" points="96,-66 8,-66 8,-42 96,-42 96,-66"/>
+<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">subdomain_m</text>
 </a>
 </g>
 </g>
 <!-- module~subdomain_s&#45;&gt;module~subdomain_m -->
 <g id="module~~subdomain_s~~UsesGraph_edge4" class="edge">
 <title>module~subdomain_s&#45;&gt;module~subdomain_m</title>
-<path fill="none" stroke="#000000" d="M139.82,-81.64C129.25,-83.39 117.67,-85.31 106.52,-87.15"/>
-<polygon fill="#000000" stroke="#000000" points="105.73,-83.73 96.44,-88.82 106.88,-90.64 105.73,-83.73"/>
+<path fill="none" stroke="#000000" d="M139.82,-68.36C129.25,-66.61 117.67,-64.69 106.52,-62.85"/>
+<polygon fill="#000000" stroke="#000000" points="106.88,-59.36 96.44,-61.18 105.73,-66.27 106.88,-59.36"/>
 </g>
-<!-- intrinsic_array_m -->
-<g id="module~~subdomain_s~~UsesGraph_node4" class="node">
-<title>intrinsic_array_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="104,-66 0,-66 0,-42 104,-42 104,-66"/>
-<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">intrinsic_array_m</text>
-</g>
-<!-- module~subdomain_s&#45;&gt;intrinsic_array_m -->
-<g id="module~~subdomain_s~~UsesGraph_edge2" class="edge">
-<title>module~subdomain_s&#45;&gt;intrinsic_array_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-68.36C131.67,-67.01 122.93,-65.56 114.24,-64.13"/>
-<polygon fill="#000000" stroke="#000000" points="114.54,-60.63 104.11,-62.45 113.4,-67.54 114.54,-60.63"/>
-</g>
-<!-- assert_m -->
+<!-- sourcery_m -->
 <g id="module~~subdomain_s~~UsesGraph_node5" class="node">
-<title>assert_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="82.5,-24 21.5,-24 21.5,0 82.5,0 82.5,-24"/>
-<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">assert_m</text>
+<title>sourcery_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="89,-24 15,-24 15,0 89,0 89,-24"/>
+<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sourcery_m</text>
 </g>
-<!-- module~subdomain_s&#45;&gt;assert_m -->
+<!-- module~subdomain_s&#45;&gt;sourcery_m -->
 <g id="module~~subdomain_s~~UsesGraph_edge3" class="edge">
-<title>module~subdomain_s&#45;&gt;assert_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.16,-31.16 96.12,-29.32 92.06,-27.55"/>
-<polygon fill="#000000" stroke="#000000" points="93.22,-24.24 82.65,-23.54 90.48,-30.68 93.22,-24.24"/>
+<title>module~subdomain_s&#45;&gt;sourcery_m</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.61,-31.37 97.05,-29.75 93.47,-28.16"/>
+<polygon fill="#000000" stroke="#000000" points="94.56,-24.83 83.99,-24.1 91.8,-31.26 94.56,-24.83"/>
 </g>
 </g>
 </svg>
-</div><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
-    <p>Nodes of different colours represent the following: </p>
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#UsesGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="UsesGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
@@ -300,483 +331,934 @@
 </g>
 </svg>
 
-    
-    <p>Solid arrows point from a submodule to the (sub)module which it is
-    descended from. Dashed arrows point from a module or program unit to 
-    modules which it uses.
-    </p>
-    </div></div></div></div>
-      </li>
-      </ul>
+<p>Solid arrows point from a submodule to the (sub)module which it is
+descended from. Dashed arrows point from a module or program unit to 
+modules which it uses.
+</p>
+ </div>
+            </div>
+          </div>
+        </div>
+            </li>
+        </ul>
+      </div>
     </div>
 
-    
-    <br>
-
-    <section class="visible-xs visible-sm hidden-md">
-      <h3>Contents</h3>
- 
-<div class="panel panel-primary">
-  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#vars-1">Variables</a></h3></div>
-  <div id="vars-1" class="panel-collapse collapse">
-    <div class="list-group">
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-halo_x">halo_x</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-west">west</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-east">east</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-data_partition">data_partition</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dx_">dx_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dy_">dy_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-dz_">dz_</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_nx">my_nx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-nx">nx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-ny">ny</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-nz">nz</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-me">me</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-num_subdomains">num_subdomains</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_west">my_internal_west</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-my_internal_east">my_internal_east</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#variable-increment">increment</a>
-    </div>
-  </div>
-</div>
-<div class="panel panel-primary">
-  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#modprocs-1">Module Procedures</a></h3></div>
-  <div id="modprocs-1" class="panel-collapse collapse">
-    <div class="list-group">
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-define">define</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dx">dx</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dy">dy</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-dz">dz</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-laplacian">laplacian</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-multiply">multiply</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-add">add</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-assign_and_sync">assign_and_sync</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-values">values</a>
-      <a class="list-group-item" href="../module/subdomain_s.html#proc-step">step</a>
-    </div>
-  </div>
-</div>
-
-    </section>
-    <br class="visible-xs visible-sm hidden-md">
-
-
-    <section>
-    <h2>Variables</h2>
-    <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Visibility</th><th>Attributes</th><th></th><th>Name</th><th></th><th>Initial</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" id="variable-halo_x"></span>real,</td>
-<td>private,</td>  <td>allocatable</td><td>::</td>
-  <td><strong>halo_x</strong>(:,:,:)[:]</td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-west"></span>integer,</td>
-<td>private,</td>  <td>parameter</td><td>::</td>
-  <td><strong>west</strong></td><td> =</td><td>1</td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-east"></span>integer,</td>
-<td>private,</td>  <td>parameter</td><td>::</td>
-  <td><strong>east</strong></td><td> =</td><td>2</td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-data_partition"></span>type(data_partition_t),</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>data_partition</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-dx_"></span>real,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>dx_</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-dy_"></span>real,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>dy_</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-dz_"></span>real,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>dz_</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-my_nx"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>my_nx</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-nx"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>nx</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-ny"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>ny</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-nz"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>nz</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-me"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>me</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-num_subdomains"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>num_subdomains</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-my_internal_west"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>my_internal_west</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-my_internal_east"></span>integer,</td>
-<td>private</td>  <td></td><td>::</td>
-  <td><strong>my_internal_east</strong></td><td></td><td></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" id="variable-increment"></span>real,</td>
-<td>private,</td>  <td>allocatable</td><td>::</td>
-  <td><strong>increment</strong>(:,:,:)</td><td></td><td></td><td></td>
-</tr>
-</tbody>
-</table>
-
-    </section>
-    <br>
-    
-    
-
-    
-    
-
-    
-    
+      
+      <br>
 
 
         <section>
-        <h2>Module Procedures</h2>
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-define"></span><h3>module procedure <a href='../proc/define.html'>define</a> <small>module module subroutine define(side, boundary_val, internal_val, n, self)</small>   <a href='../interface/define.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+          <h2>Variables</h2>
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-halo_x"></span>
+              real,
+            </td>
+              <td>private,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>halo_x</strong>(:,:,:)[:]</td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-west"></span>
+              integer,
+            </td>
+              <td>private,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>west</strong></td>
+<td> =</td>
+                <td>1</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-east"></span>
+              integer,
+            </td>
+              <td>private,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>east</strong></td>
+<td> =</td>
+                <td>2</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-data_partition"></span>
+              type(data_partition_t),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>data_partition</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dx_"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dx_</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dy_"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dy_</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dz_"></span>
+              real,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dz_</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-my_nx"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>my_nx</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nx"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nx</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ny"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ny</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nz"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nz</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_subdomains"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>num_subdomains</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-my_internal_west"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>my_internal_west</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-my_internal_east"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>my_internal_east</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-increment"></span>
+              real,
+            </td>
+              <td>private,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>increment</strong>(:,:,:)</td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </section>
+        <br>
+
+
+
+
+
+
+
+
+
+        <section>
+          <h2>Module Procedures</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-define"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/define.html'>define</a> <small>module subroutine define(side, boundary_val, internal_val, n, self)</small>  
+    <a href="../interface/define.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
 </h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>real,</td>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-side"></span>
+              real,
+            </td>
 <td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>side</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>real,</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>side</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-boundary_val"></span>
+              real,
+            </td>
 <td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>boundary_val</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>real,</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>boundary_val</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-internal_val"></span>
+              real,
+            </td>
 <td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>internal_val</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>integer,</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>internal_val</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-n"></span>
+              integer,
+            </td>
 <td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>n</strong></td><td><p>number of grid points in each coordinate direction</p></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+<p>number of grid points in each coordinate direction</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~3"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
 <td>intent(out)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-dx"></span><h3>module procedure <a href='../proc/dx.html'>dx</a> <small>pure module module function dx(self) result(my_dx)</small>   <a href='../interface/dx.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>real</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-dy"></span><h3>module procedure <a href='../proc/dy.html'>dy</a> <small>pure module module function dy(self) result(my_dy)</small>   <a href='../interface/dy.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>real</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-dz"></span><h3>module procedure <a href='../proc/dz.html'>dz</a> <small>pure module module function dz(self) result(my_dz)</small>   <a href='../interface/dz.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>real</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-laplacian"></span><h3>module procedure <a href='../proc/laplacian.html'>laplacian</a> <small>pure module module function laplacian(rhs) result(laplacian_rhs)</small>   <a href='../interface/laplacian.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>rhs</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-multiply"></span><h3>module procedure <a href='../proc/multiply.html'>multiply</a> <small>pure module module function multiply(lhs, rhs) result(product)</small>   <a href='../interface/multiply.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>real,</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>lhs</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>rhs</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-add"></span><h3>module procedure <a href='../proc/add.html'>add</a> <small>pure module module function add(lhs, rhs) result(total)</small>   <a href='../interface/add.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>lhs</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>type(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>rhs</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-assign_and_sync"></span><h3>module procedure <a href='../proc/assign_and_sync.html'>assign_and_sync</a> <small>module module subroutine assign_and_sync(lhs, rhs)</small>   <a href='../interface/assign_and_sync.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(out)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>lhs</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>type(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>rhs</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-values"></span><h3>module procedure <a href='../proc/values.html'>values</a> <small>pure module module function values(self) result(my_values)</small>   <a href='../interface/values.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-<h4>Return Value <small>real,allocatable, (:,:,:)</small></h4>  
-
-  </div>
-  </div>
-
-          <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-step"></span><h3>module procedure <a href='../proc/step.html'>step</a> <small>module module subroutine step(alpha_dt, self)</small>   <a href='../interface/step.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
-</h3></div>
-  <div class="panel-body">
-           
-<h4>Arguments</h4>      <table class="table table-striped varlist">
-<thead><tr><th>Type</th><th>Intent</th><th>Optional</th><th>Attributes</th><th></th><th>Name</th><th></th></thead>
-<tbody>
-<tr>
-  <td><span class="anchor" ></span>real,</td>
-<td>intent(in)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>alpha_dt</strong></td><td></td>
-</tr>
-<tr>
-  <td><span class="anchor" ></span>class(<a href='../type/subdomain_t.html'>subdomain_t</a>),</td>
-<td>intent(inout)</td>
-  <td></td>  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-</tr>
-</tbody>
-</table>
-
-
-  </div>
-  </div>
-
-        </section>    
-    
     </div>
   </div>
 
-    <hr>    
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dx"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/dx.html'>dx</a> <small>pure module function dx(self) result(my_dx)</small>  
+    <a href="../interface/dx.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~6"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dy"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/dy.html'>dy</a> <small>pure module function dy(self) result(my_dy)</small>  
+    <a href="../interface/dy.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~7"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-dz"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/dz.html'>dz</a> <small>pure module function dz(self) result(my_dz)</small>  
+    <a href="../interface/dz.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~8"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-laplacian"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/laplacian.html'>laplacian</a> <small>pure module function laplacian(rhs) result(laplacian_rhs)</small>  
+    <a href="../interface/laplacian.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rhs"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-multiply"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/multiply.html'>multiply</a> <small>pure module function multiply(lhs, rhs) result(product)</small>  
+    <a href="../interface/multiply.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lhs"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rhs~2"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-add"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/add.html'>add</a> <small>pure module function add(lhs, rhs) result(total)</small>  
+    <a href="../interface/add.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lhs~2"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rhs~3"></span>
+              type(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/subdomain_t.html'>subdomain_t</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-assign_and_sync"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/assign_and_sync.html'>assign_and_sync</a> <small>module subroutine assign_and_sync(lhs, rhs)</small>  
+    <a href="../interface/assign_and_sync.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lhs~3"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-rhs~4"></span>
+              type(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rhs</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-values"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/values.html'>values</a> <small>pure module function values(self) result(my_values)</small>  
+    <a href="../interface/values.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~5"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real, allocatable, (:,:,:)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-step"></span> <h3>module procedure /home/runner/work/matcha/matcha/doc/html/module/subdomain_s.html <a href='../proc/step.html'>step</a> <small>module subroutine step(alpha_dt, self)</small>  
+    <a href="../interface/step.html"><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-alpha_dt"></span>
+              real,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>alpha_dt</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~4"></span>
+              class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+        </section>
+    </div>
+  </div>
+
+      <hr>
     </div> <!-- /container -->
     <footer>
       <div class="container">
-      <div class="row">
-        <div class="col-xs-6 col-md-6"><p>Matcha was developed by <br>&copy; 2023 
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Matcha
+              &copy; 2025 
 </p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
         </div>
-        <div class="col-xs-6 col-md-6">
-          <p class="text-right">
-            Documentation generated by 
-            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
-          </p>
-        </div>
-      </div>
-      <br>
-      </div> <!-- /container -->    
+        <br>
+      </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
+    <!-- Bootstrap core JavaScript -->
     <!-- Placed at the end of the document so the pages load faster -->
-<!--
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
--->
-    <script src="../js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
     <!-- MathJax JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-      });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script src="../tipuesearch/tipuesearch_content.js"></script>
-    <script src="../tipuesearch/tipuesearch_set.js"></script>
-    <script src="../tipuesearch/tipuesearch.js"></script>
-    
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
   </body>
 </html>
