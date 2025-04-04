@@ -1,3 +1,5 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
 module do_concurrent_m
   use iso_c_binding, only : c_double, c_int
   use t_cell_collection_m, only : t_cell_collection_t, t_cell_collection_bind_C_t

@@ -1,3 +1,5 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
 submodule(subdomain_m) subdomain_s
   use sourcery_m, only : data_partition_t
   use assert_m, only : assert
