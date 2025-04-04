@@ -1,6 +1,10 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
+
+#include "assert_macros.h"
+
 submodule(t_cell_collection_m) t_cell_collection_s
+  use assert_m
   use iso_c_binding, only : c_loc
   use assert_m, only : assert
   implicit none
@@ -13,7 +17,7 @@ contains
   end procedure 
   
   module procedure positions
-    call assert(allocated(self%positions_), "t_cell_collection_t%positions: allocated(positions_)")
+    call_assert(allocated(self%positions_))
     my_positions = self%positions_
   end procedure
   

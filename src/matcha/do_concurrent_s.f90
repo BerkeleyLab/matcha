@@ -1,3 +1,6 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
+
 submodule(do_concurrent_m) do_concurrent_s
   use iso_c_binding, only : c_f_pointer
   implicit none
