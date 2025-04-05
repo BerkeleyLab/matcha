@@ -2,7 +2,14 @@
 ! Terms of use are as specified in LICENSE.txt
 module subdomain_test_m
   !! Define subdomain tests and procedures required for reporting results
-  use julienne_m, only : test_t, test_result_t
+  use julienne_m, only : &
+     diagnosis_function_i &
+    ,operator(.csv.) &
+    ,string_t &
+    ,test_t &
+    ,test_description_t &
+    ,test_diagnosis_t &
+    ,test_result_t
   use subdomain_m, only : subdomain_t
   use assert_m, only : assert
   implicit none
@@ -24,26 +31,32 @@ contains
   end function
 
   function results() result(test_results)
+    type(test_description_t), allocatable :: test_descriptions(:)
     type(test_result_t), allocatable :: test_results(:)
-    integer, parameter :: longest_len = &
-      len("computing a concave Laplacian for a spatially constant operand with a step down at boundaries")
 
-    associate( &
-      descriptions => &
-        [character(len=longest_len) :: &
-         "computing a concave Laplacian for a spatially constant operand with a step down at boundaries", &
-         "reaching the correct steady state solution", &
-         "functional pattern results matching procedural results" &
-        ], &
-      outcomes => &
-        [concave_laplacian(), &
-         correct_steady_state(), &
-         functional_matches_procedural() &
-        ] &
-    )
-      call assert(size(descriptions) == size(outcomes),"subdomain_test_m(results): size(descriptions) == size(outcomes)")
-      test_results = test_result_t(descriptions, outcomes)
-    end associate
+#if HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY
+    test_descriptions = [ &
+       test_description_t("computing a concave Laplacian for a spatially constant operand with a step down at boundaries", concave_laplacian) &
+      ,test_description_t("reaching the correct steady state solution", correct_steady_state) &
+      ,test_description_t("functional pattern results matching procedural results" functional_matches_procedural) &
+    ]
+#else
+    procedure(diagnosis_function_i), pointer :: &
+       concave_laplacian_ptr &
+      ,correct_steady_state_ptr &
+      ,functional_matches_procedural_ptr
+
+    concave_laplacian_ptr => concave_laplacian
+    correct_steady_state_ptr => correct_steady_state
+    functional_matches_procedural_ptr => functional_matches_procedural
+
+    test_descriptions = [ &
+       test_description_t("computing a concave Laplacian for a spatially constant operand with a step down at boundaries", concave_laplacian_ptr) &
+      ,test_description_t("reaching the correct steady state solution", correct_steady_state_ptr) &
+      ,test_description_t("functional pattern results matching procedural results", functional_matches_procedural_ptr) &
+    ]
+#endif
+    test_results = test_descriptions%run()
   end function
 
   subroutine output(v)
@@ -60,8 +73,8 @@ contains
     sync all
   end subroutine
 
-  function concave_laplacian() result(test_passes)
-    logical test_passes
+  function concave_laplacian() result(test_diagnosis)
+    type(test_diagnosis_t) test_diagnosis
     type(subdomain_t) f, laplacian_f
     real, allocatable :: lap_f_vals(:,:,:)
 
@@ -145,14 +158,18 @@ contains
         end associate
       end associate
 
-      test_passes = &
-        all([internally_zero, constant_away_from_edges, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners])
+      associate(geometrical_properties => [internally_zero, constant_away_from_edges, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners])
+        test_diagnosis = test_diagnosis_t( &
+          test_passed = all(geometrical_properties) &
+         ,diagnostics_string = "expected T,T,T,T,T, actual " // .csv. string_t(geometrical_properties) &
+        )
+      end associate
     end block
 
   end function
 
-  function correct_steady_state() result(test_passes)
-    logical test_passes
+  function correct_steady_state() result(test_diagnosis)
+    type(test_diagnosis_t) test_diagnosis
     type(subdomain_t) T
     real, parameter :: T_boundary = 1., T_initial = 2., tolerance = 0.01, T_steady = T_boundary, alpha = 1.
     integer, parameter :: steps = 1000
@@ -167,12 +184,15 @@ contains
     end associate
 
     associate(residual => T%values() - T_steady)
-      test_passes = all(residual >= 0. .and. residual <= tolerance)
+      test_diagnosis = test_diagnosis_t( &
+        test_passed = all(residual >= 0. .and. residual <= tolerance) &
+       ,diagnostics_string = "expected 0 <= " &  ! // string_t(residual) // "<= "// string_t(tolerance) &
+      )
     end associate
   end function
 
-  function functional_matches_procedural() result(test_passes)
-    logical test_passes
+  function functional_matches_procedural() result(test_diagnosis)
+    type(test_diagnosis_t) test_diagnosis
     real, parameter :: tolerance = 1.E-06
     integer, parameter :: steps = 1000, n=21
     real, parameter :: alpha = 1.
@@ -180,10 +200,13 @@ contains
 
     associate( T_f => T_functional(), T_p => T_procedural())
       associate(L_infinity_norm => maxval(abs(T_f - T_p)))
-        test_passes = L_infinity_norm < tolerance
+        test_diagnosis = test_diagnosis_t( &  
+           test_passed = L_infinity_norm < tolerance &
+          ,diagnostics_string = "expected " // string_t(L_infinity_norm) // " < " // string_t(tolerance) &
+        )
       end associate
     end associate
-
+&
   contains
 
     function T_functional()
