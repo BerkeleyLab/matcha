@@ -39,7 +39,7 @@ contains
   module procedure velocities
     
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
-    integer cell, step
+    integer cell, step, k
     
     call_assert(allocated(self%cumulative_distribution_)) 
     call_assert(allocated(self%vel_))
@@ -48,9 +48,8 @@ contains
     associate(ncells => size(speeds,1), nsteps => size(speeds,2))
       allocate(sampled_speeds(ncells,nsteps))
       do concurrent(cell = 1:ncells, step = 1:nsteps)
-        associate(k => findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.false., dim=1)-1)
-          sampled_speeds(cell,step) = self%vel_(k)
-        end associate
+        k = findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.false., dim=1)-1
+        sampled_speeds(cell,step) = self%vel_(k)
       end do
       
       ! Create unit vectors

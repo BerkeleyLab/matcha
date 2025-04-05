@@ -51,8 +51,8 @@ contains
       double precision, allocatable :: speeds(:)
 
       integer, parameter :: nspacedims=3
-      integer i, j, k
-      double precision, allocatable :: x(:,:,:)
+      integer i, j, k, ij
+      double precision, allocatable :: x(:,:,:), t(:), u(:)
   
       associate( &
         npositions => size(history,1), &
@@ -62,17 +62,13 @@ contains
         do concurrent(i=1:npositions)
           x(i,:,:) = history(i)%positions()
         end do
-        associate(t => history%time())
-          allocate(speeds(ncells*(npositions-1)))
-          do concurrent(i = 1:npositions-1, j = 1:ncells)
-            associate( &
-              u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
-              ij => i + (j-1)*(npositions-1) &
-            )   
-              speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
-            end associate
-          end do
-        end associate
+        t = history%time()
+        allocate(speeds(ncells*(npositions-1)))
+        do concurrent(i = 1:npositions-1, j = 1:ncells)
+          u = (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i))
+          ij = i + (j-1)*(npositions-1)
+          speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+        end do
       end associate
     end function
 
