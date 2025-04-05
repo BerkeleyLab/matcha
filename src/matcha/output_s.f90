@@ -1,9 +1,6 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 submodule(output_m) output_s
-  use do_concurrent_m, only : do_concurrent_k, do_concurrent_output_distribution, do_concurrent_speeds
-  use t_cell_collection_m, only : t_cell_collection_bind_C_t
-  use iso_c_binding, only : c_loc, c_double
   implicit none
   
 contains
@@ -20,20 +17,64 @@ contains
   module procedure simulated_distribution
     integer i
     integer, allocatable :: k(:)
-    real(c_double), allocatable, dimension(:) :: vel, speeds
+    double precision, allocatable :: vel(:)
     
     integer, parameter :: speed=1, freq=2 ! subscripts for speeds and frequencies
 
-    call do_concurrent_speeds(t_cell_collection_bind_C_t(self%history_), speeds)
-
-    associate(emp_distribution => self%input_%sample_distribution())
-      associate(nintervals => size(emp_distribution(:,1)), dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
-        vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
-        call do_concurrent_k(speeds, vel, k)
-        call do_concurrent_output_distribution(nintervals, speed, freq, emp_distribution, k, output_distribution)
-        output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
+    associate(speeds => sim_speeds(self%history_))
+      associate(emp_distribution => self%input_%sample_distribution())
+        associate(nintervals => size(emp_distribution(:,1)))
+          allocate(output_distribution(nintervals,2))
+          output_distribution(:,freq) = 0.d0
+          output_distribution(:,speed) = emp_distribution(:,speed)
+          associate(dvel_half => (emp_distribution(2,speed)-emp_distribution(1,speed))/2.d0)
+            vel = [emp_distribution(1,speed) - dvel_half, [(emp_distribution(i,speed) + dvel_half, i=1,nintervals)]]
+            associate(nspeeds => size(speeds))
+              allocate(k(nspeeds))
+              do concurrent(i = 1:nspeeds)
+                k(i) = findloc(speeds(i) >= vel, value=.false., dim=1)-1
+              end do
+            end associate
+            do concurrent(i = 1:size(output_distribution,1))
+              output_distribution(i,freq) = count(k==i)
+            end do
+            output_distribution(:,freq) = output_distribution(:,freq)/sum(output_distribution(:,freq))
+          end associate
+        end associate
       end associate
     end associate
+
+  contains
+
+    pure function sim_speeds(history) result(speeds)
+      type(t_cell_collection_t), intent(in) :: history(:)
+      double precision, allocatable :: speeds(:)
+
+      integer, parameter :: nspacedims=3
+      integer i, j, k
+      double precision, allocatable :: x(:,:,:)
+  
+      associate( &
+        npositions => size(history,1), &
+        ncells => size(history(1)%positions(),1) &
+      )   
+        allocate(x(npositions,ncells,nspacedims))
+        do concurrent(i=1:npositions)
+          x(i,:,:) = history(i)%positions()
+        end do
+        associate(t => history%time())
+          allocate(speeds(ncells*(npositions-1)))
+          do concurrent(i = 1:npositions-1, j = 1:ncells)
+            associate( &
+              u => (x(i+1,j,:) - x(i,j,:))/(t(i+1) - t(i)), &
+              ij => i + (j-1)*(npositions-1) &
+            )   
+              speeds(ij) = sqrt(sum([(u(k)**2, k=1,nspacedims)]))
+            end associate
+          end do
+        end associate
+      end associate
+    end function
 
   end procedure
 

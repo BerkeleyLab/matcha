@@ -10,7 +10,7 @@ module matcha_test_m
      test_diagnosis_t &
     ,vector_test_description_t &
 #if ! HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY
-    ,diagnosis_function_i &
+    ,vector_diagnosis_function_i &
 #endif
     ,test_result_t
   use input_m, only : input_t
