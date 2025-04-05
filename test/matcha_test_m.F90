@@ -42,12 +42,12 @@ contains
 
     vector_test_descriptions = [ &
        vector_test_description_t([ &
-         string_t("simulated speed distribution matching empirical distribution") &
-         string_t("simulated frequency distribution matching empirical distribution") &
+          string_t("simulated speed distribution matching empirical distribution") &
+         ,string_t("simulated frequency distribution matching empirical distribution") &
          ], compare_image_distributions) &
       ,vector_test_description_t([ &
-         string_t("simulated global speed distribution matching empirical distribution") &
-         string_t("simulated global frequency distribution matching empirical distribution") &
+          string_t("simulated global speed distribution matching empirical distribution") &
+         ,string_t("simulated global frequency distribution matching empirical distribution") &
          ], compare_global_distributions) &
     ]
     do i = 1, size(vector_test_descriptions)
@@ -73,14 +73,15 @@ contains
           diffmax_speeds=> maxval(abs(empirical_distribution(:,speed)-simulated_distribution(:,speed))), &
           diffmax_freqs => maxval(abs(empirical_distribution(:,freq)-simulated_distribution(:,freq))) &
         )
-          freqs_in_tolerance = diffmax_freqs < tolerance 
-          freqs_in_tolerance = diffmax_speeds < tolerance &
           test_diagnoses = [ &
             test_diagnosis_t( &
-               test_passed = diffmax_freqs < tolerance .and. diffmax_speeds < tolerance &
-              ,diagnostics_string = "expected max freq < " // string_t(tolerance) // ", actual " // string_t(diffmax_freqs) &
-              ,                   = "expected max speed < " // string_t(tolerance) // ", actual " // string_t(diffmax_speeds) &
+              test_passed = diffmax_freqs < tolerance .and. diffmax_speeds < tolerance &
+             ,diagnostics_string = "expected max freq < " // string_t(tolerance) // ", actual " // string_t(diffmax_freqs) &
             ) &
+           ,test_diagnosis_t( &
+              test_passed = diffmax_freqs < tolerance .and. diffmax_speeds < tolerance &
+             ,diagnostics_string = "expected max speeds < " // string_t(tolerance) // ", actual " // string_t(diffmax_speeds) &
+           ) &
           ]
         end associate
       end associate
