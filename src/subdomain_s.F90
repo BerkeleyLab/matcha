@@ -1,6 +1,11 @@
+! Copyright (c), The Regents of the University of California
+! Terms of use are as specified in LICENSE.txt
+
+#include "assert_macros.h"
+
 submodule(subdomain_m) subdomain_s
+  use assert_m
   use sourcery_m, only : data_partition_t
-  use assert_m, only : assert
   use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
@@ -34,8 +39,8 @@ contains
     dy_ = dx_
     dz_ = dx_
 
-    call assert(num_subdomains <= nx-nx_boundaries, &
-      "subdomain_t%define: num_subdomains <= nx-nx_boundaries", intrinsic_array_t([nx, num_subdomains]))
+    call_assert_diagnose(num_subdomains <= nx-nx_boundaries, "subdomain_t%define: num_subdomains <= nx-nx_boundaries", intrinsic_array_t([nx, num_subdomains]))
+      
     me = this_image()
     num_subdomains = num_images()
 
@@ -82,14 +87,14 @@ contains
     integer i, j, k
     real, allocatable :: halo_west(:,:), halo_east(:,:)
 
-    call assert(allocated(rhs%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
-    call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
+    call_assert(allocated(rhs%s_))
+    call_assert(allocated(halo_x))
 
     allocate(laplacian_rhs%s_(my_nx, ny, nz))
 
     halo_west = merge(halo_x(west,:,:), rhs%s_(1,:,:), me/=1)
     i = my_internal_west
-    call assert(i+1<=my_nx,"laplacian: westernmost subdomain too small")
+    call_assert_describe(i+1<=my_nx, "laplacian: westernmost subdomain too small")
     do concurrent(j=2:ny-1, k=2:nz-1)
       laplacian_rhs%s_(i,j,k) = ( halo_west(j,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
                                 (rhs%s_(i,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
@@ -104,7 +109,7 @@ contains
 
     halo_east = merge(halo_x(east,:,:), rhs%s_(my_nx,:,:), me/=num_subdomains)
     i = my_internal_east
-    call assert(i-1>0,"laplacian: easternmost subdomain too small")
+    call_assert_describe(i-1>0, "laplacian: easternmost subdomain too small")
     do concurrent(j=2:ny-1, k=2:nz-1)
       laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) +  halo_east(j  ,k  ))/dx_**2 + &
                                 (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
@@ -121,17 +126,17 @@ contains
   end procedure
 
   module procedure multiply
-    call assert(allocated(rhs%s_), "subdomain_t%multiply: allocated(rhs%s_)")
+    call_assert(allocated(rhs%s_))
     product%s_ =  lhs * rhs%s_
   end procedure
 
   module procedure add
-    call assert(allocated(rhs%s_), "subdomain_t%add: allocated(rhs%s_)")
+    call_assert(allocated(rhs%s_))
     total%s_ =  lhs%s_ + rhs%s_
   end procedure
 
   module procedure assign_and_sync
-    call assert(allocated(rhs%s_), "subdomain_t%assign_and_sync: allocated(rhs%s_)")
+    call_assert(allocated(rhs%s_))
     sync all
     lhs%s_ =  rhs%s_
     if (me>1) halo_x(east,:,:)[me-1] = rhs%s_(1,:,:)
@@ -140,16 +145,16 @@ contains
   end procedure
 
   module procedure values
-    call assert(allocated(self%s_), "subdomain_t%values: allocated(self%s_)")
+    call_assert(allocated(self%s_))
     my_values =  self%s_
   end procedure
 
   module procedure step
 
-    call assert(allocated(self%s_), "subdomain_t%laplacian: allocated(rhs%s_)")
-    call assert(allocated(halo_x), "subdomain_t%laplacian: allocated(halo_x)")
-    call assert(my_internal_west+1<=my_nx,"laplacian: westernmost subdomain too small")
-    call assert(my_internal_east-1>0,"laplacian: easternmost subdomain too small")
+    call_assert(allocated(self%s_))
+    call_assert(allocated(halo_x))
+    call_assert_describe(my_internal_west+1<=my_nx, "laplacian: westernmost subdomain too small")
+    call_assert_describe(my_internal_east-1>0, "laplacian: easternmost subdomain too small")
 
     if (.not. allocated(increment)) allocate(increment(my_nx,ny,nz))
  
