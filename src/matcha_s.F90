@@ -3,7 +3,7 @@
 submodule(matcha_m) matcha_s
   use t_cell_collection_m, only : t_cell_collection_t
   use distribution_m, only : distribution_t
-  use sourcery_m, only : data_partition_t
+  use julienne_m, only : bin_t
   implicit none
   
 contains
@@ -25,12 +25,10 @@ contains
         type(distribution_t) distribution
         integer, parameter :: nveldim = 4
         integer step
-        type(data_partition_t) data_partition
         
-        call data_partition%define_partitions(cardinality=ncells)
-    
         associate(me => this_image())
-          associate(my_num_cells => data_partition%last(me) - data_partition%first(me) + 1)
+          associate(bin => bin_t(num_items=ncells, num_bins=num_images(), bin_number=me))
+          associate(my_num_cells => bin%last() - bin%first() + 1)
           
             call random_init(repeatable=.true., image_distinct=.true.)
             
@@ -54,6 +52,7 @@ contains
                 end associate
               end associate
             end associate
+          end associate  
           end associate  
         end associate    
       end block

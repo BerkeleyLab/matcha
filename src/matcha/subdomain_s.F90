@@ -5,14 +5,12 @@
 
 submodule(subdomain_m) subdomain_s
   use assert_m
-  use sourcery_m, only : data_partition_t
+  use julienne_m, only : bin_t
   use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
   real, allocatable :: halo_x(:,:,:)[:]
   integer, parameter :: west=1, east=2
-
-  type(data_partition_t) data_partition
 
   real dx_, dy_, dz_
   integer my_nx, nx, ny, nz, me, num_subdomains, my_internal_west, my_internal_east
@@ -44,8 +42,9 @@ contains
     me = this_image()
     num_subdomains = num_images()
 
-    call data_partition%define_partitions(nx)
-    my_nx = data_partition%last(me) - data_partition%first(me) + 1
+    associate(bin => bin_t(num_items=nx, num_bins=num_subdomains, bin_number=me))
+      my_nx = bin%last() - bin%first() + 1
+    end associate
 
     if (allocated(self%s_)) deallocate(self%s_)
     allocate(self%s_(my_nx, ny, nz))
