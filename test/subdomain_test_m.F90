@@ -1,5 +1,8 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
+
+#include "language-support.F90"
+
 module subdomain_test_m
   !! Define subdomain tests and procedures required for reporting results
   use julienne_m, only : &
@@ -38,7 +41,7 @@ contains
     test_descriptions = [ &
        test_description_t("computing a concave Laplacian for a spatially constant operand with a step down at boundaries", concave_laplacian) &
       ,test_description_t("reaching the correct steady state solution", correct_steady_state) &
-      ,test_description_t("functional pattern results matching procedural results" functional_matches_procedural) &
+      ,test_description_t("functional pattern results matching procedural results", functional_matches_procedural) &
     ]
 #else
     procedure(diagnosis_function_i), pointer :: &
@@ -63,13 +66,17 @@ contains
     real, intent(in) :: v(:,:,:)
     integer j, k
     sync all
+#ifdef HAVE_CRITICAL
     critical
+#endif
       do j = 1, size(v,2)
         do k = 1, size(v,3)
           print *,"image ",this_image(),": ",j,k,v(:,j,k)
         end do
       end do
+#ifdef HAVE_CRITICAL
     end critical
+#endif
     sync all
   end subroutine
 

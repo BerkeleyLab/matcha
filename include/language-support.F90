@@ -12,6 +12,15 @@
 #endif
 #endif
 
+#ifndef HAVE_CRITICAL
+   ! Define whether the compiler supports the `critical` and `end critical` statements
+#  if defined(_CRAYFTN) || defined(__INTEL_COMPILER) || defined(NAGFOR) || defined(__GFORTRAN__)
+#    define HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY 1
+#  else
+#    define HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY 0
+#  endif
+#endif
+
 #ifndef HAVE_MULTI_IMAGE_SUPPORT
   ! Define whether the compiler supports the statements and intrinsic procedures that support
   ! multi-image execution, e.g., this_image(), sync all, etc.
