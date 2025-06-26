@@ -2,4 +2,4 @@ name = "matcha"
 
 [dependencies]
 assert = {git = "https://github.com/berkeleylab/assert", tag = "2.1.0"}
-julienne = {git = "https://github.com/BerkeleyLab/julienne", tag = "2.3.0"}
+julienne = {git = "https://github.com/BerkeleyLab/julienne", tag = "2.4.0"}

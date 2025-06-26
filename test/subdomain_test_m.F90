@@ -7,7 +7,13 @@ module subdomain_test_m
   !! Define subdomain tests and procedures required for reporting results
   use julienne_m, only : &
      diagnosis_function_i &
+    ,operator(.all.) &
+    ,operator(.approximates.) &
+    ,operator(.and.) &
     ,operator(.csv.) &
+    ,operator(.isAtLeast.) &
+    ,operator(.isAtMost.) &
+    ,operator(.within.) &
     ,string_t &
     ,test_t &
     ,test_description_t &
@@ -191,10 +197,7 @@ contains
     end associate
 
     associate(residual => T%values() - T_steady)
-      test_diagnosis = test_diagnosis_t( &
-        test_passed = all(residual >= 0. .and. residual <= tolerance) &
-       ,diagnostics_string = "expected 0 <= " &  ! // string_t(residual) // "<= "// string_t(tolerance) &
-      )
+      test_diagnosis = .all. ((residual .isAtLeast. 0.) .and. (residual .isAtMost. tolerance))
     end associate
   end function
 
@@ -207,13 +210,10 @@ contains
 
     associate( T_f => T_functional(), T_p => T_procedural())
       associate(L_infinity_norm => maxval(abs(T_f - T_p)))
-        test_diagnosis = test_diagnosis_t( &  
-           test_passed = L_infinity_norm < tolerance &
-          ,diagnostics_string = "expected " // string_t(L_infinity_norm) // " < " // string_t(tolerance) &
-        )
+        test_diagnosis = .all. (T_f .approximates. T_p .within. tolerance)
       end associate
     end associate
-&
+
   contains
 
     function T_functional()
