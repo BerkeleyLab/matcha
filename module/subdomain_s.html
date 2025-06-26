@@ -135,7 +135,6 @@
             <a class="list-group-item" href="../module/subdomain_s.html#variable-halo_x">halo_x</a>
             <a class="list-group-item" href="../module/subdomain_s.html#variable-west">west</a>
             <a class="list-group-item" href="../module/subdomain_s.html#variable-east">east</a>
-            <a class="list-group-item" href="../module/subdomain_s.html#variable-data_partition">data_partition</a>
             <a class="list-group-item" href="../module/subdomain_s.html#variable-dx_">dx_</a>
             <a class="list-group-item" href="../module/subdomain_s.html#variable-dy_">dy_</a>
             <a class="list-group-item" href="../module/subdomain_s.html#variable-dz_">dz_</a>
@@ -205,9 +204,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item">assert_m</li>
                   <li class="list-inline-item">intrinsic_array_m</li>
-                  <li class="list-inline-item">sourcery_m</li>
+                  <li class="list-inline-item">assert_m</li>
+                  <li class="list-inline-item">julienne_m</li>
               </ul>
             </li>
             <li class="list-group-item">
@@ -258,31 +257,31 @@
 <path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-81.64C131.67,-82.99 122.93,-84.44 114.24,-85.87"/>
 <polygon fill="#000000" stroke="#000000" points="113.4,-82.46 104.11,-87.55 114.54,-89.37 113.4,-82.46"/>
 </g>
-<!-- module~subdomain_m -->
+<!-- julienne_m -->
 <g id="module~~subdomain_s~~UsesGraph_node4" class="node">
+<title>julienne_m</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="87.5,-66 16.5,-66 16.5,-42 87.5,-42 87.5,-66"/>
+<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">julienne_m</text>
+</g>
+<!-- module~subdomain_s&#45;&gt;julienne_m -->
+<g id="module~~subdomain_s~~UsesGraph_edge3" class="edge">
+<title>module~subdomain_s&#45;&gt;julienne_m</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.82,-68.36C126.5,-66.15 111.59,-63.69 97.94,-61.43"/>
+<polygon fill="#000000" stroke="#000000" points="98.22,-57.93 87.79,-59.75 97.08,-64.84 98.22,-57.93"/>
+</g>
+<!-- module~subdomain_m -->
+<g id="module~~subdomain_s~~UsesGraph_node5" class="node">
 <title>module~subdomain_m</title>
-<g id="a_module~~subdomain_s~~UsesGraph_node4"><a xlink:href="../module/subdomain_m.html" xlink:title="subdomain_m">
-<polygon fill="#337ab7" stroke="#337ab7" points="96,-66 8,-66 8,-42 96,-42 96,-66"/>
-<text text-anchor="middle" x="52" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">subdomain_m</text>
+<g id="a_module~~subdomain_s~~UsesGraph_node5"><a xlink:href="../module/subdomain_m.html" xlink:title="subdomain_m">
+<polygon fill="#337ab7" stroke="#337ab7" points="96,-24 8,-24 8,0 96,0 96,-24"/>
+<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">subdomain_m</text>
 </a>
 </g>
 </g>
 <!-- module~subdomain_s&#45;&gt;module~subdomain_m -->
 <g id="module~~subdomain_s~~UsesGraph_edge4" class="edge">
 <title>module~subdomain_s&#45;&gt;module~subdomain_m</title>
-<path fill="none" stroke="#000000" d="M139.82,-68.36C129.25,-66.61 117.67,-64.69 106.52,-62.85"/>
-<polygon fill="#000000" stroke="#000000" points="106.88,-59.36 96.44,-61.18 105.73,-66.27 106.88,-59.36"/>
-</g>
-<!-- sourcery_m -->
-<g id="module~~subdomain_s~~UsesGraph_node5" class="node">
-<title>sourcery_m</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="89,-24 15,-24 15,0 89,0 89,-24"/>
-<text text-anchor="middle" x="52" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">sourcery_m</text>
-</g>
-<!-- module~subdomain_s&#45;&gt;sourcery_m -->
-<g id="module~~subdomain_s~~UsesGraph_edge3" class="edge">
-<title>module~subdomain_s&#45;&gt;sourcery_m</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.61,-31.37 97.05,-29.75 93.47,-28.16"/>
+<path fill="none" stroke="#000000" d="M159.69,-62.94C144.57,-54.18 123.3,-42.27 104,-33 100.61,-31.37 97.05,-29.75 93.47,-28.16"/>
 <polygon fill="#000000" stroke="#000000" points="94.56,-24.83 83.99,-24.1 91.8,-31.26 94.56,-24.83"/>
 </g>
 </g>
@@ -425,23 +424,6 @@ parameter
             <td><strong>east</strong></td>
 <td> =</td>
                 <td>2</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-data_partition"></span>
-              type(data_partition_t),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>data_partition</strong></td>
-                <td></td>
-                <td></td>
             <td>
                 
             </td>
@@ -689,7 +671,7 @@ arXiv preprint arXiv:2410.04167.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~17"></span>
+              <span class="anchor" id="variable-self~19"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -810,7 +792,7 @@ arXiv preprint arXiv:2410.04167.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~11"></span>
+              <span class="anchor" id="variable-self~13"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(out)</td>
@@ -851,7 +833,7 @@ arXiv preprint arXiv:2410.04167.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~14"></span>
+              <span class="anchor" id="variable-self~16"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -897,7 +879,7 @@ arXiv preprint arXiv:2410.04167.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~15"></span>
+              <span class="anchor" id="variable-self~17"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -943,7 +925,7 @@ arXiv preprint arXiv:2410.04167.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
+              <span class="anchor" id="variable-self~18"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1213,7 +1195,7 @@ arXiv preprint arXiv:2410.04167.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~13"></span>
+              <span class="anchor" id="variable-self~15"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1274,7 +1256,7 @@ arXiv preprint arXiv:2410.04167.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~12"></span>
+              <span class="anchor" id="variable-self~14"></span>
               class(<a href='../type/subdomain_t.html'>subdomain_t</a>),
             </td>
 <td>intent(inout)</td>
