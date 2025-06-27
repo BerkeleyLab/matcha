@@ -6,7 +6,6 @@
 submodule(subdomain_m) subdomain_s
   use assert_m
   use julienne_m, only : bin_t
-  use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
   real, allocatable :: halo_x(:,:,:)[:]
@@ -37,7 +36,7 @@ contains
     dy_ = dx_
     dz_ = dx_
 
-    call_assert_diagnose(num_subdomains <= nx-nx_boundaries, "subdomain_t%define: num_subdomains <= nx-nx_boundaries", intrinsic_array_t([nx, num_subdomains]))
+    call_assert(num_subdomains <= nx-nx_boundaries)
       
     me = this_image()
     num_subdomains = num_images()
@@ -82,34 +81,34 @@ contains
   end procedure
 
   module procedure laplacian
-    integer i, j, k; 
+    integer i, j, k
     real, allocatable :: halo_west(:,:), halo_east(:,:)
 
     call_assert(allocated(rhs%s_))
     call_assert(allocated(halo_x))
 
     allocate(laplacian_rhs%s_(my_nx, ny, nz))
-    halo_west = merge(halo_x(west,:,:), rhs%s_(1,:,:), me/=1)
+    halo_west = merge(halo_x(west,:,:), rhs%s_(1,:,:), me/=1) ! conditionally use halo value
     i = my_internal_west
     call_assert_describe(i+1<=my_nx, "laplacian: westernmost subdomain too small")
-
+    ! Compute Laplacians throughout the low-x boundary subdomain using non-allocatable associations:
     associate( laplacian_phi =>  laplacian_rhs%s_, inbox => halo_west, phi=>rhs%s_)
 #if HAVE_2018_LOCALITY_SPECIFIERS
       do concurrent(j=2:ny-1, k=2:nz-1) &
-        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i)
+        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i) !Fortran 2018 loacality specifiers
 #else
-      do concurrent(j=2:ny-1, k=2:nz-1) 
+      do concurrent(j=2:ny-1, k=2:nz-1)
 #endif
         laplacian_phi(i,j,k) = (inbox(j,k    ) - 2*phi(i,j,k) + phi(i+1,j  ,k  ))/dx_**2 + &
                                (phi(i,j-1,k  ) - 2*phi(i,j,k) + phi(i  ,j+1,k  ))/dy_**2 + &
                                (phi(i,j  ,k-1) - 2*phi(i,j,k) + phi(i  ,j  ,k+1))/dz_**2
       end do
     end associate
-
-    associate(laplacian_phi =>  laplacian_rhs%s_, phi=>rhs%s_)
+    ! Compute Laplacians throughout non-boundary subdomains with non-allocatable associations:
+    associate(laplacian_phi => laplacian_rhs%s_, phi=>rhs%s_)
 #if HAVE_2018_LOCALITY_SPECIFIERS
       do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1) &
-        default(none) shared(laplacian_phi, phi, dx_, dy_, dz_)
+        default(none) shared(laplacian_phi, phi, dx_, dy_, dz_) ! Fortran 2018 locality specifiers
 #else
       do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
 #endif
@@ -119,16 +118,16 @@ contains
       end do
     end associate
 
-    halo_east = merge(halo_x(east,:,:), rhs%s_(my_nx,:,:), me/=num_subdomains)
+    halo_east = merge(halo_x(east,:,:), rhs%s_(my_nx,:,:), me/=num_subdomains) !conditionally use halo value
     i = my_internal_east
     call_assert_describe(i-1>0, "laplacian: easternmost subdomain too small")
-
+    ! Compute Laplacians throughout the high-x boundary subdomain using non-allocatable associations:
     associate(laplacian_phi =>  laplacian_rhs%s_, inbox => halo_east, phi=>rhs%s_)
 #if HAVE_2018_LOCALITY_SPECIFIERS
-      do concurrent(j=2:ny-1, k=2:nz-1) &
-        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i)
+      do concurrent(j=2:ny-1, k=2:nz-1) & ! compute Laplacian in low-x boundary subdomain
+        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i) ! Fortran 2018 locality specifiers
 #else
-      do concurrent(j=2:ny-1, k=2:nz-1)
+      do concurrent(j=2:ny-1, k=2:nz-1) ! compute Laplacian in low-x boundary subdomain
 #endif
         laplacian_phi(i,j,k) = (phi(i-1,j  ,k  ) - 2*phi(i,j,k) + inbox(  j  ,k  ))/dx_**2 + &
                                (phi(i  ,j-1,k  ) - 2*phi(i,j,k) + phi(i  ,j+1,k  ))/dy_**2 + &
@@ -136,12 +135,13 @@ contains
       end do
     end associate
 
-    laplacian_rhs%s_(:, 1,:) = 0. ! y-direction low boundary
-    laplacian_rhs%s_(:,ny,:) = 0. ! y-direction high boundary
-    laplacian_rhs%s_(:,:, 1) = 0. ! z-direction low boundary
-    laplacian_rhs%s_(:,:,nz) = 0. ! z-direction high boundary
-    if (me==1) laplacian_rhs%s_(1,:,:) = 0. ! x-direction low boundary
-    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0. ! x-direction high boundary
+    laplacian_rhs%s_(:, 1,:) = 0. ! low-y boundary
+    laplacian_rhs%s_(:,ny,:) = 0. ! high-y boundary
+    laplacian_rhs%s_(:,:, 1) = 0. ! low-z boundary
+    laplacian_rhs%s_(:,:,nz) = 0. ! high-z boundary
+
+    if (me==1) laplacian_rhs%s_(1,:,:) = 0. ! low-x boundary
+    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0. ! high-x boundary
   end procedure
 
   module procedure multiply
