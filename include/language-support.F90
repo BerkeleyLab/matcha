@@ -1,6 +1,8 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
 
+#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+
 #ifndef HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY
   ! Define whether the compiler supports associating a procedure pointer dummy argument with an
   ! actual argument that is a valid target for the pointer dummy in a procedure assignment, a
@@ -9,6 +11,15 @@
 #    define HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY 1
 #  else
 #    define HAVE_PROCEDURE_ACTUAL_FOR_POINTER_DUMMY 0
+#  endif
+#endif
+
+#ifndef HAVE_2018_LOCALITY_SPECIFIERS
+  ! Define whether the compiler supports locality specifiers in `do concurrent`
+#  if defined(_CRAYFTN) || defined(__INTEL_COMPILER) || defined(NAGFOR) || defined(__flang__) || (GCC_VERSION > 150000)
+#    define HAVE_2018_LOCALITY_SPECIFIERS 1
+#  else
+#    define HAVE_2018_LOCALITY_SPECIFIERS 0
 #  endif
 #endif
 
