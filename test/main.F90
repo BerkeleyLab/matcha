@@ -3,13 +3,9 @@
 program main
   use julienne_m, only : command_line_t
   use subdomain_test_m, only : subdomain_test_t
-  use t_cell_collection_test_m, only : t_cell_collection_test_t
-  use matcha_test_m, only : matcha_test_t
   implicit none
 
   type(subdomain_test_t) subdomain_test
-  type(t_cell_collection_test_t) t_cell_collection_test
-  type(matcha_test_t) matcha_test
 
   type(command_line_t) command_line
 
@@ -28,8 +24,6 @@ program main
   print "(a)", new_line("") // "Append '-- --help' or '-- -h' to your `fpm test` command to display usage information."
 
   call subdomain_test%report(passes, tests, skips)
-  call t_cell_collection_test%report(passes, tests, skips)
-  call matcha_test%report(passes, tests, skips)
 
 #if HAVE_MULTI_IMAGE_SUPPORT
   if (this_image()==1) then
