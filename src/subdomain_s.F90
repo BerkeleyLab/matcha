@@ -82,46 +82,66 @@ contains
   end procedure
 
   module procedure laplacian
-
-    integer i, j, k
+    integer i, j, k; 
     real, allocatable :: halo_west(:,:), halo_east(:,:)
 
     call_assert(allocated(rhs%s_))
     call_assert(allocated(halo_x))
 
     allocate(laplacian_rhs%s_(my_nx, ny, nz))
-
     halo_west = merge(halo_x(west,:,:), rhs%s_(1,:,:), me/=1)
     i = my_internal_west
     call_assert_describe(i+1<=my_nx, "laplacian: westernmost subdomain too small")
-    do concurrent(j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = ( halo_west(j,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
 
-    do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i+1,j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
+    associate( laplacian_phi =>  laplacian_rhs%s_, inbox => halo_west, phi=>rhs%s_)
+#if HAVE_2018_LOCALITY_SPECIFIERS
+      do concurrent(j=2:ny-1, k=2:nz-1) &
+        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i)
+#else
+      do concurrent(j=2:ny-1, k=2:nz-1) 
+#endif
+        laplacian_phi(i,j,k) = (inbox(j,k    ) - 2*phi(i,j,k) + phi(i+1,j  ,k  ))/dx_**2 + &
+                               (phi(i,j-1,k  ) - 2*phi(i,j,k) + phi(i  ,j+1,k  ))/dy_**2 + &
+                               (phi(i,j  ,k-1) - 2*phi(i,j,k) + phi(i  ,j  ,k+1))/dz_**2
+      end do
+    end associate
+
+    associate(laplacian_phi =>  laplacian_rhs%s_, phi=>rhs%s_)
+#if HAVE_2018_LOCALITY_SPECIFIERS
+      do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1) &
+        default(none) shared(laplacian_phi, phi, dx_, dy_, dz_)
+#else
+      do concurrent(i=my_internal_west+1:my_internal_east-1, j=2:ny-1, k=2:nz-1)
+#endif
+        laplacian_phi(i,j,k) = (phi(i-1,j  ,k  ) - 2*phi(i,j,k) + phi(i+1,j  ,k  ))/dx_**2 + &
+                               (phi(i  ,j-1,k  ) - 2*phi(i,j,k) + phi(i  ,j+1,k  ))/dy_**2 + &
+                               (phi(i  ,j  ,k-1) - 2*phi(i,j,k) + phi(i  ,j  ,k+1))/dz_**2
+      end do
+    end associate
 
     halo_east = merge(halo_x(east,:,:), rhs%s_(my_nx,:,:), me/=num_subdomains)
     i = my_internal_east
     call_assert_describe(i-1>0, "laplacian: easternmost subdomain too small")
-    do concurrent(j=2:ny-1, k=2:nz-1)
-      laplacian_rhs%s_(i,j,k) = (rhs%s_(i-1,j  ,k  ) - 2*rhs%s_(i,j,k) +  halo_east(j  ,k  ))/dx_**2 + &
-                                (rhs%s_(i  ,j-1,k  ) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j+1,k  ))/dy_**2 + &
-                                (rhs%s_(i  ,j  ,k-1) - 2*rhs%s_(i,j,k) + rhs%s_(i  ,j  ,k+1))/dz_**2
-    end do
 
-    laplacian_rhs%s_(:, 1,:) = 0.
-    laplacian_rhs%s_(:,ny,:) = 0.
-    laplacian_rhs%s_(:,:, 1) = 0.
-    laplacian_rhs%s_(:,:,nz) = 0.
-    if (me==1) laplacian_rhs%s_(1,:,:) = 0.
-    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0.
+    associate(laplacian_phi =>  laplacian_rhs%s_, inbox => halo_east, phi=>rhs%s_)
+#if HAVE_2018_LOCALITY_SPECIFIERS
+      do concurrent(j=2:ny-1, k=2:nz-1) &
+        default(none) shared(laplacian_phi, inbox, phi, dx_, dy_, dz_, i)
+#else
+      do concurrent(j=2:ny-1, k=2:nz-1)
+#endif
+        laplacian_phi(i,j,k) = (phi(i-1,j  ,k  ) - 2*phi(i,j,k) + inbox(  j  ,k  ))/dx_**2 + &
+                               (phi(i  ,j-1,k  ) - 2*phi(i,j,k) + phi(i  ,j+1,k  ))/dy_**2 + &
+                               (phi(i  ,j  ,k-1) - 2*phi(i,j,k) + phi(i  ,j  ,k+1))/dz_**2
+      end do
+    end associate
 
+    laplacian_rhs%s_(:, 1,:) = 0. ! y-direction low boundary
+    laplacian_rhs%s_(:,ny,:) = 0. ! y-direction high boundary
+    laplacian_rhs%s_(:,:, 1) = 0. ! z-direction low boundary
+    laplacian_rhs%s_(:,:,nz) = 0. ! z-direction high boundary
+    if (me==1) laplacian_rhs%s_(1,:,:) = 0. ! x-direction low boundary
+    if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0. ! x-direction high boundary
   end procedure
 
   module procedure multiply
