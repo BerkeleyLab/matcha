@@ -7,6 +7,7 @@
 export assert_dir="../build/dependencies/assert"
 export julienne_dir="../build/dependencies/julienne"
 export matcha_dir=".."
+export test_dir="../test"
 export destination_dir="../build/single-file-programs"
 
 echo ""
@@ -80,3 +81,7 @@ cp "$julienne_dir/include/julienne-assert-macros.h" "$destination_dir"
 
 echo "Concatenating Assert, Julienne, and Matcha src and app into $destination_dir/diffusion-app.F90"
 cat "$destination_dir"/assert.F90 "$destination_dir"/julienne.F90 "$destination_dir"/matcha.F90 "$matcha_dir/app/diffusion.f90" > $destination_dir/diffusion-app.F90
+
+echo "Concatenating Assert, Julienne, and Matcha src and test into $destination_dir/test-suite.F90"
+test_modules=$(find "$test_dir" -name '*_m.?90')
+cat "$destination_dir"/assert.F90 "$destination_dir"/julienne.F90 "$destination_dir"/matcha.F90 $test_modules "$test_dir"/main.F90 > $destination_dir/test-suite.F90
