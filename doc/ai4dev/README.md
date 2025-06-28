@@ -29,6 +29,6 @@ Idiomtic Vibe Coding
 2. Edit `test-suite.F90` to remove the lines beginning and ending with 
    `module procedure laplacian` and `end procedure laplacian`, respectively.
 3. Enter the file `doc/ai4dev/idiomaic-vibe-coding/README.md` as your prompt 
-   and attach the edited `tgest-sutie.F90` file.
+   and attach the edited `test-suite.F90` file.
 4. Insert the resulting function into the `subdomain_s` submodule and
    try compiling and executing again to check the result.
