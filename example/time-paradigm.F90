@@ -1,9 +1,12 @@
 ! Copyright (c), The Regents of the University of California
 ! Terms of use are as specified in LICENSE.txt
+
+#include "assert_macros.h"
+
 program time_paradigm_m
   !! Time various alternative programming paradigms
   use subdomain_m, only : subdomain_t
-  use assert_m, only : assert
+  use assert_m
   use julienne_m, only : string_t, file_t, command_line_t, bin_t, csv 
   use iso_fortran_env, only : int64
   implicit none
@@ -69,7 +72,7 @@ contains
     system_time = real(t_end_functional - t_start_functional)/real(clock_rate)
 
     associate(L_infinity_norm => maxval(abs(T%values() - T_steady)))
-      call assert(L_infinity_norm < tolerance, "functional programming reaches steady state", L_infinity_norm)
+      call_assert(L_infinity_norm < tolerance)
     end associate
 
   end function
@@ -93,7 +96,7 @@ contains
     system_time = real(t_end_procedural - t_start_procedural)/real(clock_rate)
 
     associate(L_infinity_norm => maxval(abs(T%values() - T_steady)))
-      call assert(L_infinity_norm < tolerance, "procedurall programming reaches steady state", L_infinity_norm)
+      call_assert(L_infinity_norm < tolerance)
     end associate
 
   end function

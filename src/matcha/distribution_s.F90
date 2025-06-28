@@ -5,7 +5,6 @@
 
 submodule(distribution_m) distribution_s
   use assert_m
-  use intrinsic_array_m, only : intrinsic_array_t
   implicit none
 
 contains
@@ -20,14 +19,14 @@ contains
   module procedure construct
     integer i
 
-    call_assert_diagnose(all(sample_distribution(:,2)>=0.D0), "distribution_t%construct: sample_distribution>=0.", intrinsic_array_t(sample_distribution))
+    call_assert(all(sample_distribution(:,2)>=0.D0))
 
     associate(nintervals => size(sample_distribution,1))      
       distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin         
       distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i,2)), i=1, nintervals)]]
     end associate
 
-    call_assert_diagnose(monotonically_increasing(distribution%cumulative_distribution_), "distribution_t: monotonically increasing cumulative distribution", intrinsic_array_t(distribution%cumulative_distribution_))
+    call_assert(monotonically_increasing(distribution%cumulative_distribution_))
 
   end procedure construct
 
