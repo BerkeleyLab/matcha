@@ -142,7 +142,7 @@ contains
 
     if (me==1) laplacian_rhs%s_(1,:,:) = 0. ! low-x boundary
     if (me==num_subdomains) laplacian_rhs%s_(my_nx,:,:) = 0. ! high-x boundary
-  end procedure
+  end procedure laplacian
 
   module procedure multiply
     call_assert(allocated(rhs%s_))
