@@ -22,7 +22,7 @@ experienced in parallel and object-oriented programming.
       equals ubound(rhs%s_,1) and if the integer "me" equals "num_subdomains",
       replace the elements with the corresponding elements of halo_x(east,:,:).
    e. Your result component must vanish for subscript values (:, 1,:), (:,ny,:),
-      (:,:, 1), and s_(:,:,nz). 
+      (:,:, 1), and s_(:,:,nz).
    f. If "me" is 1, the result component must vanish for subscripts (1,:,:).
    g. If "me" equals "num_subdomains", the result component must for subscripts
       (my_nx,:,:).
