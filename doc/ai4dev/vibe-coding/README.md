@@ -1,11 +1,28 @@
-You are a research software engineer who is familiar with Fortran 2018, experienced in parallel and object-oriented programming, and working on a program named "diffusion". All source code that you need is in the attached file. The main program uses a second-order Runge-Kutta time advancement algorithm to solve the partial differential equation of unsteady molecular diffusion of a species with a density phi that varies with space and time. The program uses the subdomain_t derived type defined in the module subdomain_m.  Th subdomain_m module also contains a module function interface body named "laplacian".  Everything in the source code is complete except that there is no defintion for the "laplacian" function. Provide a defintion for the laplacian function definition using the following steps:
+You are a research software engineer who is familiar with Fortran 2018 and
+experienced in parallel and object-oriented programming.
 
-1. Write an empty module procecure named "laplacian" into which you will insert executable statements and comments that explain what your code is doing.
-2. Allocate the laplacian_rhs% component to a shape [my_nx, ny, nz]
-3. Use one or more "do concurrent" constructs, each with "default(none)" and any othe required locality specifiers, to compute a 2nd-order central difference approximation to the Laplacian of the "s_" array component of the "laplacian" function's "rhs" dummy argument.
-4. Store the Laplacian approximation in the s_ component of the laplacian_rhs function result.
-5. When an expresssion requires the value rhs%s_(1,:,:) and me==1, instead use halo_x(west,:,:) for the required value.
-5. When an expresssion requires the value rhs%s_(ubound(rhs%s_,1),:,:) and me==num_subdomains, instead use halo_x(east,:,:) for the required value.
-6. Set result component laplacian_rhs%s_ to zero for the subscript values (:, 1,:), (:,ny,:), (:,:, 1), (:,:,nz). 
-7. Also set laplacian_rhs%s_ to zero for the subscript values (1,:,:) if me==1
-8. Also set laplacian_rhs%s_ to zero for the subscript values (my_nx,:,:) if me==num_subdomains.
+1. Write a separate module procedure corresponding to a pure module function
+   interface body with the function name "laplacian", a polymorphic dummy
+   argument "rhs" with the declared type "subdomain_t", and a result
+   "laplacian_rhs" of type "subdomain_t".
+2. The "subdomain_t" type has a real, allocatable 3D array component named "s_".
+3. Use intrinsic functions and array statements for compactness.  For example,
+   replace "if" constructs with "merge" where possible.
+4. Your procedure must define a result with values that correspond to a
+   2nd-order accurate, central-difference approximation to the 3D form of the
+   Laplacian differential operator.
+5. Inside the procedure,
+   a. Allocate the laplacian_rhs%s_ to have a shape [my_nx, ny, nz].
+   b. Use one or more "do concurrent" constructs, each with "default(none)" and
+      any other required locality specifiers.
+   c. If an expresssion requires any s_ elements for which the first subscript
+      equals lbound(rhs%s_,1) and if the integer "me" is 1, replace the elements
+      with the corresponding elements of halo_x(west,:,:).
+   d. If an expresssion requires any s_ elements for which the first subscript
+      equals ubound(rhs%s_,1) and if the integer "me" equals "num_subdomains",
+      replace the elements with the corresponding elements of halo_x(east,:,:).
+   e. Your result component must vanish for subscript values (:, 1,:), (:,ny,:),
+      (:,:, 1), and s_(:,:,nz).
+   f. If "me" is 1, the result component must vanish for subscripts (1,:,:).
+   g. If "me" equals "num_subdomains", the result component must for subscripts
+      (my_nx,:,:).
