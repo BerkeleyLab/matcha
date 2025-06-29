@@ -43,7 +43,7 @@ Follow the [vibe coding](#vibe-coding) steps except as described below:
 * In your first prompt, attach test-suite.F90 with the lines from
   `module procedure laplacian` to `end procedure laplacian` removed.  If the
   LLM rejects ".F90" file extensions, change the name to "test-suite.txt".
-  Appened following to the prompt: "Inserting a correct response to this
+  Append following to the prompt: "Inserting a correct response to this
   prompt into the subdmodule `subdomain_s` and then compiling and running the
   attached program must generate output indicating that all tests pass."
 * In subsequent iterations, if replacing the laplacian procedure with the
