@@ -37,9 +37,18 @@ contains
     type(test_description_t), allocatable :: test_descriptions(:)
     type(test_result_t), allocatable :: test_results(:)
 
+#if HAVE_MULTI_IMAGE_SUPPORT
     test_descriptions = [ &
        test_description_t("the divergence of a gradient matching a Laplacian", div_grad_matches_laplacian) &
     ]
+#else
+    procedure(diagnosis_function_i), pointer :: div_grad_matches_laplacian_ptr
+    div_grad_matches_laplacian_ptr => div_grad_matches_laplacian
+
+    test_descriptions = [ &
+       test_description_t("the divergence of a gradient matching a Laplacian", div_grad_matches_laplacian_ptr) &
+    ]
+#endif
     test_results = test_descriptions%run()
   end function
 
