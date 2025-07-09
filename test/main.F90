@@ -3,11 +3,13 @@
 program main
   use julienne_m, only : command_line_t
   use subdomain_test_m, only : subdomain_test_t
+  use mimetic_test_m, only : mimetic_test_t
   use t_cell_collection_test_m, only : t_cell_collection_test_t
   use matcha_test_m, only : matcha_test_t
   implicit none
 
   type(subdomain_test_t) subdomain_test
+  type(mimetic_test_t) mimetic_test
   type(t_cell_collection_test_t) t_cell_collection_test
   type(matcha_test_t) matcha_test
 
@@ -28,6 +30,7 @@ program main
   print "(a)", new_line("") // "Append '-- --help' or '-- -h' to your `fpm test` command to display usage information."
 
   call subdomain_test%report(passes, tests, skips)
+  call mimetic_test%report(passes, tests, skips)
   call t_cell_collection_test%report(passes, tests, skips)
   call matcha_test%report(passes, tests, skips)
 

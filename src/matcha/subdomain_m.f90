@@ -29,7 +29,7 @@ module subdomain_m
 
   interface
 
-    module subroutine define(side, boundary_val, internal_val, n, self)
+    impure elemental module subroutine define(side, boundary_val, internal_val, n, self)
       implicit none
       real, intent(in) :: side, boundary_val, internal_val
       integer, intent(in) :: n !! number of grid points in each coordinate direction

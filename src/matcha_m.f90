@@ -6,6 +6,7 @@ module matcha_m
   use input_m, only : input_t
   use output_m, only : output_t
   use subdomain_m, only : subdomain_t
+  use mimetic_m, only : mimetic_t, operator(.div.)
   
   implicit none
 
