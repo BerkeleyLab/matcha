@@ -8,7 +8,7 @@ jobs:
 
     env:
       FC: gfortran
-      GCC_V: 14
+      GCC_V: 15
 
     steps:
     - name: Checkout code
@@ -29,7 +29,7 @@ jobs:
       id: cache-opencoarrays
       uses: actions/cache@v3
       with:
-        path: "OpenCoarrays-2.10.2/"
+        path: "OpenCoarrays-2.10.3/"
         key: ${{ steps.time.outputs.time }}
 
     - name: Install GFortran, OpenCoarrays
