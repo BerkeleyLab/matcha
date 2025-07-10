@@ -59,7 +59,7 @@ contains
 
     call phi%define(side=1., boundary_val=0., internal_val=0., n=21)
 
-#ifndef __GFORTRAN__
+#if (! defined(__GFORTRAN__)) || defined(GFORTRAN_ICE)
     associate(div_grad_phi => .div. (.grad. phi) , laplacian_phi => .laplacian. phi)
       test_diagnosis = .all.(div_grad_phi%values() .approximates. laplacian_phi%values() .within. tolerance)
     end associate
