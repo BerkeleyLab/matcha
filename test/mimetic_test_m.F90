@@ -39,14 +39,18 @@ contains
 
 #if HAVE_MULTI_IMAGE_SUPPORT
     test_descriptions = [ &
-       test_description_t("the divergence of a gradient matching a Laplacian", div_grad_matches_laplacian) &
+       test_description_t("the divergence of a gradient matching a Laplacian - Multi-Image", div_grad_matches_laplacian) &
+       ,test_description_t("div test1 - Multi-Image", div_test1) &
     ]
 #else
     procedure(diagnosis_function_i), pointer :: div_grad_matches_laplacian_ptr
+    procedure(diagnosis_function_i), pointer :: div_test1_ptr
     div_grad_matches_laplacian_ptr => div_grad_matches_laplacian
+    div_test1_ptr => div_test1
 
     test_descriptions = [ &
-       test_description_t("the divergence of a gradient matching a Laplacian", div_grad_matches_laplacian_ptr) &
+       test_description_t("the divergence of a gradient matching a Laplacian - Non Mult-Image", div_grad_matches_laplacian_ptr) &
+       ,test_description_t("div test1 - Non Multi-Image", div_test1_ptr) &
     ]
 #endif
     test_results = test_descriptions%run()
@@ -56,6 +60,8 @@ contains
     type(test_diagnosis_t) test_diagnosis
     real, parameter :: tolerance = 1.E-06
     type(mimetic_t) phi
+
+    ! For now I'll use n = order*2 + 1, = 5
 
     call phi%define(side=1., boundary_val=0., internal_val=0., n=21)
 
@@ -72,5 +78,34 @@ contains
     end block
 #endif
   end function
+
+  function div_test1() result(test_diagnosis)
+    type(test_diagnosis_t) test_diagnosis
+    real, parameter :: tolerance = 1.E-06
+    type(mimetic_t) phi
+    integer :: mimetic_k
+
+    call phi%define(side=1., boundary_val=0., internal_val=0., n=21)
+    !call phi%setOrder(my_k=2)
+    mimetic_k = phi%mimetic_k()
+    write (*,*) "mimetic_k = ", mimetic_k
+
+#ifndef __GFORTRAN__
+#else
+    block
+      type(mimetic_t) div_grad_phi, laplacian_phi
+      div_grad_phi = .div. (.grad. phi)
+      laplacian_phi = .laplacian. phi
+    end block
+#endif
+
+    test_diagnosis = test_diagnosis_t( &
+      test_passed = .true. &
+      ,diagnostics_string = "Test passed" &
+    )
+
+
+  end function
+
 
 end module mimetic_test_m
