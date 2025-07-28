@@ -8,7 +8,7 @@ submodule(distribution_m) distribution_s
   implicit none
 
 contains
-  
+
   pure function monotonically_increasing(f) result(monotonic)
     double precision, intent(in) :: f(:)
     logical monotonic
@@ -21,8 +21,8 @@ contains
 
     call_assert(all(sample_distribution(:,2)>=0.D0))
 
-    associate(nintervals => size(sample_distribution,1))      
-      distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin         
+    associate(nintervals => size(sample_distribution,1))
+      distribution%vel_ = [(sample_distribution(i,1), i =1, nintervals)]  ! Assign speeds to each distribution bin
       distribution%cumulative_distribution_ = [0.D0, [(sum(sample_distribution(1:i,2)), i=1, nintervals)]]
     end associate
 
@@ -33,14 +33,14 @@ contains
   module procedure cumulative_distribution
     call_assert(allocated(self%cumulative_distribution_))
     my_cumulative_distribution = self%cumulative_distribution_
-  end procedure 
-  
+  end procedure
+
   module procedure velocities
-    
+
     double precision, allocatable :: sampled_speeds(:,:),  dir(:,:,:)
     integer cell, step, k
-    
-    call_assert(allocated(self%cumulative_distribution_)) 
+
+    call_assert(allocated(self%cumulative_distribution_))
     call_assert(allocated(self%vel_))
 
     ! Sample from the distribution
@@ -50,7 +50,7 @@ contains
         k = findloc(speeds(cell,step) >= self%cumulative_distribution(), value=.false., dim=1)-1
         sampled_speeds(cell,step) = self%vel_(k)
       end do
-      
+
       ! Create unit vectors
       dir = directions(:,1:nsteps,:)
 
@@ -63,7 +63,7 @@ contains
       end associate
 
       allocate(my_velocities, mold=dir)
-      
+
       do concurrent(step=1:nsteps)
         my_velocities(:,step,1) = sampled_speeds(:,step)*dir(:,step,1)
         my_velocities(:,step,2) = sampled_speeds(:,step)*dir(:,step,2)
