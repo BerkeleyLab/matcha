@@ -37,7 +37,8 @@ Change '2' above to the number of images that you would like to launch in parall
 #### Multi-image (parallel) execution
 The unit test suite uses small grids to minimize runtime, which limits the scalability of the test suite only.
 Hence, the test suite is _not_ designed for execution in a large number of images.
-All tests pass when running the test suite in 1-4 images: 
+
+All tests pass when running the test suite in 1-4 images:
 ```
 export FOR_COARRAY_NUM_IMAGES=4
 fpm test --compiler ifx --profile release --flag "-heap-arrays -coarray"

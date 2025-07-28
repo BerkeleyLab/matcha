@@ -20,7 +20,7 @@ Vibe Coding
    ```
 4. Use the contents of [vibe-coding/README.md](./vibe-coding/README.md) as your
    prompt to a large language model (LLM).
-5. Use an editor to edit the test-suite.F90 lines beginning and ending with 
+5. Use an editor to edit the test-suite.F90 lines beginning and ending with
    `module procedure laplacian` and `end procedure laplacian`, respectively,
    replacing those lines with the LLM's response.
 6. Compile test-suite.F90 as in step 2 again.
@@ -36,7 +36,7 @@ Vibe Coding
      but tests failed replace "compiling" with "running" and replace "errors"
      with "test failures".
    * Append LLM-generated code from the previous iteration.
-   
+
 Idiomatic Vibe Coding
 ---------------------
 Follow the [vibe coding](#vibe-coding) steps except as described below:

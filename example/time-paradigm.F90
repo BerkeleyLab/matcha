@@ -7,7 +7,7 @@ program time_paradigm_m
   !! Time various alternative programming paradigms
   use subdomain_m, only : subdomain_t
   use assert_m
-  use julienne_m, only : string_t, file_t, command_line_t, bin_t, csv 
+  use julienne_m, only : string_t, file_t, command_line_t, bin_t, csv
   use iso_fortran_env, only : int64
   implicit none
 
@@ -32,7 +32,7 @@ program time_paradigm_m
     if (len(steps_string)/=0) read(steps_string,*) steps
     if (len(resolution_string)/=0) read(resolution_string,*) resolution
 
-    if (me==1) then 
+    if (me==1) then
       print *,"Number of steps to execute: ",steps
       print *,"Number of grid points in each coordinate direction: ",resolution
       print *,"Starting functional solver."
@@ -40,7 +40,7 @@ program time_paradigm_m
     associate(t_functional => functional_programming_time())
       if (me==1) print *,"Starting procedural solver."
       associate(t_procedural => functional_programming_time())
-        if (me==1) then 
+        if (me==1) then
           print *,"Functional program time: ", t_functional
           print *,"Procedural program time: ", t_procedural
           print *,"Procedural speedup: ", (t_functional - t_procedural)/t_functional
@@ -48,7 +48,7 @@ program time_paradigm_m
       end associate
     end associate
   end associate
-  
+
 contains
 
   function functional_programming_time() result(system_time)
