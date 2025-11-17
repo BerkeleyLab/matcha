@@ -25,6 +25,12 @@ jobs:
             extra_flags: -g -ffree-line-length-0
             oc_version: 2.10.3
 
+          - os: ubuntu-24.04
+            compiler: gfortran
+            version: 15
+            extra_flags: -g 
+            oc_version: 2.10.3
+
     env:
       COMPILER_VERSION: ${{ matrix.version }}
       OC_VERSION: ${{ matrix.oc_version }}
@@ -66,7 +72,28 @@ jobs:
         set -x
         sudo apt update
         sudo apt install -y build-essential pkg-config make
-        sudo apt install -y gfortran-${COMPILER_VERSION} g++-${COMPILER_VERSION}
+        if [[ ${COMPILER_VERSION} < 15 ]] ; then \
+          sudo apt install -y gfortran-${COMPILER_VERSION} g++-${COMPILER_VERSION} ; \
+        else \
+          curl -L https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -o install-homebrew.sh ; \
+          chmod +x install-homebrew.sh ; \
+          env CI=1 ./install-homebrew.sh ; \
+          HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew" ; \
+          ${HOMEBREW_PREFIX}/bin/brew install -v gcc@${COMPILER_VERSION} binutils ; \
+          ls -al ${HOMEBREW_PREFIX}/bin ; \
+          echo "PATH=${HOMEBREW_PREFIX}/bin:${PATH}" >> "$GITHUB_ENV" ; \
+          echo "LD_LIBRARY_PATH=${HOMEBREW_PREFIX}/lib64:${HOMEBREW_PREFIX}/lib:${LD_LIBRARY_PATH}" >> "$GITHUB_ENV" ; \
+          : Homebrew GCC@15 needs binutils 2.44+ ; \
+          HOMEBREW_BINUTILS=$(ls -d ${HOMEBREW_PREFIX}/Cellar/binutils/2.*/bin ) ; \
+          ls -al ${HOMEBREW_BINUTILS} ; \
+          echo "FFLAGS=${FFLAGS:+"$FFLAGS" }-B ${HOMEBREW_BINUTILS}" >> "$GITHUB_ENV" ; \
+          echo "CFLAGS=${CFLAGS:+"$CFLAGS" }-B ${HOMEBREW_BINUTILS}" >> "$GITHUB_ENV" ; \
+          echo "CXXFLAGS=${CXXFLAGS:+"$CXXFLAGS" }-B ${HOMEBREW_BINUTILS}" >> "$GITHUB_ENV" ; \
+          echo "LDFLAGS=${LDFLAGS:+"$LDFLAGS" }-B ${HOMEBREW_BINUTILS}" >> "$GITHUB_ENV" ; \
+          for tool in $(cd ${HOMEBREW_BINUTILS} ; ls ) ; do \
+             sudo ln -sf ${HOMEBREW_BINUTILS}/$tool /usr/bin/$tool ; \
+          done
+        fi  
 
     - name: OpenCoarrays/MPICH Cache
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.container == '' }}
