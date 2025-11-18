@@ -14,8 +14,8 @@ jobs:
       matrix:
         os: [ ubuntu-24.04 ]
         compiler: [ gfortran ]
-        version: [ 14 ]
-        extra_flags: [ -g ]
+        version: [ 13, 14 ]
+        extra_flags: [ -g -ffree-line-length-0 ]
         oc_version: [ 2.10.3 ]
 
     env:
