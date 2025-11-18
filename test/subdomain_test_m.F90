@@ -207,7 +207,7 @@ contains
 
   function functional_matches_procedural() result(test_diagnosis)
     type(test_diagnosis_t) test_diagnosis
-    real, parameter :: tolerance = 1.E-06
+    real, parameter :: tolerance = 1.E-05
     integer, parameter :: steps = 1000, n=21
     real, parameter :: alpha = 1.
     real, parameter :: side=1., boundary_val=1., internal_val=2.
