@@ -201,7 +201,12 @@ contains
     end associate
 
     associate(residual => T%values() - T_steady)
+#ifdef __INTEL_COMPILER
+      ! workaround a typecheck defect observed in ifx 2025.2.1
+      test_diagnosis = .all. [(residual .isAtLeast. 0.) .and. (residual .isAtMost. tolerance)]
+#else
       test_diagnosis = .all. ((residual .isAtLeast. 0.) .and. (residual .isAtMost. tolerance))
+#endif
     end associate
   end function
 
@@ -214,7 +219,12 @@ contains
 
     associate( T_f => T_functional(), T_p => T_procedural())
       associate(L_infinity_norm => maxval(abs(T_f - T_p)))
+#ifdef __INTEL_COMPILER
+      ! workaround a typecheck defect observed in ifx 2025.2.1
+        test_diagnosis = .all. [T_f .approximates. T_p .within. tolerance]
+#else
         test_diagnosis = .all. (T_f .approximates. T_p .within. tolerance)
+#endif
       end associate
     end associate
 
