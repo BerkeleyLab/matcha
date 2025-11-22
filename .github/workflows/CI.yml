@@ -4,44 +4,126 @@ on: [push, pull_request]
 
 jobs:
   Build:
-    runs-on: [ubuntu-latest]
+    name: ${{ matrix.compiler }}-${{ matrix.version }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-14, macos-15, macos-15-intel, macos-26, ubuntu-24.04 ]
+        compiler: [ gfortran ]
+        version: [ 14 ]
+        extra_flags: [ -g ]
+        oc_version: [ 2.10.3 ]
+
+        include:
+          - os: ubuntu-24.04
+            compiler: gfortran
+            version: 13
+            extra_flags: -g -ffree-line-length-0
+            oc_version: 2.10.3
 
     env:
-      FC: gfortran
-      GCC_V: 14
+      COMPILER_VERSION: ${{ matrix.version }}
+      OC_VERSION: ${{ matrix.oc_version }}
+      FC: ${{ matrix.compiler }}
+      FFLAGS: ${{ matrix.extra_flags }}
+      FPM_FLAGS:  --profile release --verbose
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Install fpm
-      uses: fortran-lang/setup-fpm@v7
+      uses: fortran-lang/setup-fpm@main
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        fpm-version: latest
 
     - name: Get Time
       id: time
-      uses: nanzm/get-time-action@v1.1
+      uses: nanzm/get-time-action@master
       with:
         format: 'YYYY-MM'
 
-    - name: Setup cache for opencoarrays
-      id: cache-opencoarrays
-      uses: actions/cache@v3
-      with:
-        path: "OpenCoarrays-2.10.2/"
-        key: ${{ steps.time.outputs.time }}
-
-    - name: Install GFortran, OpenCoarrays
+    - name: Install macOS Dependencies
+      if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gfortran' && matrix.version == 14 }}
       run: |
+        set -x
+        brew update
+        # fpm binary distribution for macOS requires gfortran shared libraries from gcc@12
+        brew install -v gcc@12
+        brew install -v opencoarrays gcc@14 open-mpi
+        #brew --prefix
+        #ls -alR $(brew --prefix)/bin
+        echo "FC=gfortran-${COMPILER_VERSION}" >> "$GITHUB_ENV"
+
+    - name: Install Ubuntu Native Dependencies
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.container == '' && matrix.compiler == 'gfortran' }}
+      run: |
+        set -x
         sudo apt update
-        sudo apt install -y build-essential gfortran-${GCC_V} g++-${GCC_V} pkg-config make
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
-          --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
-          --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V}
-        if [ ! -d OpenCoarrays-2.10.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.10.2/OpenCoarrays-2.10.2.tar.gz && tar -xf OpenCoarrays-2.10.2.tar.gz && cd OpenCoarrays-2.10.2 && TERM=xterm ./install.sh -y; fi
+        sudo apt install -y build-essential pkg-config make
+        sudo apt install -y gfortran-${COMPILER_VERSION} g++-${COMPILER_VERSION}
+
+    - name: OpenCoarrays/MPICH Cache
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.container == '' }}
+      id: cache-opencoarrays
+      uses: actions/cache@v4
+      with:
+        path: OpenCoarrays-${{ matrix.oc_version }}
+        key: OpenCoarrays-${{ matrix.oc_version }}-${{ matrix.compiler }}-${{ matrix.version }}-${{ matrix.os }}-${{ steps.time.outputs.time }}
+
+    - name: OpenCoarrays/MPICH Build
+      if: ${{ steps.cache-opencoarrays.outputs.cache-hit != 'true' && contains(matrix.os, 'ubuntu') && matrix.container == '' }}
+      run: |
+          set -x
+          rm -Rf OpenCoarrays-${OC_VERSION}
+          #OC_URL=https://github.com/sourceryinstitute/OpenCoarrays/releases/download/${OC_VERSION}/OpenCoarrays-${OC_VERSION}.tar.gz
+          OC_URL=https://github.com/sourceryinstitute/OpenCoarrays/archive/refs/tags/${OC_VERSION}.tar.gz
+          wget -P . ${OC_URL}
+          tar -xf ${OC_VERSION}.tar.gz
+          cd OpenCoarrays-${OC_VERSION}
+          TERM=xterm ./install.sh --yes-to-all \
+            --with-fortran gfortran-${COMPILER_VERSION} \
+            --with-cxx g++-${COMPILER_VERSION} \
+            --with-c gcc-${COMPILER_VERSION}
+
+    - name: Setup Ubuntu Compilers
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.container == '' && matrix.compiler == 'gfortran' }}
+      run: |
+        set -x
+        PREFIX="$PWD/OpenCoarrays-${OC_VERSION}/prerequisites/installations"
+        OC_PATH="$PREFIX/opencoarrays/${OC_VERSION}"
+        MPI_PATH=$(ls -d $PREFIX/mpich/*)
+        #ls -alR ${PREFIX}
+        cat ${OC_PATH}/setup.sh
+        echo "PATH=${OC_PATH}/bin:${MPI_PATH}/bin:$PATH" >> "$GITHUB_ENV"
+        echo "FC=gfortran-${COMPILER_VERSION}" >> "$GITHUB_ENV"
+        echo "FPM_FFLAGS=${FFLAGS}" >> "$GITHUB_ENV"
+        echo "FPM_CFLAGS=${CFLAGS}" >> "$GITHUB_ENV"
+        echo "FPM_CXXFLAGS=${CXXFLAGS}" >> "$GITHUB_ENV"
+        echo "FPM_LDFLAGS=${LDFLAGS}" >> "$GITHUB_ENV"
+
+    - name: Version info
+      run: |
+        echo == TOOL VERSIONS ==
+        echo Platform version info:
+        uname -a
+        if test -r /etc/os-release ; then grep -e NAME -e VERSION /etc/os-release  ; fi
+        if test -x /usr/bin/sw_vers ; then /usr/bin/sw_vers ; fi
+        echo
+        echo PATH="$PATH"
+        for tool in ${FC} caf mpicc mpif90 fpm ; do
+          ( echo ; set -x ; w=$(which $tool) ; \
+            if test -n "$w" ; then \
+               ls -al $w ; ls -alhL $w ; $tool --version || echo ERROR=$? ; \
+            fi )
+        done
 
     - name: Build, run, and test
       run: |
-        source OpenCoarrays-2.10.2/prerequisites/installations/opencoarrays/2.10.2/setup.sh
-        fpm test --compiler caf --runner "cafrun -n 2" 
+        #source OpenCoarrays-${OC_VERSION}/prerequisites/installations/opencoarrays/${OC_VERSION}/setup.sh
+        fpm test --compiler caf --runner "cafrun -n 2"  ${FPM_FLAGS}

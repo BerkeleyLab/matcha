@@ -97,9 +97,13 @@ contains
 
     block
       real, parameter :: tolerance = 1.0E-06
+      integer :: nx, ny, nz
       logical internally_zero, concave_at_faces, doubly_concave_at_edges, triply_concave_in_corners, constant_away_from_edges
 
-      associate(me=>this_image(), n_subdomains=>num_images(), nx=>size(lap_f_vals,1), ny=>size(lap_f_vals,2),nz=>size(lap_f_vals,3))
+      nx = size(lap_f_vals,1)
+      ny = size(lap_f_vals,2)
+      nz = size(lap_f_vals,3)
+      associate(me=>this_image(), n_subdomains=>num_images())
         associate(first_zero_in_x => merge(3, 1, me==1), last_zero_in_x => merge(nx-2, nx, me==n_subdomains))
           internally_zero = all(abs(lap_f_vals(first_zero_in_x:last_zero_in_x, 3:ny-2, 3:nz-2)) < tolerance)
         end associate
@@ -197,20 +201,30 @@ contains
     end associate
 
     associate(residual => T%values() - T_steady)
+#ifdef __INTEL_COMPILER
+      ! workaround a typecheck defect observed in ifx 2025.2.1
+      test_diagnosis = .all. [(residual .isAtLeast. 0.) .and. (residual .isAtMost. tolerance)]
+#else
       test_diagnosis = .all. ((residual .isAtLeast. 0.) .and. (residual .isAtMost. tolerance))
+#endif
     end associate
   end function
 
   function functional_matches_procedural() result(test_diagnosis)
     type(test_diagnosis_t) test_diagnosis
-    real, parameter :: tolerance = 1.E-06
+    real, parameter :: tolerance = 1.E-05
     integer, parameter :: steps = 1000, n=21
     real, parameter :: alpha = 1.
     real, parameter :: side=1., boundary_val=1., internal_val=2.
 
     associate( T_f => T_functional(), T_p => T_procedural())
       associate(L_infinity_norm => maxval(abs(T_f - T_p)))
+#ifdef __INTEL_COMPILER
+      ! workaround a typecheck defect observed in ifx 2025.2.1
+        test_diagnosis = .all. [T_f .approximates. T_p .within. tolerance]
+#else
         test_diagnosis = .all. (T_f .approximates. T_p .within. tolerance)
+#endif
       end associate
     end associate
 

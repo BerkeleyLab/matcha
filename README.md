@@ -9,7 +9,7 @@ Despite advances in microscopy, imaging techniques only capture a very small spa
 
 Prerequisites
 -------------
-1. A Fortran 2018 compiler (`gfortran` + [OpenCoarrays])
+1. A Fortran 2018 compiler with multi-image/coarray support (e.g. `gfortran` + [OpenCoarrays])
 2. The Fortran Package Manager
 
 Downloading, Building, and Testing
@@ -44,8 +44,11 @@ export FOR_COARRAY_NUM_IMAGES=4
 fpm test --compiler ifx --profile release --flag "-heap-arrays -coarray"
 ```
 
+Note this requires a working install of Intel MPI.
+
 #### Single-image (serial) execution
 Same as multi-image execution except `FOR_COARRAY_NUM_IMAGES=1`.
+Also requires a working install of Intel MPI.
 
 #### Automatic GPU-based acceleration: _Experimental_
 The following command is listed here for reference while we investigate what appear to be platform-specific compiler issues causing a crashe when automatic GPU-based acceleration is enabled with the required coarray features:
